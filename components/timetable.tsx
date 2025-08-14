@@ -1,9 +1,11 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
-import { Card, CardContent } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Upload, FileImage, Loader2, Trash2, RotateCcw, Calendar, Clock } from "lucide-react"
 
 const subjects = [
   "국어",
@@ -27,8 +29,14 @@ const subjects = [
 ]
 
 const periods = ["1교시", "2교시", "3교시", "4교시", "5교시", "6교시"]
+const weekDays = ["월", "화", "수", "목", "금"]
+
+interface WeeklySchedule {
+  [day: string]: { [period: string]: string }
+}
 
 export function Timetable() {
+  const [viewMode, setViewMode] = useState<"daily" | "weekly">("daily")
   const [schedule, setSchedule] = useState<{ [key: string]: string }>({
     "1교시": "",
     "2교시": "",
@@ -37,7 +45,134 @@ export function Timetable() {
     "5교시": "",
     "6교시": "",
   })
+  const [weeklySchedule, setWeeklySchedule] = useState<WeeklySchedule>({})
   const [customSubjects, setCustomSubjects] = useState<{ [key: string]: string }>({})
+  const [uploadedImage, setUploadedImage] = useState<string | null>(null)
+  const [isProcessing, setIsProcessing] = useState(false)
+  const [ocrResult, setOcrResult] = useState<string>("")
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  // localStorage에서 시간표 데이터 불러오기
+  useEffect(() => {
+    const savedSchedule = localStorage.getItem("dailySchedule")
+    const savedWeeklySchedule = localStorage.getItem("weeklySchedule")
+    const savedCustomSubjects = localStorage.getItem("customSubjects")
+    
+    if (savedSchedule) {
+      setSchedule(JSON.parse(savedSchedule))
+    }
+    if (savedWeeklySchedule) {
+      setWeeklySchedule(JSON.parse(savedWeeklySchedule))
+    }
+    if (savedCustomSubjects) {
+      setCustomSubjects(JSON.parse(savedCustomSubjects))
+    }
+  }, [])
+
+  // 데이터 저장 함수
+  const saveToLocalStorage = () => {
+    localStorage.setItem("dailySchedule", JSON.stringify(schedule))
+    localStorage.setItem("weeklySchedule", JSON.stringify(weeklySchedule))
+    localStorage.setItem("customSubjects", JSON.stringify(customSubjects))
+  }
+
+  // 이미지 업로드 처리
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      const result = e.target?.result as string
+      setUploadedImage(result)
+    }
+    reader.readAsDataURL(file)
+  }
+
+  // OCR 처리 및 시간표 생성
+  const processImageWithOCR = async () => {
+    if (!uploadedImage) return
+
+    setIsProcessing(true)
+    setOcrResult("")
+
+    try {
+      // 설정에서 API 키 가져오기
+      const savedSettings = localStorage.getItem("classHomepageSettings")
+      let apiKey = ""
+      let model = "gemini-1.5-flash"
+      
+      if (savedSettings) {
+        const settings = JSON.parse(savedSettings)
+        apiKey = settings.geminiApiKey
+        model = settings.geminiModel
+      }
+
+      if (!apiKey) {
+        alert("설정에서 Gemini API Key를 먼저 등록해주세요!")
+        setIsProcessing(false)
+        return
+      }
+
+      const response = await fetch("/api/gemini-vision", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          image: uploadedImage,
+          apiKey: apiKey,
+          model: model,
+          prompt: `이 이미지는 주간 시간표입니다. 시간표의 내용을 읽고 JSON 형식으로 변환해주세요.
+          
+요청사항:
+1. 요일별(월,화,수,목,금)로 구성된 시간표를 분석
+2. 각 교시별 과목명을 추출
+3. 다음 JSON 형식으로 출력:
+
+{
+  "월": {"1교시": "과목명", "2교시": "과목명", ...},
+  "화": {"1교시": "과목명", "2교시": "과목명", ...},
+  "수": {"1교시": "과목명", "2교시": "과목명", ...},
+  "목": {"1교시": "과목명", "2교시": "과목명", ...},
+  "금": {"1교시": "과목명", "2교시": "과목명", ...}
+}
+
+주의사항:
+- 과목명은 한국어로 정확히 추출
+- 빈 시간은 ""로 표시
+- JSON 형식만 출력하고 다른 설명은 제외
+- 교시는 1교시~6교시까지 처리`
+        }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || "OCR 처리 중 오류가 발생했습니다.")
+      }
+
+      setOcrResult(data.response)
+      
+      // JSON 파싱 시도
+      try {
+        const parsedSchedule = JSON.parse(data.response)
+        setWeeklySchedule(parsedSchedule)
+        setViewMode("weekly")
+        saveToLocalStorage()
+        alert("시간표가 성공적으로 생성되었습니다!")
+      } catch (parseError) {
+        console.error("JSON 파싱 오류:", parseError)
+        alert("시간표 데이터 파싱에 실패했습니다. OCR 결과를 확인해주세요.")
+      }
+      
+    } catch (error: any) {
+      console.error("OCR 처리 오류:", error)
+      alert(error.message || "OCR 처리 중 오류가 발생했습니다.")
+    } finally {
+      setIsProcessing(false)
+    }
+  }
 
   const handleSubjectChange = (period: string, subject: string) => {
     setSchedule((prev) => ({ ...prev, [period]: subject }))
@@ -64,63 +199,245 @@ export function Timetable() {
     })
   }
 
+  const clearUploadedImage = () => {
+    setUploadedImage(null)
+    setOcrResult("")
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ""
+    }
+  }
+
+  const resetSchedule = () => {
+    if (confirm("시간표를 초기화하시겠습니까?")) {
+      setSchedule({
+        "1교시": "",
+        "2교시": "",
+        "3교시": "",
+        "4교시": "",
+        "5교시": "",
+        "6교시": "",
+      })
+      setWeeklySchedule({})
+      setCustomSubjects({})
+      localStorage.removeItem("dailySchedule")
+      localStorage.removeItem("weeklySchedule")
+      localStorage.removeItem("customSubjects")
+    }
+  }
+
   return (
-    <div className="space-y-4">
-      <Card className="bg-green-50 border-green-200">
-        <CardContent className="p-4">
-          <h3 className="font-semibold text-green-700 mb-2">오늘 날짜</h3>
-          <p className="text-lg">{getCurrentDate()}</p>
+    <div className="space-y-6">
+      {/* 헤더 영역 */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <Card className="bg-green-50 border-green-200 flex-1">
+          <CardContent className="p-4">
+            <h3 className="font-semibold text-green-700 mb-2 flex items-center gap-2">
+              <Calendar className="w-5 h-5" />
+              오늘 날짜
+            </h3>
+            <p className="text-lg">{getCurrentDate()}</p>
+          </CardContent>
+        </Card>
+        
+        <div className="flex gap-2">
+          <Button
+            variant={viewMode === "daily" ? "default" : "outline"}
+            onClick={() => setViewMode("daily")}
+            size="sm"
+          >
+            <Clock className="w-4 h-4 mr-1" />
+            오늘
+          </Button>
+          <Button
+            variant={viewMode === "weekly" ? "default" : "outline"}
+            onClick={() => setViewMode("weekly")}
+            size="sm"
+          >
+            <Calendar className="w-4 h-4 mr-1" />
+            주간
+          </Button>
+          <Button
+            variant="outline"
+            onClick={resetSchedule}
+            size="sm"
+            className="text-red-600 hover:text-red-700"
+          >
+            <RotateCcw className="w-4 h-4 mr-1" />
+            초기화
+          </Button>
+        </div>
+      </div>
+
+      {/* 이미지 업로드 섹션 */}
+      <Card className="border-blue-200">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-blue-700">
+            <FileImage className="w-5 h-5" />
+            시간표 이미지로 자동 생성
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex-1">
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleImageUpload}
+                className="hidden"
+              />
+              <Button
+                variant="outline"
+                onClick={() => fileInputRef.current?.click()}
+                className="w-full sm:w-auto"
+                disabled={isProcessing}
+              >
+                <Upload className="w-4 h-4 mr-2" />
+                시간표 이미지 업로드
+              </Button>
+            </div>
+            
+            {uploadedImage && (
+              <div className="flex gap-2">
+                <Button
+                  onClick={processImageWithOCR}
+                  disabled={isProcessing}
+                  className="bg-blue-600 hover:bg-blue-700"
+                >
+                  {isProcessing ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      처리 중...
+                    </>
+                  ) : (
+                    "시간표 생성"
+                  )}
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={clearUploadedImage}
+                  size="sm"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </Button>
+              </div>
+            )}
+          </div>
+          
+          {uploadedImage && (
+            <div className="border rounded-lg p-4 bg-gray-50">
+              <p className="text-sm text-gray-600 mb-2">업로드된 이미지:</p>
+              <img 
+                src={uploadedImage} 
+                alt="업로드된 시간표" 
+                className="max-w-full max-h-64 object-contain rounded border"
+              />
+            </div>
+          )}
+          
+          {ocrResult && (
+            <div className="border rounded-lg p-4 bg-blue-50">
+              <p className="text-sm text-blue-700 mb-2">OCR 결과:</p>
+              <pre className="text-xs bg-white p-2 rounded border overflow-auto max-h-32">
+                {ocrResult}
+              </pre>
+            </div>
+          )}
         </CardContent>
       </Card>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {periods.map((period) => (
-          <Card key={period} className="hover:shadow-md transition-shadow">
-            <CardContent className="p-4">
-              <h4 className="font-semibold mb-3 text-center text-green-700">{period}</h4>
-              <div className="space-y-2">
-                <Select
-                  value={schedule[period] || "선택"}
-                  onValueChange={(value) => handleSubjectChange(period, value)}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="과목 선택" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="선택">선택</SelectItem>
-                    {subjects.map((subject) => (
-                      <SelectItem key={subject} value={subject}>
-                        {subject}
-                      </SelectItem>
+      {/* 시간표 표시 영역 */}
+      {viewMode === "weekly" && Object.keys(weeklySchedule).length > 0 ? (
+        // 주간 시간표 표시
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Calendar className="w-5 h-5 text-green-600" />
+              주간 시간표
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse">
+                <thead>
+                  <tr>
+                    <th className="border p-3 bg-green-100 text-green-800 font-semibold">교시</th>
+                    {weekDays.map((day) => (
+                      <th key={day} className="border p-3 bg-green-100 text-green-800 font-semibold min-w-24">
+                        {day}요일
+                      </th>
                     ))}
-                    <SelectItem value="직접입력">직접 입력</SelectItem>
-                  </SelectContent>
-                </Select>
+                  </tr>
+                </thead>
+                <tbody>
+                  {periods.map((period) => (
+                    <tr key={period}>
+                      <td className="border p-3 bg-gray-50 font-medium text-center">{period}</td>
+                      {weekDays.map((day) => (
+                        <td key={`${day}-${period}`} className="border p-3 text-center">
+                          <span className="inline-block px-2 py-1 bg-green-100 text-green-800 rounded text-sm">
+                            {weeklySchedule[day]?.[period] || "-"}
+                          </span>
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </CardContent>
+        </Card>
+      ) : (
+        // 일간 시간표 (기존 방식)
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {periods.map((period) => (
+            <Card key={period} className="hover:shadow-md transition-shadow">
+              <CardContent className="p-4">
+                <h4 className="font-semibold mb-3 text-center text-green-700">{period}</h4>
+                <div className="space-y-2">
+                  <Select
+                    value={schedule[period] || "선택"}
+                    onValueChange={(value) => handleSubjectChange(period, value)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="과목 선택" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="선택">선택</SelectItem>
+                      {subjects.map((subject) => (
+                        <SelectItem key={subject} value={subject}>
+                          {subject}
+                        </SelectItem>
+                      ))}
+                      <SelectItem value="직접입력">직접 입력</SelectItem>
+                    </SelectContent>
+                  </Select>
 
-                {schedule[period] === "직접입력" && (
-                  <Input
-                    placeholder="과목명을 입력하세요"
-                    value={customSubjects[period] || ""}
-                    onChange={(e) => handleCustomSubjectChange(period, e.target.value)}
-                  />
+                  {schedule[period] === "직접입력" && (
+                    <Input
+                      placeholder="과목명을 입력하세요"
+                      value={customSubjects[period] || ""}
+                      onChange={(e) => handleCustomSubjectChange(period, e.target.value)}
+                    />
+                  )}
+                </div>
+
+                {schedule[period] && schedule[period] !== "직접입력" && (
+                  <div className="mt-3 p-2 bg-green-100 rounded text-center font-medium text-green-800">
+                    {schedule[period]}
+                  </div>
                 )}
-              </div>
 
-              {schedule[period] && schedule[period] !== "직접입력" && (
-                <div className="mt-3 p-2 bg-green-100 rounded text-center font-medium text-green-800">
-                  {schedule[period]}
-                </div>
-              )}
-
-              {schedule[period] === "직접입력" && customSubjects[period] && (
-                <div className="mt-3 p-2 bg-green-100 rounded text-center font-medium text-green-800">
-                  {customSubjects[period]}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+                {schedule[period] === "직접입력" && customSubjects[period] && (
+                  <div className="mt-3 p-2 bg-green-100 rounded text-center font-medium text-green-800">
+                    {customSubjects[period]}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
     </div>
   )
 }

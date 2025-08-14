@@ -194,6 +194,7 @@ export function Settings({ onSettingsChange }: SettingsProps) {
               <SelectContent>
                 <SelectItem value="gemini-1.5-flash">Gemini 1.5 Flash (빠른 응답)</SelectItem>
                 <SelectItem value="gemini-1.5-pro">Gemini 1.5 Pro (고품질 응답)</SelectItem>
+                <SelectItem value="gemini-2.0-flash-exp">Gemini 2.0 Flash (실험적)</SelectItem>
                 <SelectItem value="gemini-1.0-pro">Gemini 1.0 Pro (안정적)</SelectItem>
               </SelectContent>
             </Select>
