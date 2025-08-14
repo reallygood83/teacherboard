@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -35,6 +35,77 @@ export function DocumentGenerator({ geminiApiKey, geminiModel }: DocumentGenerat
   const [isGenerating, setIsGenerating] = useState(false);
   const [copySuccess, setCopySuccess] = useState(false);
   const [error, setError] = useState('');
+  const [viewMode, setViewMode] = useState<'formatted' | 'markdown'>('formatted');
+
+  // Markdown → 정돈된 일반 문서 텍스트로 변환
+  const toPlainDocument = (md: string): string => {
+    if (!md) return '';
+    let text = md.replace(/\r\n/g, '\n');
+
+    // 코드 펜스/인라인 코드 마커 제거
+    text = text.replace(/```/g, '');
+    text = text.replace(/`([^`]+)`/g, '$1');
+
+    const lines = text.split('\n');
+    const out: string[] = [];
+    for (let raw of lines) {
+      let line = raw.replace(/\s+$/g, '');
+
+      // Heading (#, ##, ...)
+      const h = line.match(/^\s*#{1,6}\s+(.*)$/);
+      if (h) {
+        const title = h[1].trim();
+        out.push(title);
+        out.push('─'.repeat(Math.max(3, Math.min(80, title.length))));
+        continue;
+      }
+
+      // Blockquote
+      const bq = line.match(/^\s*>\s?(.*)$/);
+      if (bq) {
+        out.push(bq[1]);
+        continue;
+      }
+
+      // Bullet list
+      const bullet = line.match(/^(\s*)[-*]\s+(.*)$/);
+      if (bullet) {
+        const indent = bullet[1] || '';
+        out.push(`${indent}• ${bullet[2]}`);
+        continue;
+      }
+
+      // Numbered list
+      const numbered = line.match(/^(\s*)(\d+)\.\s+(.*)$/);
+      if (numbered) {
+        const indent = numbered[1] || '';
+        out.push(`${indent}${numbered[2]}. ${numbered[3]}`);
+        continue;
+      }
+
+      // Bold/italic 제거
+      line = line.replace(/\*\*([^*]+)\*\*/g, '$1');
+      line = line.replace(/__([^_]+)__/g, '$1');
+      line = line.replace(/\*(?!\s)([^*]+)\*/g, '$1');
+      line = line.replace(/_(?!\s)([^_]+)_/g, '$1');
+
+      out.push(line);
+    }
+
+    // 공백 줄 과다 제거
+    const compact: string[] = [];
+    for (let i = 0; i < out.length; i++) {
+      const cur = out[i];
+      const prev = compact[compact.length - 1];
+      if (!(cur.trim() === '' && (prev === undefined || prev.trim() === ''))) {
+        compact.push(cur);
+      }
+    }
+
+    return compact.join('\n').trim();
+  };
+
+  const formattedDoc = useMemo(() => toPlainDocument(generatedDoc), [generatedDoc]);
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -100,7 +171,8 @@ ${formData.attachments ? `- 첨부: ${formData.attachments}` : ''}
 
   const copyToClipboard = async () => {
     try {
-      await navigator.clipboard.writeText(generatedDoc);
+      const textToCopy = viewMode === 'formatted' ? formattedDoc : generatedDoc;
+      await navigator.clipboard.writeText(textToCopy);
       setCopySuccess(true);
       setTimeout(() => setCopySuccess(false), 2000);
     } catch (err) {
@@ -109,7 +181,8 @@ ${formData.attachments ? `- 첨부: ${formData.attachments}` : ''}
   };
 
   const downloadDocument = () => {
-    const blob = new Blob([generatedDoc], { type: 'text/plain;charset=utf-8' });
+    const textToDownload = viewMode === 'formatted' ? formattedDoc : generatedDoc;
+    const blob = new Blob([textToDownload], { type: 'text/plain;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
@@ -233,7 +306,26 @@ ${formData.attachments ? `- 첨부: ${formData.attachments}` : ''}
                 <CheckCircle className="w-5 h-5 text-green-600" />
                 생성된 공문서
               </div>
-              <div className="flex gap-2">
+              <div className="flex gap-2 items-center">
+                {/* 보기 모드 토글 */}
+                <div className="hidden sm:flex rounded-md border overflow-hidden">
+                  <Button
+                    variant={viewMode === 'formatted' ? 'default' : 'outline'}
+                    size="sm"
+                    className="rounded-none"
+                    onClick={() => setViewMode('formatted')}
+                  >
+                    문서형식
+                  </Button>
+                  <Button
+                    variant={viewMode === 'markdown' ? 'default' : 'outline'}
+                    size="sm"
+                    className="rounded-none border-l"
+                    onClick={() => setViewMode('markdown')}
+                  >
+                    원문(MD)
+                  </Button>
+                </div>
                 <Button
                   variant="outline"
                   size="sm"
@@ -259,15 +351,21 @@ ${formData.attachments ? `- 첨부: ${formData.attachments}` : ''}
               </div>
             </CardTitle>
             <CardDescription>
-              생성된 공문서를 확인하고 필요시 수정하여 사용하세요
+              보기 모드: {viewMode === 'formatted' ? '정돈된 문서형식 (복사/붙여넣기 용이)' : '원문(Markdown)'}
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <pre className="whitespace-pre-wrap text-sm font-mono leading-relaxed">
-                {generatedDoc}
-              </pre>
-            </div>
+            {viewMode === 'formatted' ? (
+              <div className="bg-white p-5 rounded-lg border whitespace-pre-wrap text-[15px] leading-7 font-sans">
+                {formattedDoc}
+              </div>
+            ) : (
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <pre className="whitespace-pre-wrap text-sm font-mono leading-relaxed">
+                  {generatedDoc}
+                </pre>
+              </div>
+            )}
           </CardContent>
         </Card>
       )}
