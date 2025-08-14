@@ -17,6 +17,8 @@ import {
   Heart,
   Play,
   SettingsIcon,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react"
 import { DigitalClock } from "@/components/digital-clock"
 import { Chalkboard } from "@/components/chalkboard"
@@ -39,6 +41,7 @@ interface SettingsData {
 
 export default function ClassHomepage() {
   const [currentDate, setCurrentDate] = useState("")
+  const [isQuickLinksCollapsed, setIsQuickLinksCollapsed] = useState(false)
   const [settings, setSettings] = useState<SettingsData>({
     title: "우리 학급 홈페이지",
     subtitle: "함께 배우고 성장하는 공간입니다 ❤️",
@@ -178,64 +181,97 @@ export default function ClassHomepage() {
 
           {/* 수업 도구 탭 */}
           <TabsContent value="tools" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card className="card-hover">
-                <CardHeader>
-                  <CardTitle className={`flex items-center gap-2 font-serif`}>
-                    <BookOpen className={`w-5 h-5 ${getAccentColor()}`} />
-                    수업 칠판
-                  </CardTitle>
-                  <CardDescription>수업 중 필요한 내용을 자유롭게 작성하고 편집하세요</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Chalkboard 
-                    geminiApiKey={settings.geminiApiKey}
-                    geminiModel={settings.geminiModel}
-                  />
-                </CardContent>
-              </Card>
+            <div className="flex gap-4">
+              {/* 수업 칠판 - 75% */}
+              <div className={`transition-all duration-300 ${isQuickLinksCollapsed ? 'flex-1' : 'flex-[3]'}`}>
+                <Card className="card-hover h-full">
+                  <CardHeader>
+                    <CardTitle className={`flex items-center gap-2 font-serif`}>
+                      <BookOpen className={`w-5 h-5 ${getAccentColor()}`} />
+                      수업 칠판
+                    </CardTitle>
+                    <CardDescription>수업 중 필요한 내용을 자유롭게 작성하고 편집하세요</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <Chalkboard 
+                      geminiApiKey={settings.geminiApiKey}
+                      geminiModel={settings.geminiModel}
+                    />
+                  </CardContent>
+                </Card>
+              </div>
 
-              <Card className="card-hover">
-                <CardHeader>
-                  <CardTitle className={`flex items-center gap-2 font-serif`}>
-                    <ExternalLink className={`w-5 h-5 ${getAccentColor()}`} />
-                    빠른 링크
-                  </CardTitle>
-                  <CardDescription>자주 사용하는 교육 사이트에 빠르게 접속하세요</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <div className="grid grid-cols-2 gap-3">
-                    <Button
-                      variant="outline"
-                      className="justify-start bg-transparent"
-                      onClick={() => window.open("https://hi.goe.go.kr", "_blank")}
-                    >
-                      하이러닝
-                    </Button>
-                    <Button
-                      variant="outline"
-                      className="justify-start bg-transparent"
-                      onClick={() => window.open("https://www.hiclass.net/", "_blank")}
-                    >
-                      Hiclass
-                    </Button>
-                    <Button
-                      variant="outline"
-                      className="justify-start bg-transparent"
-                      onClick={() => window.open("https://www.edunet.net/", "_blank")}
-                    >
-                      에듀넷
-                    </Button>
-                    <Button
-                      variant="outline"
-                      className="justify-start bg-transparent"
-                      onClick={() => window.open("https://www.i-scream.co.kr/", "_blank")}
-                    >
-                      아이스크림
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
+              {/* 빠른 링크 - 25% 또는 접혀있을 때 숨김 */}
+              {!isQuickLinksCollapsed && (
+                <div className="flex-1">
+                  <Card className="card-hover h-full">
+                    <CardHeader>
+                      <CardTitle className={`flex items-center justify-between gap-2 font-serif`}>
+                        <div className="flex items-center gap-2">
+                          <ExternalLink className={`w-5 h-5 ${getAccentColor()}`} />
+                          빠른 링크
+                        </div>
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          onClick={() => setIsQuickLinksCollapsed(true)}
+                          className="h-6 w-6 p-0"
+                        >
+                          <ChevronRight className="w-4 h-4" />
+                        </Button>
+                      </CardTitle>
+                      <CardDescription>자주 사용하는 교육 사이트에 빠르게 접속하세요</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                      <div className="grid grid-cols-1 gap-3">
+                        <Button
+                          variant="outline"
+                          className="justify-start bg-transparent text-sm"
+                          onClick={() => window.open("https://hi.goe.go.kr", "_blank")}
+                        >
+                          하이러닝
+                        </Button>
+                        <Button
+                          variant="outline"
+                          className="justify-start bg-transparent text-sm"
+                          onClick={() => window.open("https://www.hiclass.net/", "_blank")}
+                        >
+                          Hiclass
+                        </Button>
+                        <Button
+                          variant="outline"
+                          className="justify-start bg-transparent text-sm"
+                          onClick={() => window.open("https://www.edunet.net/", "_blank")}
+                        >
+                          에듀넷
+                        </Button>
+                        <Button
+                          variant="outline"
+                          className="justify-start bg-transparent text-sm"
+                          onClick={() => window.open("https://www.i-scream.co.kr/", "_blank")}
+                        >
+                          아이스크림
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              )}
+
+              {/* 접힌 상태에서 펼치기 버튼 */}
+              {isQuickLinksCollapsed && (
+                <div className="flex items-start pt-2">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => setIsQuickLinksCollapsed(false)}
+                    className="h-8 w-8 p-0"
+                    title="빠른 링크 펼치기"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </Button>
+                </div>
+              )}
             </div>
           </TabsContent>
 

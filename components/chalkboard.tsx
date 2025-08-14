@@ -3,8 +3,11 @@
 import { useState, useRef, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Bold, Italic, Underline, Eraser, Copy, Bot } from "lucide-react"
+import { Bold, Italic, Underline, Eraser, Copy, Bot, AlertCircle } from "lucide-react"
 import { AIDialog } from "@/components/ai-dialog"
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
+import rehypeRaw from 'rehype-raw'
 
 interface ChalkboardProps {
   geminiApiKey?: string
@@ -79,10 +82,56 @@ export function Chalkboard({ geminiApiKey = "", geminiModel = "gemini-1.5-flash"
 
   const handleAISubmit = (content: string) => {
     if (editorRef.current) {
-      // AI 응답을 칠판에 추가
-      const currentContent = editorRef.current.innerHTML
-      const newContent = currentContent ? currentContent + '<br><br>' + content : content
-      editorRef.current.innerHTML = newContent
+      // AI 응답을 HTML로 변환하여 칠판에 추가
+      const aiResponseElement = document.createElement('div')
+      aiResponseElement.className = 'ai-response-block'
+      aiResponseElement.style.cssText = `
+        border-left: 4px solid #60a5fa;
+        padding: 16px;
+        margin: 16px 0;
+        background-color: rgba(96, 165, 250, 0.15);
+        border-radius: 8px;
+        font-family: inherit;
+      `
+      
+      // AI 헤더 추가
+      const aiHeader = document.createElement('div')
+      aiHeader.innerHTML = '🤖 <strong>AI 도우미 응답:</strong>'
+      aiHeader.style.cssText = `
+        color: #60a5fa;
+        font-weight: bold;
+        margin-bottom: 8px;
+        font-size: 0.9em;
+      `
+      
+      // 마크다운 스타일의 텍스트를 HTML로 간단 변환
+      const formattedContent = content
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.*?)\*/g, '<em>$1</em>')
+        .replace(/`(.*?)`/g, '<code style="background-color: rgba(255,255,255,0.2); padding: 2px 4px; border-radius: 3px;">$1</code>')
+        .replace(/^### (.*$)/gm, '<h3 style="font-size: 1.1em; font-weight: bold; margin: 12px 0 6px 0; color: #e2e8f0;">$1</h3>')
+        .replace(/^## (.*$)/gm, '<h2 style="font-size: 1.2em; font-weight: bold; margin: 16px 0 8px 0; color: #f1f5f9;">$1</h2>')
+        .replace(/^# (.*$)/gm, '<h1 style="font-size: 1.3em; font-weight: bold; margin: 20px 0 10px 0; color: #f8fafc;">$1</h1>')
+        .replace(/^- (.*$)/gm, '<li style="margin-left: 20px; list-style-type: disc;">$1</li>')
+        .replace(/^\d+\. (.*$)/gm, '<li style="margin-left: 20px; list-style-type: decimal;">$1</li>')
+        .replace(/\n/g, '<br>')
+      
+      const contentDiv = document.createElement('div')
+      contentDiv.innerHTML = formattedContent
+      contentDiv.style.cssText = `
+        color: white;
+        line-height: 1.6;
+        font-size: inherit;
+      `
+      
+      aiResponseElement.appendChild(aiHeader)
+      aiResponseElement.appendChild(contentDiv)
+      
+      // 현재 내용에 AI 응답 추가
+      if (editorRef.current.innerHTML.trim()) {
+        editorRef.current.appendChild(document.createElement('br'))
+      }
+      editorRef.current.appendChild(aiResponseElement)
       
       // 칠판 하단으로 스크롤
       editorRef.current.scrollTop = editorRef.current.scrollHeight
@@ -134,15 +183,33 @@ export function Chalkboard({ geminiApiKey = "", geminiModel = "gemini-1.5-flash"
         <div className="w-px h-8 bg-gray-300 mx-2" />
 
         {/* AI 버튼 */}
-        <Button 
-          size="sm" 
-          variant="outline" 
-          onClick={() => setShowAIDialog(true)}
-          className="bg-blue-50 border-blue-200 text-blue-700 hover:bg-blue-100"
-        >
-          <Bot className="w-4 h-4 mr-1" />
-          AI
-        </Button>
+        <div className="relative group">
+          <Button 
+            size="sm" 
+            variant="outline" 
+            onClick={() => {
+              if (!geminiApiKey) {
+                alert('설정 탭에서 Gemini API Key를 먼저 등록해주세요!')
+                return
+              }
+              setShowAIDialog(true)
+            }}
+            className="bg-blue-50 border-blue-200 text-blue-700 hover:bg-blue-100"
+          >
+            <Bot className="w-4 h-4 mr-1" />
+            AI
+            {!geminiApiKey && (
+              <AlertCircle className="w-3 h-3 ml-1 text-amber-500" />
+            )}
+          </Button>
+          
+          {/* API 키 없을 때 툴팁 */}
+          {!geminiApiKey && (
+            <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-1 text-xs text-white bg-gray-800 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
+              설정에서 API Key 등록 필요
+            </div>
+          )}
+        </div>
 
         <div className="w-px h-8 bg-gray-300 mx-2" />
 
