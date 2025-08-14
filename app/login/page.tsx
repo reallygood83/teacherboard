@@ -10,9 +10,9 @@ export default function LoginPage() {
   const router = useRouter();
 
   useEffect(() => {
-    // 이미 로그인된 사용자는 대시보드로 리다이렉트
+    // 이미 로그인된 사용자는 학급 홈페이지로 리다이렉트
     if (currentUser) {
-      router.push('/dashboard');
+      router.push('/class');
     }
   }, [currentUser, router]);
 
@@ -21,7 +21,7 @@ export default function LoginPage() {
       <div className="min-h-screen bg-gradient-to-br from-blue-500 via-purple-600 to-indigo-700 flex items-center justify-center">
         <div className="bg-white/20 backdrop-blur-lg rounded-2xl p-8 text-white text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-4 border-white/30 border-t-white mx-auto mb-4"></div>
-          <p className="text-lg font-medium">대시보드로 이동 중...</p>
+          <p className="text-lg font-medium">학급 홈페이지로 이동 중...</p>
         </div>
       </div>
     );

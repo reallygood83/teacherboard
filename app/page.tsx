@@ -11,8 +11,8 @@ export default function HomePage() {
   useEffect(() => {
     if (!loading) {
       if (currentUser) {
-        // 로그인된 사용자는 대시보드로 리다이렉트
-        router.push('/dashboard');
+        // 로그인된 사용자는 학급 홈페이지로 리다이렉트
+        router.push('/class');
       } else {
         // 로그인되지 않은 사용자는 로그인 페이지로 리다이렉트
         router.push('/login');

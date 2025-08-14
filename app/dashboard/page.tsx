@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import UserProfile from '@/components/auth/UserProfile';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { GraduationCap } from 'lucide-react';
 
 export default function DashboardPage() {
   const { currentUser, loading } = useAuth();
@@ -63,6 +65,13 @@ export default function DashboardPage() {
               </CardDescription>
             </CardHeader>
             <CardContent>
+              {/* 바로가기 CTA */}
+              <div className="mb-6">
+                <Button size="lg" className="bg-green-600 hover:bg-green-700" onClick={() => router.push('/class')}>
+                  <GraduationCap className="w-4 h-4 mr-2" /> 학급 홈페이지로 바로 가기
+                </Button>
+              </div>
+
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <Card>
                   <CardHeader>
