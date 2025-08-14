@@ -1,67 +1,61 @@
-# Vercel 환경 변수 설정 가이드
+# 🚨 Vercel 환경 변수 설정 가이드 - 즉시 설정 필요!
 
-## 필수 환경 변수
+## 현재 상황
+- Firebase 환경 변수가 Vercel에 설정되지 않아서 빌드가 실패하고 있습니다
+- `.env.local` 파일의 더미 값을 제거했으므로 Vercel에서 실제 값을 설정해야 합니다
 
-Vercel 대시보드에서 다음 환경 변수들을 설정해야 합니다:
+## 🔥 즉시 설정해야 할 환경 변수
 
-### Firebase Client 설정
+### 1. Vercel 대시보드 접속
+1. https://vercel.com/dashboard 접속
+2. `teacherboard` 프로젝트 클릭
+3. **Settings** 탭 클릭
+4. **Environment Variables** 섹션으로 이동
+
+### 2. Firebase Client 설정 (6개) - 필수!
 ```
-NEXT_PUBLIC_FIREBASE_API_KEY=AIzaSyDyWjQPXXXXXXXXXXXXXXXXXXXXX
+NEXT_PUBLIC_FIREBASE_API_KEY=실제_API_키
 NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=teacher-board-4b6ef.firebaseapp.com
 NEXT_PUBLIC_FIREBASE_PROJECT_ID=teacher-board-4b6ef
 NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=teacher-board-4b6ef.appspot.com
-NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=123456789012
-NEXT_PUBLIC_FIREBASE_APP_ID=1:123456789012:web:xxxxxxxxxxxxxxxxxxxx
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=실제_메시징_센더_ID
+NEXT_PUBLIC_FIREBASE_APP_ID=실제_앱_ID
 ```
 
-### Firebase Admin SDK 설정
+### 3. Firebase Admin SDK 설정 (3개) - 필수!
 ```
 FIREBASE_PROJECT_ID=teacher-board-4b6ef
 FIREBASE_CLIENT_EMAIL=firebase-adminsdk-fbsvc@teacher-board-4b6ef.iam.gserviceaccount.com
-FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----
-MIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQC3uQjWpWhQVfoo
-s73TLRBir6VDiQDIkW3yMxwq/QFs7MLXz/Xj4tVCOgaI7s+1jPxZcGEzff9JTeex
-7ZnNW67G5sZH2FR0zfxsQ4BSMJ3T6KjICILEz7cwFC2+twaarXHIMb2QzNSGyHWp
-Tyj6JV4aTxVjN0QB8VPRFkw66L70Lo4kN8u94QkpnrjReuYVlJ2a24571bsyvBvs
-wBriUMQY+NJs/WMYo75OB0lqVjP+j+GjhwvOZzIgd0ESVVCsByoBQTCJoZ6WaT2Y
-U8PBNb0CLzEfuX7wKFoiw6bIpM5KcFPAX8YtQFo87fs1ehlBAxaKYpqjL8xmNG1y
-qtcblo2NAgMBAAECggEAIghYpspFJHyItnl1NGUon99Bkd0TFBQ8dZ0aHqx3UyIY
-hbm0Jt6h+n6dL0htmYfgRwEWQF+apo2T2dXVo8DUA2xEVpKwMmLl23g1kQQIeHSk
-r0lEUAjaOkHCp41n38c5SIhOQUBwLfd8NDzBrnS1ldIIeDSImIOHrzeeL1tl4/1a
-wj9H3+oV5ydwFQmPotSPWIMX5kHECiMoL/Qxp1oOZZnaHsyUV1MbUEhFfhCll3+G
-B/y5FENDsa/QatNX8wv3P7FW+AvOAHx5wcUGTr4d0P8A0w4r9X15ghYuc66k904w
-l7v6uhzg2MIqIK6JPjO/q2YwLRSf4gmAo6r2zHicUQKBgQD2DjgHFmW5QHN3DLOA
-xVHCz0eFLLYcrulxv907Ql1KNJbuS5k++ZEQX1XA3wwt2GnrLD9BTuScPNbJUMYc
-XoaG9DX3ef6WpHYM2d24CF7fEeDAj+CjyYWRYuSM4ZvHMByykvJkAwRxamAh5yQH
-ITyvmNbeSxzOE0JRlImyAAZIFwKBgQC/JeXpnb187VuwglyC09eEOvPDm61yO846
-xMqMC1Vz/rGxAETzM2msFu/UflavA1906nGFesd/8DSKbQvl+eoGa+yh4MO3IeR3
-YZ5HXKL6+Trqp/39kpKcOOtSCi+PyrgB4q6IlYjboSVyrWJCxy/3ygf9uuol6Xrd
-7j+gm115+wKBgQDEyiR3Tqt22Rw/57Gc2LOGif8afOL918qvBhNrNK2mDp9z4JSk
-8DbcEFNmWT3FYON9ijrhAbcHWgUyp157DAKt5p1O24wJcWlU595TNKaj5AmMGMZC
-WIdx+tTt8/aB/XHGRI6F/H/OMZTHKLUA2s1NZ4DZ8tsL2g1db94ctbZQawKBgQCa
-S9dJOyGIRHltA+31VVd0z7mRvorF2Wzhl5UAcu2p0oBRJqyBvJCib2ltGAaVA538
-XHsCileb+KQQ0XF3VMMKJ/g9u5eAroUjsNL5O9f7y085uB2YoMZkALZD5SD7a2IZ
-c4f7jOmKkIwQA9F7ohogZR8KO+VicRPTLcyCsqdEHQKBgQCk6zBnPU0UXM9J8leH
-PyS+TheJXdx64nedn9hdcqZKfDaZjkbKH5gocvEfYdQ/X/Xuvab2aCNm+h/Ds2GX
-GuDoAYvRSVnWVbRH6FrIwfb0p0gnSTCtgRvmRcsOqQPnh2/DESM3WfaV5R6QWEeN
-8PeWomDF8o8JTf/od7WAxuoogw==
------END PRIVATE KEY-----"
+FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n실제_프라이빗_키_내용\n-----END PRIVATE KEY-----"
 ```
 
-## Vercel 환경 변수 설정 방법
+## 🔑 Firebase 실제 값 확인하는 방법
 
-1. Vercel 대시보드 접속: https://vercel.com/dashboard
-2. 프로젝트 선택 (teacherboard)
-3. Settings 탭 클릭
-4. Environment Variables 섹션
-5. 위의 모든 환경 변수 추가
+### Firebase Console에서 확인:
+1. https://console.firebase.google.com/project/teacher-board-4b6ef
+2. **프로젝트 설정** (톱니바퀴) 클릭
+3. **일반** 탭에서 웹 앱 설정 확인
+4. **서비스 계정** 탭에서 Admin SDK 키 다운로드
 
-## 주의사항
+### 중요한 주의사항:
+- ⚠️ `FIREBASE_PRIVATE_KEY`는 반드시 따옴표("")로 감싸고 전체 내용 복사
+- ⚠️ 개행문자 `\n`는 그대로 유지해야 함
+- ⚠️ 모든 `NEXT_PUBLIC_` 변수는 정확한 실제 값 필요
 
-- `FIREBASE_PRIVATE_KEY`는 따옴표 포함해서 전체를 복사
-- 개행 문자(\n)는 그대로 유지
-- 모든 값은 실제 Firebase 프로젝트 값으로 교체 필요
+## 📋 설정 체크리스트
+- [ ] NEXT_PUBLIC_FIREBASE_API_KEY 설정
+- [ ] NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN 설정
+- [ ] NEXT_PUBLIC_FIREBASE_PROJECT_ID 설정
+- [ ] NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET 설정
+- [ ] NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID 설정
+- [ ] NEXT_PUBLIC_FIREBASE_APP_ID 설정
+- [ ] FIREBASE_PROJECT_ID 설정
+- [ ] FIREBASE_CLIENT_EMAIL 설정
+- [ ] FIREBASE_PRIVATE_KEY 설정
 
-## 확인 방법
+## 🎯 설정 완료 후
+환경 변수 설정이 완료되면 자동으로 새로운 빌드가 시작됩니다.
+빌드가 성공하면 Firebase 인증이 포함된 애플리케이션이 배포됩니다!
 
-환경 변수 설정 후 다시 배포하면 빌드가 성공해야 합니다.
+## 🆘 도움이 필요하면
+Firebase Console에서 정확한 설정 값을 확인한 후 Vercel에 입력하세요.

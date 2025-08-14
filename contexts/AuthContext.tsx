@@ -28,6 +28,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   const signInWithGoogle = async (): Promise<UserCredential> => {
+    if (!auth || !googleProvider) {
+      throw new Error('Firebase가 초기화되지 않았습니다. 환경 변수를 확인해주세요.');
+    }
+    
     try {
       const result = await signInWithPopup(auth, googleProvider);
       return result;
@@ -38,6 +42,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const signOut = async (): Promise<void> => {
+    if (!auth) {
+      throw new Error('Firebase가 초기화되지 않았습니다.');
+    }
+    
     try {
       await firebaseSignOut(auth);
     } catch (error) {
@@ -47,6 +55,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   useEffect(() => {
+    if (!auth) {
+      // Firebase가 초기화되지 않은 경우 로딩 상태 해제
+      setLoading(false);
+      return;
+    }
+    
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);
       setLoading(false);
