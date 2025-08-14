@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
@@ -8,6 +9,7 @@ import { useToast } from '@/hooks/use-toast';
 export default function GoogleLoginButton() {
   const { signInWithGoogle } = useAuth();
   const { toast } = useToast();
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
 
   const handleGoogleLogin = async () => {
@@ -18,6 +20,12 @@ export default function GoogleLoginButton() {
         title: "로그인 성공",
         description: "Google 계정으로 로그인되었습니다.",
       });
+      
+      // COOP 정책 이슈를 우회하기 위한 즉시 페이지 새로고침
+      setTimeout(() => {
+        window.location.href = '/dashboard';
+      }, 1000);
+      
     } catch (error: any) {
       console.error('Google 로그인 실패:', error);
       toast({
