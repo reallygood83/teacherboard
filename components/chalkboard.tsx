@@ -10,7 +10,7 @@ import remarkGfm from 'remark-gfm'
 import rehypeRaw from 'rehype-raw'
 import { useAuth } from "@/contexts/AuthContext"
 import { useToast } from "@/hooks/use-toast"
-import { db } from "@/lib/firebase"
+import { db, isFirebaseReady, retryFirebaseInit, logFirebaseStatus } from "@/lib/firebase"
 import { addDoc, collection, serverTimestamp, getDocs, query, orderBy, limit } from "firebase/firestore"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 
@@ -35,6 +35,8 @@ export function Chalkboard({ geminiApiKey = "", geminiModel = "gemini-1.5-flash"
   const { toast } = useToast()
   // 추가: 변경 감지 상태
   const [dirty, setDirty] = useState(false)
+  // 추가: 연결 상태 추적
+  const [connectionStatus, setConnectionStatus] = useState<'connecting' | 'connected' | 'error'>('connecting')
 
   // 페이지 이탈 시 경고 및 Ctrl/Cmd+S 단축키 저장
   useEffect(() => {
@@ -71,6 +73,35 @@ export function Chalkboard({ geminiApiKey = "", geminiModel = "gemini-1.5-flash"
       }
     }
   }, [])
+
+  // Firebase 연결 상태 모니터링
+  useEffect(() => {
+    const checkConnection = () => {
+      if (isFirebaseReady()) {
+        setConnectionStatus('connected')
+      } else {
+        setConnectionStatus('connecting')
+        // 5초 후 재연결 시도
+        setTimeout(() => {
+          retryFirebaseInit()
+          if (isFirebaseReady()) {
+            setConnectionStatus('connected')
+            toast({ title: "Firebase 연결 복구", description: "칠판 저장이 다시 가능합니다." })
+          } else {
+            setConnectionStatus('error')
+          }
+        }, 5000)
+      }
+    }
+
+    // 초기 연결 상태 확인
+    checkConnection()
+    
+    // 주기적 연결 상태 확인 (30초마다)
+    const interval = setInterval(checkConnection, 30000)
+    
+    return () => clearInterval(interval)
+  }, [currentUser])
 
   const execCommand = (command: string, value?: string) => {
     document.execCommand(command, false, value)
@@ -125,25 +156,52 @@ export function Chalkboard({ geminiApiKey = "", geminiModel = "gemini-1.5-flash"
     return firstLine.length > 40 ? firstLine.slice(0, 40) + "…" : firstLine
   }
 
-  const handleSave = async () => {
+  const handleSave = async (retryCount = 0) => {
     if (!currentUser) {
       toast({ title: "로그인이 필요합니다", description: "노트를 저장하려면 로그인해주세요.", variant: "destructive" })
       return
     }
-    if (!db) {
-      toast({ title: "Firebase 미설정", description: "환경 변수 설정 후 다시 시도해주세요. (Vercel 대시보드)" , variant: "destructive"})
-      return
+    
+    // Firebase 연결 상태 확인 및 재시도
+    if (!isFirebaseReady()) {
+      if (retryCount === 0) {
+        console.log("🔄 Firebase 연결 재시도 중...")
+        logFirebaseStatus()
+        retryFirebaseInit()
+        
+        // 연결 재시도 후 잠시 대기
+        setTimeout(() => handleSave(1), 1000)
+        return
+      } else {
+        toast({ 
+          title: "Firebase 연결 실패", 
+          description: "환경 변수를 확인하고 페이지를 새로고침해주세요. (Vercel 대시보드)", 
+          variant: "destructive" 
+        })
+        return
+      }
     }
+    
     const html = editorRef.current?.innerHTML?.trim() || ""
     const text = editorRef.current?.innerText?.trim() || ""
     if (!html && !text) {
       toast({ title: "저장할 내용이 없습니다", description: "내용을 입력한 후 저장해주세요." })
       return
     }
+    
     setSaving(true)
+    
     try {
       const title = extractTitleFromText(text)
-      const ref = collection(db, "users", currentUser.uid, "chalkboardNotes")
+      const ref = collection(db!, "users", currentUser.uid, "chalkboardNotes")
+      
+      console.log("💾 Firestore 저장 시도:", {
+        userId: currentUser.uid,
+        title,
+        contentLength: text.length,
+        timestamp: new Date().toISOString()
+      })
+      
       await addDoc(ref, {
         title,
         contentHtml: html,
@@ -151,13 +209,35 @@ export function Chalkboard({ geminiApiKey = "", geminiModel = "gemini-1.5-flash"
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
       })
+      
       const now = new Date()
       setLastSavedAt(now)
       setDirty(false)
+      
+      console.log("✅ Firestore 저장 성공")
       toast({ title: "저장 완료", description: `${title} (자동 제목)` })
+      
     } catch (e: any) {
-      console.error("노트 저장 실패", e)
-      toast({ title: "저장 실패", description: e?.message || "네트워크 또는 권한 문제입니다.", variant: "destructive" })
+      console.error("❌ 노트 저장 실패:", e)
+      
+      // 네트워크 오류 시 재시도 옵션 제공
+      if (e?.code === 'unavailable' || e?.message?.includes('network') || retryCount < 2) {
+        toast({ 
+          title: "일시적 저장 실패", 
+          description: "네트워크 문제입니다. 잠시 후 다시 시도해주세요.", 
+          variant: "destructive",
+          action: {
+            altText: "재시도",
+            onClick: () => handleSave(retryCount + 1)
+          }
+        })
+      } else {
+        toast({ 
+          title: "저장 실패", 
+          description: `오류: ${e?.message || "알 수 없는 문제가 발생했습니다."}`, 
+          variant: "destructive" 
+        })
+      }
     } finally {
       setSaving(false)
     }
@@ -169,17 +249,37 @@ export function Chalkboard({ geminiApiKey = "", geminiModel = "gemini-1.5-flash"
 
   const openHistory = async () => {
     setShowHistory(true)
-    if (!currentUser || !db) return
+    if (!currentUser) return
+    
+    if (!isFirebaseReady()) {
+      toast({ 
+        title: "Firebase 연결 필요", 
+        description: "환경 변수를 확인하고 페이지를 새로고침해주세요.", 
+        variant: "destructive" 
+      })
+      return
+    }
+    
     setHistoryLoading(true)
     try {
-      const ref = collection(db, "users", currentUser.uid, "chalkboardNotes")
+      const ref = collection(db!, "users", currentUser.uid, "chalkboardNotes")
       const q = query(ref, orderBy("createdAt", "desc"), limit(10))
+      
+      console.log("📚 히스토리 로딩 시도:", { userId: currentUser.uid })
+      
       const snap = await getDocs(q)
       const list = snap.docs.map((d: any) => ({ id: d.id, ...d.data() }))
+      
+      console.log("✅ 히스토리 로딩 성공:", { count: list.length })
       setNotes(list)
-    } catch (e) {
-      console.error("히스토리 로딩 실패", e)
-      toast({ title: "불러오기 실패", description: "히스토리를 불러오지 못했습니다.", variant: "destructive" })
+      
+    } catch (e: any) {
+      console.error("❌ 히스토리 로딩 실패:", e)
+      toast({ 
+        title: "불러오기 실패", 
+        description: `히스토리를 불러오지 못했습니다: ${e?.message || "네트워크 오류"}`, 
+        variant: "destructive" 
+      })
     } finally {
       setHistoryLoading(false)
     }
@@ -260,11 +360,16 @@ export function Chalkboard({ geminiApiKey = "", geminiModel = "gemini-1.5-flash"
       editorRef.current.scrollTop = editorRef.current.scrollHeight
 
       // AI 추가 후 자동 저장 시도
-      if (currentUser && db) {
+      if (currentUser && isFirebaseReady()) {
         handleSave()
       } else {
         setDirty(true)
-        toast({ title: "AI 응답이 추가되었습니다", description: currentUser ? "Firebase 설정 후 저장 가능합니다." : "로그인하면 저장할 수 있어요." })
+        toast({ 
+          title: "AI 응답이 추가되었습니다", 
+          description: currentUser ? 
+            "Firestore 연결 후 저장됩니다." : 
+            "로그인하면 저장할 수 있어요." 
+        })
       }
     }
   }
@@ -343,18 +448,45 @@ export function Chalkboard({ geminiApiKey = "", geminiModel = "gemini-1.5-flash"
 
         {/* 저장/히스토리 */}
         <div className="ml-auto flex items-center gap-2">
-          <div className="text-xs text-white/70">
+          <div className="text-xs text-white/70 flex items-center gap-2">
+            {/* Firebase 연결 상태 표시 */}
+            {connectionStatus === 'connected' ? (
+              <span className="flex items-center gap-1 text-green-300">
+                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                연결됨
+              </span>
+            ) : connectionStatus === 'error' ? (
+              <span className="flex items-center gap-1 text-red-300">
+                <div className="w-2 h-2 bg-red-400 rounded-full"></div>
+                연결 실패
+              </span>
+            ) : (
+              <span className="flex items-center gap-1 text-amber-300">
+                <div className="w-2 h-2 bg-amber-400 rounded-full animate-spin"></div>
+                연결 중
+              </span>
+            )}
+            <span className="mx-2">|</span>
             {lastSavedAt ? (
-              <span className="flex items-center gap-1"><Cloud className="w-3 h-3" />{lastSavedAt.toLocaleTimeString()} 저장됨</span>
+              <span className="flex items-center gap-1">
+                <Cloud className="w-3 h-3" />
+                {lastSavedAt.toLocaleTimeString()} 저장됨
+              </span>
             ) : (
               <span className="opacity-70">저장되지 않음</span>
             )}
           </div>
-          <Button size="sm" variant="default" onClick={handleSave} disabled={saving} className="bg-green-600 hover:bg-green-700 text-white">
+          <Button 
+            size="sm" 
+            variant="default" 
+            onClick={() => handleSave()} 
+            disabled={saving || connectionStatus !== 'connected'} 
+            className="bg-green-600 hover:bg-green-700 text-white disabled:bg-gray-500"
+          >
             {saving ? <Loader2 className="w-4 h-4 mr-1 animate-spin" /> : <Save className="w-4 h-4 mr-1" />}
             저장
           </Button>
-          <Button size="sm" variant="outline" onClick={openHistory}>
+          <Button size="sm" variant="outline" onClick={openHistory} disabled={connectionStatus !== 'connected'}>
             <History className="w-4 h-4 mr-1" />
             히스토리
           </Button>

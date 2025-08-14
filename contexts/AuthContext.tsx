@@ -8,7 +8,7 @@ import {
   onAuthStateChanged,
   UserCredential 
 } from 'firebase/auth';
-import { auth, googleProvider } from '@/lib/firebase';
+import { auth, googleProvider, isFirebaseReady, logFirebaseStatus } from '@/lib/firebase';
 
 interface AuthContextType {
   currentUser: User | null;
@@ -28,15 +28,32 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   const signInWithGoogle = async (): Promise<UserCredential> => {
-    if (!auth || !googleProvider) {
-      throw new Error('Firebase가 초기화되지 않았습니다. 환경 변수를 확인해주세요.');
+    if (!isFirebaseReady() || !auth || !googleProvider) {
+      logFirebaseStatus();
+      throw new Error('Firebase가 초기화되지 않았습니다. 환경 변수를 확인하고 페이지를 새로고침해주세요.');
     }
     
     try {
+      console.log('🔐 Google 로그인 시도...');
       const result = await signInWithPopup(auth, googleProvider);
+      console.log('✅ Google 로그인 성공:', {
+        uid: result.user.uid,
+        email: result.user.email,
+        displayName: result.user.displayName
+      });
       return result;
-    } catch (error) {
-      console.error('Google 로그인 에러:', error);
+    } catch (error: any) {
+      console.error('❌ Google 로그인 에러:', error);
+      
+      // 특정 오류에 대한 사용자 친화적 메시지
+      if (error.code === 'auth/popup-closed-by-user') {
+        throw new Error('로그인 창이 닫혔습니다. 다시 시도해주세요.');
+      } else if (error.code === 'auth/popup-blocked') {
+        throw new Error('팝업이 차단되었습니다. 브라우저 설정을 확인해주세요.');
+      } else if (error.code === 'auth/network-request-failed') {
+        throw new Error('네트워크 연결을 확인하고 다시 시도해주세요.');
+      }
+      
       throw error;
     }
   };
