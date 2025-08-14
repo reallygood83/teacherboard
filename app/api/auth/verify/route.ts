@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { adminAuth } from '@/lib/firebase-admin';
 
 export async function POST(request: NextRequest) {
   try {
+    // Firebase Admin SDK 동적 임포트로 빌드 오류 방지
+    const { adminAuth } = await import('@/lib/firebase-admin');
+    
     const { token } = await request.json();
 
     if (!token) {
@@ -29,7 +31,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Token verification error:', error);
     return NextResponse.json(
-      { error: 'Invalid token' },
+      { error: 'Invalid token or Firebase Admin SDK not configured' },
       { status: 401 }
     );
   }
