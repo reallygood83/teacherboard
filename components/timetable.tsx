@@ -183,8 +183,8 @@ export function Timetable() {
           image: uploadedFile,
           apiKey: apiKey,
           model: model,
-          prompt: `이 이미지는 주간 시간표입니다. 시간표의 내용을 읽고 JSON 형식으로 변환해주세요.
-          
+          prompt: `이 이미지는 주간 시간표입니다. 시간표의 내용을 읽고 순수한 JSON 형식으로만 변환해주세요.
+
 요청사항:
 1. 요일별(월,화,수,목,금)로 구성된 시간표를 분석
 2. 각 교시별 과목명을 추출
@@ -198,11 +198,12 @@ export function Timetable() {
   "금": {"1교시": "과목명", "2교시": "과목명", ...}
 }
 
-주의사항:
+중요 주의사항:
 - 과목명은 한국어로 정확히 추출
 - 빈 시간은 ""로 표시
-- JSON 형식만 출력하고 다른 설명은 제외
-- 교시는 1교시~6교시까지 처리`
+- 교시는 1교시~6교시까지 처리
+- 마크다운 코드 블록(```)을 사용하지 말고 순수한 JSON만 출력
+- 설명이나 추가 텍스트 없이 JSON만 반환`
         }),
       })
 
@@ -214,15 +215,30 @@ export function Timetable() {
 
       setOcrResult(data.response)
       
-      // JSON 파싱 시도
+      // JSON 파싱 시도 (마크다운 코드 블록 제거)
       try {
-        const parsedSchedule = JSON.parse(data.response)
+        let jsonString = data.response.trim()
+        
+        // ```json 및 ``` 마크다운 블록 제거
+        if (jsonString.startsWith('```json')) {
+          jsonString = jsonString.replace(/^```json\s*/, '').replace(/\s*```$/, '')
+        } else if (jsonString.startsWith('```')) {
+          jsonString = jsonString.replace(/^```\s*/, '').replace(/\s*```$/, '')
+        }
+        
+        // 추가 정리: 앞뒤 공백 및 개행 문자 제거
+        jsonString = jsonString.trim()
+        
+        console.log("정리된 JSON 문자열:", jsonString)
+        
+        const parsedSchedule = JSON.parse(jsonString)
         setWeeklySchedule(parsedSchedule)
         setViewMode("weekly")
         saveToLocalStorage()
         alert("시간표가 성공적으로 생성되었습니다!")
       } catch (parseError) {
         console.error("JSON 파싱 오류:", parseError)
+        console.error("원본 응답:", data.response)
         alert("시간표 데이터 파싱에 실패했습니다. OCR 결과를 확인해주세요.")
       }
       
