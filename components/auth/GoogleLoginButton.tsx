@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
-import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 
 export default function GoogleLoginButton() {
@@ -20,39 +19,42 @@ export default function GoogleLoginButton() {
       console.log('✅ Google 로그인 성공:', result.user.email);
       
       toast({
-        title: "로그인 성공",
-        description: "Google 계정으로 로그인되었습니다.",
+        title: "로그인 성공! 🎉",
+        description: `환영합니다, ${result.user.displayName}님!`,
       });
       
-      // AuthContext의 onAuthStateChanged가 자동으로 리디렉션 처리
-      console.log('⏳ AuthContext 상태 업데이트 대기 중...');
+      // 즉시 대시보드로 이동
+      setTimeout(() => {
+        console.log('📍 대시보드로 리디렉션 중...');
+        window.location.href = '/dashboard';
+      }, 1000);
       
     } catch (error: any) {
       console.error('❌ Google 로그인 실패:', error);
       toast({
         title: "로그인 실패",
-        description: error.message || "로그인 중 오류가 발생했습니다.",
+        description: error.message || "로그인 중 오류가 발생했습니다. 다시 시도해주세요.",
         variant: "destructive",
       });
+    } finally {
       setLoading(false);
     }
   };
 
   return (
-    <Button
+    <button
       onClick={handleGoogleLogin}
       disabled={loading}
-      className="w-full h-12 flex items-center justify-center gap-3 bg-white text-gray-800 border-2 border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all duration-200 font-semibold text-base relative overflow-hidden group"
+      className="w-full bg-white/95 backdrop-blur-sm hover:bg-white text-gray-800 font-semibold py-4 px-6 rounded-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-2xl disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-3 border border-white/20"
     >
       {loading ? (
         <>
-          <div className="animate-spin rounded-full h-5 w-5 border-2 border-blue-500 border-t-transparent"></div>
-          <span className="text-gray-600">로그인 중...</span>
+          <div className="animate-spin rounded-full h-5 w-5 border-2 border-gray-300 border-t-blue-500"></div>
+          <span>로그인 처리 중...</span>
         </>
       ) : (
         <>
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-50 to-purple-50 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
-          <svg width="20" height="20" viewBox="0 0 24 24" className="relative z-10">
+          <svg width="24" height="24" viewBox="0 0 24 24">
             <path
               fill="#4285F4"
               d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -70,9 +72,9 @@ export default function GoogleLoginButton() {
               d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
             />
           </svg>
-          <span className="relative z-10">Google로 시작하기</span>
+          <span className="text-lg">Google로 시작하기</span>
         </>
       )}
-    </Button>
+    </button>
   );
 }
