@@ -19,6 +19,8 @@ import {
   SettingsIcon,
   ChevronLeft,
   ChevronRight,
+  Plus,
+  Trash2,
 } from "lucide-react"
 import { DigitalClock } from "@/components/digital-clock"
 import { Chalkboard } from "@/components/chalkboard"
@@ -39,9 +41,19 @@ interface SettingsData {
   geminiModel: string
 }
 
+interface SavedLink {
+  id: string
+  title: string
+  url: string
+  description?: string
+  category: string
+  addedDate: string
+}
+
 export default function ClassHomepage() {
   const [currentDate, setCurrentDate] = useState("")
   const [isQuickLinksCollapsed, setIsQuickLinksCollapsed] = useState(false)
+  const [savedLinks, setSavedLinks] = useState<SavedLink[]>([])
   const [settings, setSettings] = useState<SettingsData>({
     title: "우리 학급 홈페이지",
     subtitle: "함께 배우고 성장하는 공간입니다 ❤️",
@@ -66,10 +78,28 @@ export default function ClassHomepage() {
     if (savedSettings) {
       setSettings(JSON.parse(savedSettings))
     }
+
+    // 저장된 링크 불러오기
+    const savedLinksData = localStorage.getItem("classHomepageLinks")
+    if (savedLinksData) {
+      setSavedLinks(JSON.parse(savedLinksData))
+    }
   }, [])
 
   const handleSettingsChange = (newSettings: SettingsData) => {
     setSettings(newSettings)
+  }
+
+  // 빠른링크에서 링크 제거
+  const removeQuickLink = (id: string) => {
+    const updatedLinks = savedLinks.filter((link) => link.id !== id)
+    setSavedLinks(updatedLinks)
+    localStorage.setItem("classHomepageLinks", JSON.stringify(updatedLinks))
+  }
+
+  // 링크 열기
+  const openLink = (url: string) => {
+    window.open(url, "_blank")
   }
 
   const getBackgroundClass = () => {
@@ -223,36 +253,65 @@ export default function ClassHomepage() {
                       <CardDescription>자주 사용하는 교육 사이트에 빠르게 접속하세요</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-3">
-                      <div className="grid grid-cols-1 gap-3">
-                        <Button
-                          variant="outline"
-                          className="justify-start bg-transparent text-sm"
-                          onClick={() => window.open("https://hi.goe.go.kr", "_blank")}
-                        >
-                          하이러닝
-                        </Button>
-                        <Button
-                          variant="outline"
-                          className="justify-start bg-transparent text-sm"
-                          onClick={() => window.open("https://www.hiclass.net/", "_blank")}
-                        >
-                          Hiclass
-                        </Button>
-                        <Button
-                          variant="outline"
-                          className="justify-start bg-transparent text-sm"
-                          onClick={() => window.open("https://www.edunet.net/", "_blank")}
-                        >
-                          에듀넷
-                        </Button>
-                        <Button
-                          variant="outline"
-                          className="justify-start bg-transparent text-sm"
-                          onClick={() => window.open("https://www.i-scream.co.kr/", "_blank")}
-                        >
-                          아이스크림
-                        </Button>
+                      {/* 새 링크 추가 버튼 */}
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="w-full justify-center bg-blue-50 border-blue-200 text-blue-700 hover:bg-blue-100"
+                        onClick={() => {
+                          // 외부 링크 탭으로 이동
+                          const linksTab = document.querySelector('[value="links"]') as HTMLElement
+                          if (linksTab) {
+                            linksTab.click()
+                          }
+                        }}
+                      >
+                        <Plus className="w-4 h-4 mr-1" />
+                        새 링크 추가
+                      </Button>
+                      {/* 링크 추가 안내 */}
+                      {savedLinks.length === 0 && (
+                        <div className="text-center py-6 text-gray-500 text-sm">
+                          <p className="mb-2">저장된 링크가 없습니다</p>
+                          <p>외부 링크 탭에서 사이트를 추가해보세요</p>
+                        </div>
+                      )}
+
+                      {/* 저장된 링크들 표시 */}
+                      <div className="space-y-2 max-h-96 overflow-y-auto">
+                        {savedLinks.slice(0, 8).map((link) => (
+                          <div key={link.id} className="group flex items-center justify-between bg-white/50 rounded-lg p-2 hover:bg-white/80 transition-colors">
+                            <Button
+                              variant="ghost"
+                              className="flex-1 justify-start text-sm h-auto p-2 font-medium"
+                              onClick={() => openLink(link.url)}
+                              title={link.description || link.url}
+                            >
+                              <ExternalLink className="w-3 h-3 mr-2 text-gray-400" />
+                              <span className="truncate">{link.title}</span>
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              className="opacity-0 group-hover:opacity-100 transition-opacity h-6 w-6 p-0 hover:bg-red-100 hover:text-red-600"
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                removeQuickLink(link.id)
+                              }}
+                              title="링크 제거"
+                            >
+                              <Trash2 className="w-3 h-3" />
+                            </Button>
+                          </div>
+                        ))}
                       </div>
+
+                      {/* 링크가 8개 이상일 때 안내 */}
+                      {savedLinks.length > 8 && (
+                        <p className="text-xs text-gray-500 text-center pt-2">
+                          {savedLinks.length}개 중 8개 표시 중 (외부 링크 탭에서 전체 보기)
+                        </p>
+                      )}
                     </CardContent>
                   </Card>
                 </div>
@@ -348,7 +407,7 @@ export default function ClassHomepage() {
                 <CardDescription>유용한 외부 사이트를 쉽게 링크하고 임베드하세요</CardDescription>
               </CardHeader>
               <CardContent>
-                <LinkEmbedder />
+                <LinkEmbedder onLinksUpdate={setSavedLinks} />
               </CardContent>
             </Card>
           </TabsContent>

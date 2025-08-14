@@ -33,7 +33,11 @@ const educationalSites = [
   { title: "세종학당", url: "https://www.ksif.or.kr/", description: "한국어 교육 자료", category: "국어" },
 ]
 
-export function LinkEmbedder() {
+interface LinkEmbedderProps {
+  onLinksUpdate?: (links: SavedLink[]) => void
+}
+
+export function LinkEmbedder({ onLinksUpdate }: LinkEmbedderProps = {}) {
   const [linkTitle, setLinkTitle] = useState("")
   const [linkUrl, setLinkUrl] = useState("")
   const [linkDescription, setLinkDescription] = useState("")
@@ -59,6 +63,10 @@ export function LinkEmbedder() {
 
   const saveLinksToStorage = (links: SavedLink[]) => {
     localStorage.setItem("classHomepageLinks", JSON.stringify(links))
+    // 부모 컴포넌트에 변경 알림
+    if (onLinksUpdate) {
+      onLinksUpdate(links)
+    }
   }
 
   const addLink = () => {
