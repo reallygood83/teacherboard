@@ -45,8 +45,12 @@ const firebaseConfig = {
   appId: appId || '',
 };
 
-// Firebase 초기화 상태 추적
+// Firebase 초기화 상태 추적 및 무한 루프 방지
 let initializationAttempted = false;
+let retryCount = 0;
+const MAX_RETRIES = 3;
+const RETRY_DELAY = 2000; // 2초
+let lastRetryTime = 0;
 let app: FirebaseApp | null = null;
 let auth: Auth | null = null;
 let googleProvider: GoogleAuthProvider | null = null;
@@ -107,10 +111,40 @@ export const isFirebaseReady = (): boolean => {
   return !!(app && auth && db);
 };
 
-// 초기화 재시도 함수
-export const retryFirebaseInit = (): void => {
+// 초기화 재시도 함수 - 무한 루프 방지
+export const retryFirebaseInit = (): boolean => {
+  const now = Date.now();
+  
+  // 무한 루프 방지: 2초 내 재시도 차단
+  if (now - lastRetryTime < RETRY_DELAY) {
+    console.log('🛑 Firebase 재시도 차단 - 너무 빠른 재시도');
+    return false;
+  }
+  
+  // 최대 재시도 횟수 초과 차단
+  if (retryCount >= MAX_RETRIES) {
+    console.log('🚫 Firebase 재시도 최대 횟수 초과', { retryCount, MAX_RETRIES });
+    return false;
+  }
+  
+  console.log(`🔄 Firebase 재초기화 시도 (${retryCount + 1}/${MAX_RETRIES})...`);
+  lastRetryTime = now;
+  retryCount++;
+  
+  // 상태 리셋
   initializationAttempted = false;
-  initializeFirebase();
+  app = null;
+  auth = null;
+  db = null;
+  googleProvider = null;
+  
+  try {
+    initializeFirebase();
+    return true;
+  } catch (error) {
+    console.error('🔥 Firebase 재초기화 실패:', error);
+    return false;
+  }
 };
 
 // 연결 상태 로그

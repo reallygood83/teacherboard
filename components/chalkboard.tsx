@@ -81,14 +81,21 @@ export function Chalkboard({ geminiApiKey = "", geminiModel = "gemini-1.5-flash"
         setConnectionStatus('connected')
       } else {
         setConnectionStatus('connecting')
-        // 5초 후 재연결 시도
+        // 5초 후 재연결 시도 (무한 루프 방지)
         setTimeout(() => {
-          retryFirebaseInit()
-          if (isFirebaseReady()) {
+          const retrySuccess = retryFirebaseInit()
+          if (retrySuccess && isFirebaseReady()) {
             setConnectionStatus('connected')
             toast({ title: "Firebase 연결 복구", description: "칠판 저장이 다시 가능합니다." })
           } else {
             setConnectionStatus('error')
+            if (!retrySuccess) {
+              toast({ 
+                title: "연결 재시도 제한", 
+                description: "Firebase 보안 규칙을 확인해주세요.", 
+                variant: "destructive" 
+              })
+            }
           }
         }, 5000)
       }
@@ -167,10 +174,18 @@ export function Chalkboard({ geminiApiKey = "", geminiModel = "gemini-1.5-flash"
       if (retryCount === 0) {
         console.log("🔄 Firebase 연결 재시도 중...")
         logFirebaseStatus()
-        retryFirebaseInit()
+        const retrySuccess = retryFirebaseInit()
         
-        // 연결 재시도 후 잠시 대기
-        setTimeout(() => handleSave(1), 1000)
+        if (retrySuccess) {
+          // 연결 재시도 후 잠시 대기
+          setTimeout(() => handleSave(1), 1000)
+        } else {
+          toast({ 
+            title: "재시도 제한 초과", 
+            description: "Firebase 보안 규칙을 확인하고 페이지를 새로고침해주세요.", 
+            variant: "destructive" 
+          })
+        }
         return
       } else {
         toast({ 
