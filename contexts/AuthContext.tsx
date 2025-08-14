@@ -55,13 +55,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   useEffect(() => {
+    console.log('🔥 AuthContext: useEffect 시작, auth:', !!auth);
+    
     if (!auth) {
-      // Firebase가 초기화되지 않은 경우 로딩 상태 해제
+      console.log('❌ Firebase 초기화 실패 - auth 객체 없음');
       setLoading(false);
       return;
     }
     
+    console.log('✅ Firebase Auth 리스너 설정 중...');
     const unsubscribe = onAuthStateChanged(auth, (user) => {
+      console.log('🔄 Auth 상태 변경:', {
+        user: user ? { uid: user.uid, email: user.email, displayName: user.displayName } : null,
+        timestamp: new Date().toISOString()
+      });
       setCurrentUser(user);
       setLoading(false);
     });

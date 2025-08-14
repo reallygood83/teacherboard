@@ -1,17 +1,43 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import UserProfile from '@/components/auth/UserProfile';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default function DashboardPage() {
-  const { currentUser } = useAuth();
+  const { currentUser, loading } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    console.log('🏠 대시보드 - 상태 확인:', { currentUser: !!currentUser, loading });
+    
+    if (!loading && !currentUser) {
+      console.log('❌ 인증되지 않은 사용자 - 로그인 페이지로 이동');
+      router.push('/login');
+    }
+  }, [currentUser, loading, router]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent mx-auto mb-4"></div>
+          <div className="text-gray-600">대시보드 로딩 중...</div>
+        </div>
+      </div>
+    );
+  }
 
   if (!currentUser) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div>로그인이 필요합니다.</div>
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-red-50 to-orange-100">
+        <div className="text-center">
+          <div className="text-red-500 text-6xl mb-4">🔒</div>
+          <div className="text-gray-700 text-lg mb-4">로그인이 필요합니다</div>
+          <div className="text-gray-500">잠시 후 로그인 페이지로 이동합니다...</div>
+        </div>
       </div>
     );
   }
