@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { SettingsIcon, Palette, Type, FileText } from "lucide-react"
+import { SettingsIcon, Palette, Type, FileText, Bot } from "lucide-react"
 
 interface SettingsData {
   title: string
@@ -15,6 +15,8 @@ interface SettingsData {
   footerText: string
   footerSubtext: string
   backgroundMode: string
+  geminiApiKey: string
+  geminiModel: string
 }
 
 interface SettingsProps {
@@ -28,6 +30,8 @@ export function Settings({ onSettingsChange }: SettingsProps) {
     footerText: "교육을 위한 따뜻한 기술",
     footerSubtext: "© 2025 우리 학급 홈페이지. 모든 권리 보유.",
     backgroundMode: "green",
+    geminiApiKey: "",
+    geminiModel: "gemini-1.5-flash",
   })
 
   useEffect(() => {
@@ -38,7 +42,7 @@ export function Settings({ onSettingsChange }: SettingsProps) {
       setSettings(parsed)
       onSettingsChange(parsed)
     }
-  }, [onSettingsChange])
+  }, []) // 🔧 무한 루프 수정: 빈 의존성 배열
 
   const handleSettingChange = (key: keyof SettingsData, value: string) => {
     const newSettings = { ...settings, [key]: value }
@@ -48,12 +52,14 @@ export function Settings({ onSettingsChange }: SettingsProps) {
   }
 
   const resetSettings = () => {
-    const defaultSettings = {
+    const defaultSettings: SettingsData = {
       title: "우리 학급 홈페이지",
       subtitle: "함께 배우고 성장하는 공간입니다 ❤️",
       footerText: "교육을 위한 따뜻한 기술",
       footerSubtext: "© 2025 우리 학급 홈페이지. 모든 권리 보유.",
       backgroundMode: "green",
+      geminiApiKey: "",
+      geminiModel: "gemini-1.5-flash",
     }
     setSettings(defaultSettings)
     localStorage.setItem("classHomepageSettings", JSON.stringify(defaultSettings))
@@ -150,6 +156,47 @@ export function Settings({ onSettingsChange }: SettingsProps) {
               placeholder="예: © 2025 우리 학급 홈페이지. 모든 권리 보유."
               rows={2}
             />
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card className="card-hover">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 font-serif">
+            <Bot className="w-5 h-5 text-green-600" />
+            AI 설정 (Gemini)
+          </CardTitle>
+          <CardDescription>Gemini AI 기능을 사용하기 위한 API 설정을 구성하세요</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div>
+            <Label htmlFor="geminiApiKey">Gemini API Key</Label>
+            <Input
+              id="geminiApiKey"
+              type="password"
+              value={settings.geminiApiKey}
+              onChange={(e) => handleSettingChange("geminiApiKey", e.target.value)}
+              placeholder="AI Studio에서 발급받은 API Key를 입력하세요"
+            />
+            <p className="text-sm text-gray-500 mt-1">
+              API Key는 <a href="https://aistudio.google.com/app/apikey" target="_blank" className="text-blue-600 hover:underline">Google AI Studio</a>에서 발급받을 수 있습니다
+            </p>
+          </div>
+          <div>
+            <Label htmlFor="geminiModel">Gemini 모델</Label>
+            <Select
+              value={settings.geminiModel}
+              onValueChange={(value) => handleSettingChange("geminiModel", value)}
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="gemini-1.5-flash">Gemini 1.5 Flash (빠른 응답)</SelectItem>
+                <SelectItem value="gemini-1.5-pro">Gemini 1.5 Pro (고품질 응답)</SelectItem>
+                <SelectItem value="gemini-1.0-pro">Gemini 1.0 Pro (안정적)</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </CardContent>
       </Card>

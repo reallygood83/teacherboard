@@ -33,6 +33,8 @@ interface SettingsData {
   footerText: string
   footerSubtext: string
   backgroundMode: string
+  geminiApiKey: string
+  geminiModel: string
 }
 
 export default function ClassHomepage() {
@@ -43,6 +45,8 @@ export default function ClassHomepage() {
     footerText: "교육을 위한 따뜻한 기술",
     footerSubtext: "© 2025 우리 학급 홈페이지. 모든 권리 보유.",
     backgroundMode: "green",
+    geminiApiKey: "",
+    geminiModel: "gemini-1.5-flash",
   })
 
   useEffect(() => {
@@ -184,7 +188,10 @@ export default function ClassHomepage() {
                   <CardDescription>수업 중 필요한 내용을 자유롭게 작성하고 편집하세요</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <Chalkboard />
+                  <Chalkboard 
+                    geminiApiKey={settings.geminiApiKey}
+                    geminiModel={settings.geminiModel}
+                  />
                 </CardContent>
               </Card>
 
