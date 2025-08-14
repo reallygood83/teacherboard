@@ -5,7 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Upload, FileImage, Loader2, Trash2, RotateCcw, Calendar, Clock } from "lucide-react"
+import { Upload, FileImage, Loader2, Trash2, RotateCcw, Calendar, Clock, FileText } from "lucide-react"
 
 const subjects = [
   "국어",
@@ -47,7 +47,9 @@ export function Timetable() {
   })
   const [weeklySchedule, setWeeklySchedule] = useState<WeeklySchedule>({})
   const [customSubjects, setCustomSubjects] = useState<{ [key: string]: string }>({})
-  const [uploadedImage, setUploadedImage] = useState<string | null>(null)
+  const [uploadedFile, setUploadedFile] = useState<string | null>(null)
+  const [uploadedFileName, setUploadedFileName] = useState<string>("")
+  const [uploadedFileType, setUploadedFileType] = useState<string>("")
   const [isProcessing, setIsProcessing] = useState(false)
   const [ocrResult, setOcrResult] = useState<string>("")
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -76,22 +78,80 @@ export function Timetable() {
     localStorage.setItem("customSubjects", JSON.stringify(customSubjects))
   }
 
-  // 이미지 업로드 처리
-  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  // PDF를 이미지로 변환하는 함수
+  const convertPdfToImage = async (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      // PDF.js를 동적으로 로드
+      const script = document.createElement('script')
+      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js'
+      script.onload = async () => {
+        try {
+          const pdfjsLib = (window as any).pdfjsLib
+          pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'
+
+          const arrayBuffer = await file.arrayBuffer()
+          const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise
+          const page = await pdf.getPage(1) // 첫 번째 페이지만 처리
+
+          const canvas = document.createElement('canvas')
+          const context = canvas.getContext('2d')
+          const viewport = page.getViewport({ scale: 2.0 })
+          
+          canvas.width = viewport.width
+          canvas.height = viewport.height
+
+          await page.render({
+            canvasContext: context,
+            viewport: viewport
+          }).promise
+
+          resolve(canvas.toDataURL('image/png'))
+        } catch (error) {
+          reject(error)
+        }
+      }
+      script.onerror = () => reject(new Error('PDF.js 로드 실패'))
+      document.head.appendChild(script)
+    })
+  }
+
+  // 파일 업로드 처리 (이미지 + PDF)
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     if (!file) return
 
-    const reader = new FileReader()
-    reader.onload = (e) => {
-      const result = e.target?.result as string
-      setUploadedImage(result)
+    setUploadedFileName(file.name)
+    setUploadedFileType(file.type)
+
+    try {
+      if (file.type === 'application/pdf') {
+        // PDF 파일인 경우 이미지로 변환
+        setIsProcessing(true)
+        const imageDataUrl = await convertPdfToImage(file)
+        setUploadedFile(imageDataUrl)
+        setIsProcessing(false)
+      } else if (file.type.startsWith('image/')) {
+        // 이미지 파일인 경우 직접 읽기
+        const reader = new FileReader()
+        reader.onload = (e) => {
+          const result = e.target?.result as string
+          setUploadedFile(result)
+        }
+        reader.readAsDataURL(file)
+      } else {
+        alert('이미지 파일(PNG, JPG, JPEG) 또는 PDF 파일만 업로드 가능합니다.')
+        return
+      }
+    } catch (error) {
+      console.error('파일 처리 오류:', error)
+      alert('파일 처리 중 오류가 발생했습니다.')
+      setIsProcessing(false)
     }
-    reader.readAsDataURL(file)
   }
 
   // OCR 처리 및 시간표 생성
   const processImageWithOCR = async () => {
-    if (!uploadedImage) return
+    if (!uploadedFile) return
 
     setIsProcessing(true)
     setOcrResult("")
@@ -120,7 +180,7 @@ export function Timetable() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          image: uploadedImage,
+          image: uploadedFile,
           apiKey: apiKey,
           model: model,
           prompt: `이 이미지는 주간 시간표입니다. 시간표의 내용을 읽고 JSON 형식으로 변환해주세요.
@@ -199,8 +259,10 @@ export function Timetable() {
     })
   }
 
-  const clearUploadedImage = () => {
-    setUploadedImage(null)
+  const clearUploadedFile = () => {
+    setUploadedFile(null)
+    setUploadedFileName("")
+    setUploadedFileType("")
     setOcrResult("")
     if (fileInputRef.current) {
       fileInputRef.current.value = ""
@@ -268,12 +330,12 @@ export function Timetable() {
         </div>
       </div>
 
-      {/* 이미지 업로드 섹션 */}
+      {/* 파일 업로드 섹션 */}
       <Card className="border-blue-200">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-blue-700">
-            <FileImage className="w-5 h-5" />
-            시간표 이미지로 자동 생성
+            <FileText className="w-5 h-5" />
+            시간표 파일로 자동 생성
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -282,8 +344,8 @@ export function Timetable() {
               <input
                 ref={fileInputRef}
                 type="file"
-                accept="image/*"
-                onChange={handleImageUpload}
+                accept="image/*,application/pdf"
+                onChange={handleFileUpload}
                 className="hidden"
               />
               <Button
@@ -293,11 +355,11 @@ export function Timetable() {
                 disabled={isProcessing}
               >
                 <Upload className="w-4 h-4 mr-2" />
-                시간표 이미지 업로드
+                시간표 파일 업로드 (이미지/PDF)
               </Button>
             </div>
             
-            {uploadedImage && (
+            {uploadedFile && (
               <div className="flex gap-2">
                 <Button
                   onClick={processImageWithOCR}
@@ -315,7 +377,7 @@ export function Timetable() {
                 </Button>
                 <Button
                   variant="outline"
-                  onClick={clearUploadedImage}
+                  onClick={clearUploadedFile}
                   size="sm"
                 >
                   <Trash2 className="w-4 h-4" />
@@ -324,11 +386,16 @@ export function Timetable() {
             )}
           </div>
           
-          {uploadedImage && (
+          {uploadedFile && (
             <div className="border rounded-lg p-4 bg-gray-50">
-              <p className="text-sm text-gray-600 mb-2">업로드된 이미지:</p>
+              <p className="text-sm text-gray-600 mb-2">
+                업로드된 파일: <strong>{uploadedFileName}</strong> 
+                <span className="ml-2 text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">
+                  {uploadedFileType.startsWith('image/') ? '이미지' : 'PDF'}
+                </span>
+              </p>
               <img 
-                src={uploadedImage} 
+                src={uploadedFile} 
                 alt="업로드된 시간표" 
                 className="max-w-full max-h-64 object-contain rounded border"
               />
