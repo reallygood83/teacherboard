@@ -75,33 +75,42 @@ export default function DashboardPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <Card>
                   <CardHeader>
-                    <CardTitle className="text-lg">시간표 관리</CardTitle>
+                    <div className="flex items-center justify-between">
+                      <CardTitle className="text-lg">시간표 관리</CardTitle>
+                      <span className="text-[11px] font-medium bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded">개발중</span>
+                    </div>
                   </CardHeader>
                   <CardContent>
                     <p className="text-sm text-gray-600">
-                      시간표를 생성하고 관리하세요.
+                      해당 기능은 현재 개발 중입니다.
                     </p>
                   </CardContent>
                 </Card>
 
                 <Card>
                   <CardHeader>
-                    <CardTitle className="text-lg">학생 관리</CardTitle>
+                    <div className="flex items-center justify-between">
+                      <CardTitle className="text-lg">학생 관리</CardTitle>
+                      <span className="text-[11px] font-medium bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded">개발중</span>
+                    </div>
                   </CardHeader>
                   <CardContent>
                     <p className="text-sm text-gray-600">
-                      학생 정보를 관리하세요.
+                      해당 기능은 현재 개발 중입니다.
                     </p>
                   </CardContent>
                 </Card>
 
                 <Card>
                   <CardHeader>
-                    <CardTitle className="text-lg">과제 관리</CardTitle>
+                    <div className="flex items-center justify-between">
+                      <CardTitle className="text-lg">과제 관리</CardTitle>
+                      <span className="text-[11px] font-medium bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded">개발중</span>
+                    </div>
                   </CardHeader>
                   <CardContent>
                     <p className="text-sm text-gray-600">
-                      과제를 생성하고 관리하세요.
+                      해당 기능은 현재 개발 중입니다.
                     </p>
                   </CardContent>
                 </Card>
