@@ -21,6 +21,8 @@ import {
   ChevronRight,
   Plus,
   Trash2,
+  Brain,
+  FileText,
 } from "lucide-react"
 import { DigitalClock } from "@/components/digital-clock"
 import { Chalkboard } from "@/components/chalkboard"
@@ -30,6 +32,7 @@ import { LinkEmbedder } from "@/components/link-embedder"
 import { Timetable } from "@/components/timetable"
 import { YoutubeSearch } from "@/components/youtube-search"
 import { Settings } from "@/components/settings"
+import { OfficialDocGenerator } from "@/components/official-doc-generator"
 import { useAuth } from "@/contexts/AuthContext"
 import { useRouter } from "next/navigation"
 import UserProfile from "@/components/auth/UserProfile"
@@ -210,10 +213,14 @@ export default function ClassHomepage() {
         </div>
 
         <Tabs defaultValue="tools" className="w-full">
-          <TabsList className="grid w-full grid-cols-7 mb-8">
+          <TabsList className="grid w-full grid-cols-8 mb-8">
             <TabsTrigger value="tools" className="flex items-center gap-2">
               <BookOpen className="w-4 h-4" />
               수업 도구
+            </TabsTrigger>
+            <TabsTrigger value="ai-tools" className="flex items-center gap-2">
+              <Brain className="w-4 h-4" />
+              AI 도구
             </TabsTrigger>
             <TabsTrigger value="schedule" className="flex items-center gap-2">
               <Calendar className="w-4 h-4" />
@@ -366,6 +373,85 @@ export default function ClassHomepage() {
             </div>
           </TabsContent>
 
+          {/* AI 도구 탭 */}
+          <TabsContent value="ai-tools" className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+              {/* 공문 생성기 */}
+              <Card className="card-hover">
+                <CardHeader>
+                  <CardTitle className={`flex items-center gap-2 font-serif`}>
+                    <FileText className={`w-5 h-5 ${getAccentColor()}`} />
+                    공문 생성기
+                  </CardTitle>
+                  <CardDescription>
+                    AI가 한국 공문서 표준 형식에 맞는 공문을 자동으로 작성해드립니다
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <DocumentGenerator 
+                    geminiApiKey={settings.geminiApiKey}
+                    geminiModel={settings.geminiModel}
+                  />
+                </CardContent>
+              </Card>
+
+              {/* 추가 AI 도구 썸네일 (향후 확장용) */}
+              <Card className="card-hover opacity-60">
+                <CardHeader>
+                  <CardTitle className={`flex items-center gap-2 font-serif text-gray-500`}>
+                    <Brain className="w-5 h-5 text-gray-400" />
+                    수업 계획서 생성기
+                  </CardTitle>
+                  <CardDescription className="text-gray-400">
+                    곧 출시 예정 - AI가 교육과정에 맞는 수업 계획서를 자동 작성
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-center py-8 text-gray-400">
+                    <Brain className="w-12 h-12 mx-auto mb-2 opacity-50" />
+                    <p className="text-sm">개발중...</p>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="card-hover opacity-60">
+                <CardHeader>
+                  <CardTitle className={`flex items-center gap-2 font-serif text-gray-500`}>
+                    <Brain className="w-5 h-5 text-gray-400" />
+                    학생 평가서 생성기
+                  </CardTitle>
+                  <CardDescription className="text-gray-400">
+                    곧 출시 예정 - 학생별 맞춤형 평가서 및 생활기록부 작성 지원
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-center py-8 text-gray-400">
+                    <Brain className="w-12 h-12 mx-auto mb-2 opacity-50" />
+                    <p className="text-sm">개발중...</p>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* AI 도구 안내 */}
+            <Card className="bg-blue-50 border-blue-200">
+              <CardContent className="pt-6">
+                <div className="flex items-start gap-3">
+                  <Brain className="w-6 h-6 text-blue-600 mt-1" />
+                  <div>
+                    <h3 className="font-semibold text-blue-900 mb-2">AI 도구 사용 안내</h3>
+                    <ul className="text-sm text-blue-800 space-y-1">
+                      <li>• 설정 탭에서 Gemini API 키를 먼저 입력해주세요</li>
+                      <li>• 생성된 문서는 반드시 검토 후 사용하시기 바랍니다</li>
+                      <li>• 개인정보가 포함된 내용은 신중히 처리해주세요</li>
+                      <li>• 더 많은 AI 도구가 지속적으로 추가될 예정입니다</li>
+                    </ul>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
           {/* 시간표 탭 */}
           <TabsContent value="schedule">
             <Card className="card-hover">
@@ -456,6 +542,103 @@ export default function ClassHomepage() {
               </CardHeader>
               <CardContent>
                 <DigitalClock />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* AI 도구 탭 */}
+          <TabsContent value="ai-tools">
+            <Card className="card-hover">
+              <CardHeader>
+                <CardTitle className={`flex items-center gap-2 font-serif`}>
+                  <Brain className={`w-5 h-5 ${getAccentColor()}`} />
+                  AI 도구
+                </CardTitle>
+                <CardDescription>교육 업무를 돕는 인공지능 도구를 활용하세요</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                  {/* 공문 생성기 카드 */}
+                  <Card className="border-2 border-blue-200 hover:border-blue-300 transition-colors cursor-pointer group">
+                    <CardHeader className="pb-3">
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 bg-blue-100 rounded-lg group-hover:bg-blue-200 transition-colors">
+                          <FileText className="w-6 h-6 text-blue-600" />
+                        </div>
+                        <div>
+                          <CardTitle className="text-lg font-bold text-blue-800">공문 생성기</CardTitle>
+                          <CardDescription className="text-sm">
+                            교육부 표준 형식의 공문서 자동 생성
+                          </CardDescription>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="pt-0">
+                      <div className="space-y-2 text-sm text-gray-600 mb-4">
+                        <div className="flex items-center gap-2">
+                          <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
+                          <span>15년 경력 공무원 전문가 시스템</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
+                          <span>행정업무 매뉴얼 100% 준수</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
+                          <span>클릭 한 번으로 다운로드</span>
+                        </div>
+                      </div>
+                      <div className="pt-3 border-t border-gray-100">
+                        <OfficialDocGenerator />
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* 향후 AI 도구 슬롯들 */}
+                  <Card className="border-2 border-dashed border-gray-300 hover:border-gray-400 transition-colors">
+                    <CardHeader>
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 bg-gray-100 rounded-lg">
+                          <Brain className="w-6 h-6 text-gray-400" />
+                        </div>
+                        <div>
+                          <CardTitle className="text-lg font-bold text-gray-600">학습 계획 생성기</CardTitle>
+                          <CardDescription className="text-sm">
+                            개별 학생 맞춤형 학습 계획 자동 생성
+                          </CardDescription>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-center py-8 text-gray-500">
+                        <Brain className="w-12 h-12 mx-auto mb-2 text-gray-300" />
+                        <p className="text-sm">곧 출시 예정</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="border-2 border-dashed border-gray-300 hover:border-gray-400 transition-colors">
+                    <CardHeader>
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 bg-gray-100 rounded-lg">
+                          <Brain className="w-6 h-6 text-gray-400" />
+                        </div>
+                        <div>
+                          <CardTitle className="text-lg font-bold text-gray-600">평가 문제 생성기</CardTitle>
+                          <CardDescription className="text-sm">
+                            교육과정 기반 맞춤형 평가 문항 생성
+                          </CardDescription>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-center py-8 text-gray-500">
+                        <Brain className="w-12 h-12 mx-auto mb-2 text-gray-300" />
+                        <p className="text-sm">곧 출시 예정</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
