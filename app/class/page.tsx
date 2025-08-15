@@ -20,6 +20,12 @@ import {
   Plus,
   Trash2,
   FileText,
+  BookOpen,
+  Brain,
+  Calendar,
+  Users,
+  Play,
+  Link,
   Settings as SettingsIcon,
 } from "lucide-react"
 import { DigitalClock } from "@/components/digital-clock"

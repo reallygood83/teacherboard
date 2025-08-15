@@ -8,7 +8,8 @@ import {
   Menu,
   X,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  BookOpen
 } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { type TabInfo } from "@/lib/tab-config"
