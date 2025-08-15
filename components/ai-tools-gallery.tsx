@@ -4,7 +4,7 @@ import { useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { FileText, Brain, Clock, Users, ExternalLink, ChevronDown, ChevronUp, Star } from "lucide-react"
+import { FileText, Brain, Clock, Users, ExternalLink, ChevronDown, ChevronUp, Star, HelpCircle, BarChart3, Mail } from "lucide-react"
 import { DocumentGenerator } from "@/components/document-generator"
 
 interface AITool {
@@ -14,9 +14,10 @@ interface AITool {
   icon: React.ComponentType<any>
   thumbnail: string
   category: "document" | "planning" | "assessment" | "analysis"
-  status: "available" | "coming-soon"
+  status: "available" | "coming-soon" | "external-link"
   component?: React.ComponentType<any>
   props?: any
+  externalUrl?: string
 }
 
 interface AIToolsGalleryProps {
@@ -42,35 +43,46 @@ export function AIToolsGallery({ geminiApiKey, geminiModel, accentColor = "text-
       props: { geminiApiKey, geminiModel }
     },
     {
-      id: "lesson-planner",
-      title: "수업 계획서 생성기",
-      description: "교육과정에 맞는 수업 계획서를 AI가 자동으로 작성합니다",
-      icon: Brain,
-      thumbnail: "/thumbnails/lesson-planner-thumbnail.svg",
-      category: "planning", 
-      status: "coming-soon"
-    },
-    {
-      id: "student-assessment",
-      title: "학생 평가서 생성기",
-      description: "학생별 맞춤형 평가서 및 생활기록부 작성을 지원합니다",
-      icon: Users,
-      thumbnail: "/thumbnails/student-assessment-thumbnail.svg",
+      id: "quiz-generator",
+      title: "AI 퀴즈 생성기",
+      description: "교육 내용에 맞는 퀴즈를 AI가 자동으로 생성하여 학생들의 학습 성과를 측정할 수 있습니다",
+      icon: HelpCircle,
+      thumbnail: "/thumbnails/quiz-generator-thumbnail.svg",
       category: "assessment",
-      status: "coming-soon"
+      status: "external-link",
+      externalUrl: "https://script.google.com/macros/s/AKfycbygtpi71zrBa__Nf9glDHadq0HlojLg1kLXU4zhqPHIzK3DJBdsH9d5-zqqQsXpwOabMA/exec"
     },
     {
-      id: "schedule-optimizer",
-      title: "시간표 최적화기",
-      description: "AI가 학급 상황을 분석하여 최적의 시간표를 제안합니다",
-      icon: Clock,
-      thumbnail: "/thumbnails/schedule-optimizer-thumbnail.svg",
-      category: "planning",
-      status: "coming-soon"
+      id: "survey-generator",
+      title: "AI 설문 생성기",
+      description: "학급 운영과 교육 개선을 위한 설문을 AI가 체계적으로 생성하고 분석해드립니다",
+      icon: BarChart3,
+      thumbnail: "/thumbnails/survey-generator-thumbnail.svg",
+      category: "analysis",
+      status: "external-link",
+      externalUrl: "https://script.google.com/macros/s/AKfycby8TGGcuL7Vm7gkz_X2h6wBV7ClhKUL89va3AzsGlNnAJRleuB60A5eiYYbKKr7XeT8NA/exec"
+    },
+    {
+      id: "newsletter-generator",
+      title: "AI 통신문 생성기",
+      description: "학부모와의 소통을 위한 학급 통신문을 AI가 전문적이고 따뜻하게 작성해드립니다",
+      icon: Mail,
+      thumbnail: "/thumbnails/newsletter-generator-thumbnail.svg",
+      category: "document",
+      status: "external-link",
+      externalUrl: "https://script.google.com/macros/s/AKfycbzaAqlDZZycMuRp6YGhqSpurL-sseqj6VtksSyR5SMv8_WazTXpTN949RVAeprvkuqt-A/exec"
     }
   ]
 
   const handleToolClick = (toolId: string) => {
+    const tool = aiTools.find(t => t.id === toolId)
+    
+    if (tool?.status === "external-link" && tool.externalUrl) {
+      // 외부 링크 도구인 경우 새 탭에서 열기
+      window.open(tool.externalUrl, "_blank")
+      return
+    }
+
     if (selectedTool === toolId) {
       setSelectedTool(null)
       setExpandedTool(null)
@@ -146,6 +158,7 @@ export function AIToolsGallery({ geminiApiKey, geminiModel, accentColor = "text-
           const IconComponent = tool.icon
           const isSelected = selectedTool === tool.id
           const isComingSoon = tool.status === "coming-soon"
+          const isExternalLink = tool.status === "external-link"
           
           return (
             <Card 
@@ -174,11 +187,21 @@ export function AIToolsGallery({ geminiApiKey, geminiModel, accentColor = "text-
                   </div>
                   
                   {/* 사용 가능 표시 */}
-                  {!isComingSoon && (
+                  {tool.status === "available" && (
                     <div className="absolute top-2 right-2 z-20">
                       <Badge variant="secondary" className="bg-green-100 text-green-700 border-green-200 text-xs">
                         <Star className="w-3 h-3 mr-1" />
                         사용가능
+                      </Badge>
+                    </div>
+                  )}
+                  
+                  {/* 외부 링크 표시 */}
+                  {isExternalLink && (
+                    <div className="absolute top-2 right-2 z-20">
+                      <Badge variant="secondary" className="bg-blue-100 text-blue-700 border-blue-200 text-xs">
+                        <ExternalLink className="w-3 h-3 mr-1" />
+                        외부링크
                       </Badge>
                     </div>
                   )}
@@ -197,10 +220,13 @@ export function AIToolsGallery({ geminiApiKey, geminiModel, accentColor = "text-
                 <CardContent className="p-4">
                   <div className="flex items-start justify-between mb-2">
                     <h3 className="font-semibold text-sm line-clamp-1 flex-1">{tool.title}</h3>
-                    {!isComingSoon && (
+                    {!isComingSoon && !isExternalLink && (
                       <ChevronDown className={`w-4 h-4 text-gray-400 ml-2 flex-shrink-0 transition-transform duration-200 ${
                         isSelected ? 'rotate-180' : ''
                       }`} />
+                    )}
+                    {isExternalLink && (
+                      <ExternalLink className="w-4 h-4 text-gray-400 ml-2 flex-shrink-0" />
                     )}
                   </div>
                   
@@ -219,7 +245,7 @@ export function AIToolsGallery({ geminiApiKey, geminiModel, accentColor = "text-
                     {!isComingSoon && (
                       <Button size="sm" variant="ghost" className="text-xs h-6 px-2">
                         <ExternalLink className="w-3 h-3 mr-1" />
-                        열기
+                        {isExternalLink ? '바로가기' : '열기'}
                       </Button>
                     )}
                   </div>
