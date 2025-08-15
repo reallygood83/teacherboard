@@ -38,6 +38,7 @@ import { YoutubeSearch } from "@/components/youtube-search"
 import { Settings } from "@/components/settings"
 // import { OfficialDocGenerator } from "@/components/official-doc-generator"
 import { DocumentGenerator } from "@/components/document-generator"
+import { AIToolsGallery } from "@/components/ai-tools-gallery"
 import { ScheduleManager } from "@/components/schedule-manager"
 import { DDayHeader, InlineDDay } from "@/components/dday-header"
 import { useAuth } from "@/contexts/AuthContext"
@@ -588,81 +589,11 @@ export default function ClassHomepage() {
 
           {/* AI 도구 탭 */}
           <TabsContent value="ai-tools" className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-              {/* 공문 생성기 */}
-              <Card className="card-hover">
-                <CardHeader>
-                  <CardTitle className={`flex items-center gap-2 font-serif`}>
-                    <FileText className={`w-5 h-5 ${getAccentColor()}`} />
-                    공문 생성기
-                  </CardTitle>
-                  <CardDescription>
-                    AI가 한국 공문서 표준 형식에 맞는 공문을 자동으로 작성해드립니다
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <DocumentGenerator 
-                    geminiApiKey={settings.geminiApiKey}
-                    geminiModel={settings.geminiModel}
-                  />
-                </CardContent>
-              </Card>
-
-              {/* 추가 AI 도구 썸네일 (향후 확장용) */}
-              <Card className="card-hover opacity-60">
-                <CardHeader>
-                  <CardTitle className={`flex items-center gap-2 font-serif text-gray-500`}>
-                    <Brain className="w-5 h-5 text-gray-400" />
-                    수업 계획서 생성기
-                  </CardTitle>
-                  <CardDescription className="text-gray-400">
-                    곧 출시 예정 - AI가 교육과정에 맞는 수업 계획서를 자동 작성
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-center py-8 text-gray-400">
-                    <Brain className="w-12 h-12 mx-auto mb-2 opacity-50" />
-                    <p className="text-sm">개발중...</p>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="card-hover opacity-60">
-                <CardHeader>
-                  <CardTitle className={`flex items-center gap-2 font-serif text-gray-500`}>
-                    <Brain className="w-5 h-5 text-gray-400" />
-                    학생 평가서 생성기
-                  </CardTitle>
-                  <CardDescription className="text-gray-400">
-                    곧 출시 예정 - 학생별 맞춤형 평가서 및 생활기록부 작성 지원
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-center py-8 text-gray-400">
-                    <Brain className="w-12 h-12 mx-auto mb-2 opacity-50" />
-                    <p className="text-sm">개발중...</p>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* AI 도구 안내 */}
-            <Card className="bg-blue-50 border-blue-200">
-              <CardContent className="pt-6">
-                <div className="flex items-start gap-3">
-                  <Brain className="w-6 h-6 text-blue-600 mt-1" />
-                  <div>
-                    <h3 className="font-semibold text-blue-900 mb-2">AI 도구 사용 안내</h3>
-                    <ul className="text-sm text-blue-800 space-y-1">
-                      <li>• 설정 탭에서 Gemini API 키를 먼저 입력해주세요</li>
-                      <li>• 생성된 문서는 반드시 검토 후 사용하시기 바랍니다</li>
-                      <li>• 개인정보가 포함된 내용은 신중히 처리해주세요</li>
-                      <li>• 더 많은 AI 도구가 지속적으로 추가될 예정입니다</li>
-                    </ul>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <AIToolsGallery 
+              geminiApiKey={settings.geminiApiKey}
+              geminiModel={settings.geminiModel}
+              accentColor={getAccentColor()}
+            />
           </TabsContent>
 
           {/* 시간표 탭 */}

@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 200" width="300" height="200">
+  <defs>
+    <!-- 그라데이션 정의 -->
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F8FAFC;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#EFF6FF;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#DBEAFE;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="documentGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3B82F6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1D4ED8;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="aiGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F59E0B;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#EF4444;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- 미묘한 패턴 -->
+    <pattern id="subtlePattern" patternUnits="userSpaceOnUse" width="20" height="20">
+      <circle cx="10" cy="10" r="0.8" fill="#94A3B8" opacity="0.1"/>
+    </pattern>
+  </defs>
+  
+  <!-- 배경 -->
+  <rect width="300" height="200" fill="url(#bgGradient)" rx="8"/>
+  <rect width="300" height="200" fill="url(#subtlePattern)" rx="8"/>
+  
+  <!-- 장식적 원형들 -->
+  <circle cx="50" cy="50" r="25" fill="url(#documentGradient)" opacity="0.1"/>
+  <circle cx="250" cy="150" r="35" fill="url(#aiGradient)" opacity="0.08"/>
+  <circle cx="220" cy="40" r="15" fill="url(#documentGradient)" opacity="0.15"/>
+  
+  <!-- 메인 문서 아이콘 -->
+  <g transform="translate(80, 60)">
+    <!-- 문서 배경 -->
+    <rect x="0" y="0" width="80" height="100" rx="8" fill="white" stroke="url(#documentGradient)" stroke-width="2"/>
+    
+    <!-- 문서 헤더 -->
+    <rect x="8" y="8" width="64" height="12" rx="2" fill="url(#documentGradient)" opacity="0.8"/>
+    
+    <!-- 문서 내용 라인들 -->
+    <rect x="8" y="28" width="50" height="3" rx="1.5" fill="#94A3B8"/>
+    <rect x="8" y="36" width="58" height="3" rx="1.5" fill="#94A3B8"/>
+    <rect x="8" y="44" width="45" height="3" rx="1.5" fill="#94A3B8"/>
+    <rect x="8" y="52" width="60" height="3" rx="1.5" fill="#94A3B8"/>
+    <rect x="8" y="60" width="40" height="3" rx="1.5" fill="#94A3B8"/>
+    
+    <!-- 도장 표시 -->
+    <circle cx="60" cy="80" r="8" fill="none" stroke="#EF4444" stroke-width="2"/>
+    <text x="60" y="85" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#EF4444" font-weight="bold">印</text>
+  </g>
+  
+  <!-- AI 로봇 아이콘 -->
+  <g transform="translate(200, 80)">
+    <!-- 로봇 머리 -->
+    <rect x="0" y="0" width="30" height="25" rx="12" fill="url(#aiGradient)"/>
+    
+    <!-- 로봇 눈 -->
+    <circle cx="8" cy="10" r="3" fill="white"/>
+    <circle cx="22" cy="10" r="3" fill="white"/>
+    <circle cx="8" cy="10" r="1.5" fill="url(#aiGradient)"/>
+    <circle cx="22" cy="10" r="1.5" fill="url(#aiGradient)"/>
+    
+    <!-- 로봇 입 -->
+    <rect x="10" y="16" width="10" height="2" rx="1" fill="white"/>
+    
+    <!-- 안테나 -->
+    <line x1="15" y1="0" x2="15" y2="-5" stroke="url(#aiGradient)" stroke-width="2"/>
+    <circle cx="15" cy="-5" r="2" fill="url(#aiGradient)"/>
+  </g>
+  
+  <!-- 화살표 (AI → 문서) -->
+  <path d="M170 100 Q180 90 190 100" stroke="url(#aiGradient)" stroke-width="3" fill="none" opacity="0.6" marker-end="url(#arrowhead)"/>
+  
+  <!-- 화살표 마커 정의 -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="url(#aiGradient)" opacity="0.6"/>
+    </marker>
+  </defs>
+  
+  <!-- 타이틀 -->
+  <text x="150" y="180" font-family="Pretendard, Arial, sans-serif" font-size="14" font-weight="700" text-anchor="middle" fill="url(#documentGradient)">AI 공문 생성기</text>
+  
+  <!-- 장식적 점들 -->
+  <circle cx="40" cy="180" r="2" fill="url(#aiGradient)" opacity="0.4"/>
+  <circle cx="260" cy="30" r="1.5" fill="url(#documentGradient)" opacity="0.5"/>
+  <circle cx="30" cy="120" r="1" fill="#10B981" opacity="0.6"/>
+</svg>

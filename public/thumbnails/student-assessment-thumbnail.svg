@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 200" width="300" height="200">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F0FDF4;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#DCFCE7;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#BBF7D0;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="assessGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#10B981;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#059669;stop-opacity:1" />
+    </linearGradient>
+    
+    <pattern id="subtlePattern" patternUnits="userSpaceOnUse" width="18" height="18">
+      <circle cx="9" cy="9" r="0.6" fill="#34D399" opacity="0.1"/>
+    </pattern>
+  </defs>
+  
+  <rect width="300" height="200" fill="url(#bgGradient)" rx="8"/>
+  <rect width="300" height="200" fill="url(#subtlePattern)" rx="8"/>
+  
+  <!-- 장식 원들 -->
+  <circle cx="50" cy="50" r="18" fill="url(#assessGradient)" opacity="0.1"/>
+  <circle cx="250" cy="40" r="12" fill="url(#assessGradient)" opacity="0.15"/>
+  <circle cx="230" cy="150" r="25" fill="url(#assessGradient)" opacity="0.08"/>
+  
+  <!-- 메인 평가표 아이콘 -->
+  <g transform="translate(70, 45)">
+    <!-- 평가표 배경 -->
+    <rect x="0" y="0" width="85" height="100" rx="6" fill="white" stroke="url(#assessGradient)" stroke-width="2"/>
+    
+    <!-- 헤더 -->
+    <rect x="6" y="6" width="73" height="15" rx="3" fill="url(#assessGradient)" opacity="0.1"/>
+    <text x="42.5" y="16" font-family="Arial, sans-serif" font-size="8" font-weight="600" text-anchor="middle" fill="url(#assessGradient)">학생 평가표</text>
+    
+    <!-- 학생 정보 -->
+    <g transform="translate(8, 28)">
+      <!-- 프로필 이미지 -->
+      <circle cx="8" cy="8" r="6" fill="url(#assessGradient)" opacity="0.2"/>
+      <circle cx="8" cy="6" r="2.5" fill="url(#assessGradient)" opacity="0.6"/>
+      <path d="M3 12 Q8 10 13 12" fill="url(#assessGradient)" opacity="0.6"/>
+      
+      <!-- 이름 -->
+      <rect x="18" y="4" width="25" height="3" rx="1.5" fill="#94A3B8"/>
+      <rect x="18" y="9" width="20" height="2.5" rx="1.25" fill="#CBD5E1"/>
+    </g>
+    
+    <!-- 평가 항목들 -->
+    <g transform="translate(8, 50)">
+      <!-- 항목 1 -->
+      <text x="0" y="8" font-family="Arial, sans-serif" font-size="6" fill="#374151">학습태도</text>
+      <g transform="translate(50, 4)">
+        <circle cx="3" cy="3" r="2" fill="#F59E0B"/>
+        <circle cx="9" cy="3" r="2" fill="#F59E0B"/>
+        <circle cx="15" cy="3" r="2" fill="#F59E0B"/>
+        <circle cx="21" cy="3" r="2" fill="#10B981"/>
+        <circle cx="27" cy="3" r="2" fill="#10B981"/>
+      </g>
+      
+      <!-- 항목 2 -->
+      <text x="0" y="20" font-family="Arial, sans-serif" font-size="6" fill="#374151">참여도</text>
+      <g transform="translate(50, 16)">
+        <circle cx="3" cy="3" r="2" fill="#F59E0B"/>
+        <circle cx="9" cy="3" r="2" fill="#F59E0B"/>
+        <circle cx="15" cy="3" r="2" fill="#10B981"/>
+        <circle cx="21" cy="3" r="2" fill="#10B981"/>
+        <circle cx="27" cy="3" r="2" fill="#10B981"/>
+      </g>
+      
+      <!-- 항목 3 -->
+      <text x="0" y="32" font-family="Arial, sans-serif" font-size="6" fill="#374151">협력성</text>
+      <g transform="translate(50, 28)">
+        <circle cx="3" cy="3" r="2" fill="#F59E0B"/>
+        <circle cx="9" cy="3" r="2" fill="#10B981"/>
+        <circle cx="15" cy="3" r="2" fill="#10B981"/>
+        <circle cx="21" cy="3" r="2" fill="#10B981"/>
+        <circle cx="27" cy="3" r="2" fill="#10B981"/>
+      </g>
+    </g>
+    
+    <!-- 총 점수 -->
+    <g transform="translate(50, 85)">
+      <rect x="0" y="0" width="25" height="10" rx="5" fill="url(#assessGradient)" opacity="0.2"/>
+      <text x="12.5" y="7" font-family="Arial, sans-serif" font-size="8" font-weight="600" text-anchor="middle" fill="url(#assessGradient)">85점</text>
+    </g>
+  </g>
+  
+  <!-- AI 차트 아이콘 -->
+  <g transform="translate(190, 70)">
+    <!-- 차트 배경 -->
+    <rect x="0" y="0" width="40" height="30" rx="4" fill="white" stroke="url(#assessGradient)" stroke-width="1.5"/>
+    
+    <!-- 막대 차트 -->
+    <rect x="5" y="20" width="4" height="8" fill="url(#assessGradient)" opacity="0.6"/>
+    <rect x="12" y="15" width="4" height="13" fill="url(#assessGradient)" opacity="0.8"/>
+    <rect x="19" y="10" width="4" height="18" fill="url(#assessGradient)"/>
+    <rect x="26" y="18" width="4" height="10" fill="url(#assessGradient)" opacity="0.7"/>
+    <rect x="33" y="12" width="4" height="16" fill="url(#assessGradient)" opacity="0.9"/>
+    
+    <!-- AI 라벨 -->
+    <text x="20" y="40" font-family="Arial, sans-serif" font-size="6" font-weight="600" text-anchor="middle" fill="url(#assessGradient)">AI 분석</text>
+  </g>
+  
+  <!-- 연결선 -->
+  <path d="M165 85 Q175 75 185 85" stroke="url(#assessGradient)" stroke-width="2" fill="none" opacity="0.5"/>
+  
+  <!-- 타이틀 -->
+  <text x="150" y="180" font-family="Pretendard, Arial, sans-serif" font-size="14" font-weight="700" text-anchor="middle" fill="url(#assessGradient)">학생 평가서 생성기</text>
+  
+  <!-- 장식 요소들 -->
+  <circle cx="40" cy="170" r="1.8" fill="url(#assessGradient)" opacity="0.4"/>
+  <circle cx="260" cy="30" r="1.2" fill="#F59E0B" opacity="0.5"/>
+  <circle cx="25" cy="110" r="0.8" fill="#10B981" opacity="0.7"/>
+  
+  <!-- Coming Soon 배지 -->
+  <rect x="210" y="20" width="70" height="16" rx="8" fill="#F59E0B" opacity="0.9"/>
+  <text x="245" y="31" font-family="Arial, sans-serif" font-size="10" font-weight="600" text-anchor="middle" fill="white">개발중</text>
+</svg>
