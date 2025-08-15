@@ -39,9 +39,12 @@ import { Settings } from "@/components/settings"
 // import { OfficialDocGenerator } from "@/components/official-doc-generator"
 import { DocumentGenerator } from "@/components/document-generator"
 import { ScheduleManager } from "@/components/schedule-manager"
+import { DDayHeader, InlineDDay } from "@/components/dday-header"
 import { useAuth } from "@/contexts/AuthContext"
 import { useRouter } from "next/navigation"
 import UserProfile from "@/components/auth/UserProfile"
+import { db } from "@/lib/firebase"
+import { collection, getDocs, query, orderBy, where } from "firebase/firestore"
 
 interface SettingsData {
   title: string
@@ -63,6 +66,18 @@ interface SavedLink {
   isQuickLink?: boolean
 }
 
+interface ImportantEvent {
+  id: string;
+  title: string;
+  startDate: string;
+  endDate: string;
+  startTime?: string;
+  category: 'holiday' | 'school-event' | 'personal' | 'meeting' | 'consultation';
+  isImportant: boolean;
+  isAllDay: boolean;
+  description: string;
+}
+
 export default function ClassHomepage() {
   const { currentUser, loading } = useAuth();
   const router = useRouter();
@@ -71,13 +86,15 @@ export default function ClassHomepage() {
   const [isQuickLinksCollapsed, setIsQuickLinksCollapsed] = useState(false)
   const [savedLinks, setSavedLinks] = useState<SavedLink[]>([])
   const [activeTab, setActiveTab] = useState("tools")
+  const [importantEvents, setImportantEvents] = useState<ImportantEvent[]>([])
+  const [selectedDDayEvent, setSelectedDDayEvent] = useState<ImportantEvent | null>(null)
 
   // Touch gesture setup for tab navigation
   const tabIds = getTabIds()
   const { handleSwipeLeft, handleSwipeRight } = useTabSwipeGesture(
     tabIds,
     activeTab,
-    setActiveTab
+    handleTabChange
   )
   const [settings, setSettings] = useState<SettingsData>({
     title: "우리 학급 홈페이지",
@@ -90,8 +107,143 @@ export default function ClassHomepage() {
   })
 
   // 헤더 카운트다운 관련 상태
-  const [selectedImportantEvent, setSelectedImportantEvent] = useState<any | null>(null)
+  const [selectedImportantEvent, setSelectedImportantEvent] = useState<ImportantEvent | null>(null)
   const [countdownText, setCountdownText] = useState<string>("")
+
+  // 오늘의 중요 일정에 대한 실시간 카운트다운 업데이트
+  useEffect(() => {
+    const updateCountdown = () => {
+      if (!selectedImportantEvent && importantEvents.length > 0) {
+        // 가장 가까운 중요 일정 찾기
+        const today = new Date();
+        const todayEvents = importantEvents.filter(event => {
+          const eventDate = new Date(event.startDate);
+          return eventDate.toDateString() === today.toDateString();
+        });
+        
+        if (todayEvents.length > 0) {
+          setSelectedImportantEvent(todayEvents[0]);
+          setCountdownText("D-DAY");
+        } else {
+          // 가장 가까운 미래 일정
+          const upcomingEvent = importantEvents.find(event => 
+            new Date(event.startDate) > today
+          );
+          if (upcomingEvent) {
+            const daysUntil = Math.ceil(
+              (new Date(upcomingEvent.startDate).getTime() - today.getTime()) / (1000 * 3600 * 24)
+            );
+            setSelectedImportantEvent(upcomingEvent);
+            setCountdownText(`D-${daysUntil}`);
+          }
+        }
+      }
+    };
+
+    if (importantEvents.length > 0) {
+      updateCountdown();
+      // 1분마다 업데이트
+      const interval = setInterval(updateCountdown, 60000);
+      return () => clearInterval(interval);
+    }
+  }, [importantEvents, selectedImportantEvent]);
+
+  // 브라우저 알림 허용 요청 및 타이머 알림
+  useEffect(() => {
+    // 알림 권한 요청
+    if ('Notification' in window && Notification.permission === 'default') {
+      Notification.requestPermission();
+    }
+
+    // 오늘의 중요 일정 알림
+    if (selectedImportantEvent && countdownText === "D-DAY") {
+      const checkTodayEvents = () => {
+        const now = new Date();
+        const eventDate = new Date(selectedImportantEvent.startDate);
+        
+        // 일정 시작 30분 전, 10분 전, 시작 시점에 알림
+        if (selectedImportantEvent.startTime && !selectedImportantEvent.isAllDay) {
+          const [hours, minutes] = selectedImportantEvent.startTime.split(':').map(Number);
+          const eventDateTime = new Date(eventDate);
+          eventDateTime.setHours(hours, minutes);
+
+          const timeDiff = eventDateTime.getTime() - now.getTime();
+          const minutesDiff = Math.floor(timeDiff / (1000 * 60));
+
+          if (minutesDiff === 30 || minutesDiff === 10 || minutesDiff === 0) {
+            if ('Notification' in window && Notification.permission === 'granted') {
+              const message = minutesDiff === 0 
+                ? `⏰ ${selectedImportantEvent.title} 시작!`
+                : `⏰ ${selectedImportantEvent.title}이(가) ${minutesDiff}분 후 시작됩니다.`;
+              
+              new Notification('중요 일정 알림', {
+                body: message,
+                icon: '/favicon.ico',
+                tag: `important-event-${selectedImportantEvent.id}`,
+              });
+            }
+          }
+        }
+      };
+
+      // 1분마다 체크
+      const notificationInterval = setInterval(checkTodayEvents, 60000);
+      checkTodayEvents(); // 즉시 한 번 실행
+      
+      return () => clearInterval(notificationInterval);
+    }
+  }, [selectedImportantEvent, countdownText]);
+
+  // 중요 일정 로드 함수
+  const loadImportantEvents = async () => {
+    if (!currentUser || !db) return;
+    
+    try {
+      const eventsRef = collection(db!, `users/${currentUser.uid}/events`);
+      const q = query(
+        eventsRef, 
+        where('isImportant', '==', true),
+        orderBy('startDate', 'asc')
+      );
+      const snapshot = await getDocs(q);
+      
+      const loadedEvents: ImportantEvent[] = [];
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        loadedEvents.push({
+          id: doc.id,
+          ...data
+        } as ImportantEvent);
+      });
+      
+      setImportantEvents(loadedEvents);
+      
+      // 가장 가까운 미래 일정을 기본 선택
+      const upcoming = loadedEvents.find(event => 
+        new Date(event.startDate) >= new Date()
+      );
+      if (upcoming) {
+        setSelectedDDayEvent(upcoming);
+      }
+    } catch (error) {
+      console.error('중요 일정 로드 실패:', error);
+    }
+  };
+
+  // D-Day 이벤트 클릭 핸들러
+  const handleDDayEventClick = (event: ImportantEvent) => {
+    setSelectedDDayEvent(event);
+    setActiveTab('schedule-management'); // 일정 관리 탭으로 이동
+  };
+
+  // 탭 변경 시 중요 일정 새로고침 (일정 관리 탭에서 돌아올 때)
+  const handleTabChange = (tabValue: string) => {
+    setActiveTab(tabValue);
+    // 일정 관리 탭에서 다른 탭으로 이동할 때 중요 일정 새로고침
+    if (activeTab === 'schedule-management' && tabValue !== 'schedule-management') {
+      setTimeout(() => loadImportantEvents(), 300);
+    }
+  };
   useEffect(() => {
     // 인증되지 않은 사용자는 로그인 페이지로 리다이렉트
     if (!loading && !currentUser) {
@@ -99,6 +251,13 @@ export default function ClassHomepage() {
       return;
     }
   }, [currentUser, loading, router]);
+
+  // 중요 일정 로드 (currentUser가 로드된 후 실행)
+  useEffect(() => {
+    if (currentUser) {
+      loadImportantEvents();
+    }
+  }, [currentUser]);
 
   useEffect(() => {
     const today = new Date()
@@ -241,17 +400,25 @@ export default function ClassHomepage() {
           <p className="text-gray-600 md:text-lg text-base">안녕하세요 {currentUser.displayName}님, 오늘 하루도 평안하세요 ❤️</p>
         </div>
 
+        {/* D-Day 중요 일정 헤더 */}
+        <DDayHeader 
+          events={importantEvents} 
+          maxDisplay={3}
+          onEventClick={handleDDayEventClick}
+          className="mb-6"
+        />
+
         <TouchGesture
           onSwipeLeft={handleSwipeLeft}
           onSwipeRight={handleSwipeRight}
           className="mobile-swipe-container"
         >
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
           {/* Mobile Navigation - only show on mobile */}
           <div className="md:hidden">
             <MobileNavigation
               activeTab={activeTab}
-              onTabChange={setActiveTab}
+              onTabChange={handleTabChange}
               tabs={tabConfig}
             />
           </div>
@@ -530,6 +697,8 @@ export default function ClassHomepage() {
                   } else {
                     setSelectedImportantEvent(null)
                   }
+                  // 일정이 변경될 때 중요 일정 목록 새로고침
+                  loadImportantEvents();
                 }} />
               </CardContent>
             </Card>

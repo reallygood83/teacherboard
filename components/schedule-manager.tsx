@@ -16,7 +16,6 @@ import { Calendar, Clock, Plus, Trash2, Edit, ExternalLink, AlertCircle, Loader2
 import { useToast } from "@/hooks/use-toast";
 import { format, addDays, startOfWeek, addWeeks, startOfMonth, addMonths, isToday, isSameDay, addMinutes, parse, isAfter, isBefore } from "date-fns";
 import { ko } from "date-fns/locale";
-import { googleCalendarService } from "@/lib/google-calendar";
 
 interface Event {
   id: string;
@@ -51,15 +50,6 @@ export function ScheduleManager({ onEventSelect }: ScheduleManagerProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingEvent, setEditingEvent] = useState<Event | null>(null);
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
-  const [googleSyncLoading, setGoogleSyncLoading] = useState(false);
-  // const [googleEventsPreview, setGoogleEventsPreview] = useState<any[] | null>(null);
-  const [isGooglePreviewOpen, setIsGooglePreviewOpen] = useState(false);
-  // const [googleImportSummary, setGoogleImportSummary] = useState<
-  //   { id: string; title: string; status: 'imported' | 'duplicate' }[] | null
-  // >(null);
-  const [googleImportList, setGoogleImportList] = useState<
-    { id: string; title: string; status: 'new' | 'duplicate'; checked: boolean; eventData?: any }[] | null
-  >(null);
 
 
   // Form state
@@ -195,108 +185,6 @@ export function ScheduleManager({ onEventSelect }: ScheduleManagerProps) {
     }
   };
 
-  // Google Calendar sync handler
-  const handleGoogleSync = async () => {
-    if (googleSyncLoading) return;
-    setGoogleSyncLoading(true);
-    setGoogleImportList([]);
-    setIsGooglePreviewOpen(false);
-
-    try {
-      await googleCalendarService.authenticate();
-
-      if (!currentUser) {
-        throw new Error('로그인이 필요합니다.');
-      }
-
-      const timeMin = new Date();
-      const timeMax = new Date();
-      timeMax.setMonth(timeMax.getMonth() + 3);
-      const gEvents = await googleCalendarService.getCalendarEvents(timeMin.toISOString(), timeMax.toISOString());
-
-      // 로컬 상태에서 기존 googleEventId 집합 생성 (중복 감지용)
-      const existingIds = new Set((events || []).map((e) => e.googleEventId).filter(Boolean) as string[]);
-
-      // 미리보기 리스트 구성: 신규는 기본 체크, 중복은 체크 불가
-      const previewList = gEvents.map((ge: any) => {
-        const isDup = ge.id && existingIds.has(ge.id);
-        const partial = ge.id && !isDup
-          ? googleCalendarService.convertGoogleToLocalEvent(ge, currentUser.uid)
-          : undefined;
-        const eventData = partial
-          ? {
-              ...partial,
-              createdAt: new Date().toISOString(),
-              googleEventId: ge.id,
-            }
-          : undefined;
-
-        return {
-          id: ge.id ?? (crypto.randomUUID?.() ?? `${Date.now()}-${Math.random()}`),
-          title: ge.summary || '제목 없음',
-          status: (isDup ? 'duplicate' : 'new') as 'new' | 'duplicate',
-          checked: !isDup,
-          eventData,
-        };
-      });
-
-      setGoogleImportList(previewList);
-      setIsGooglePreviewOpen(true);
-
-      toast({
-        title: '구글 캘린더',
-        description: `가져온 ${gEvents.length}개 중 신규 ${previewList.filter(i => i.status==='new').length}개가 있습니다. 가져올 항목을 선택하세요.`,
-      });
-    } catch (err: any) {
-      const message = err?.message || '구글 캘린더 연동 중 오류가 발생했습니다. 환경변수 설정을 확인해주세요.';
-      toast({ title: '구글 캘린더 연동 실패', description: message, variant: 'destructive' });
-    } finally {
-      setGoogleSyncLoading(false);
-    }
-  };
-
-  // 선택 가져오기 실행
-  const handleConfirmGoogleImport = async () => {
-    try {
-      if (!currentUser || !db) {
-        throw new Error('로그인이 필요하거나 Firestore가 초기화되지 않았습니다.');
-      }
-      if (!googleImportList) return;
-
-      const eventsRef = collection(db!, `users/${currentUser.uid}/events`);
-      const toImport = googleImportList.filter((item) => item.status === 'new' && item.checked && item.eventData);
-
-      let importedCount = 0;
-      for (const item of toImport) {
-        await addDoc(eventsRef, item.eventData as any);
-        importedCount++;
-      }
-
-      await loadEvents();
-      setIsGooglePreviewOpen(false);
-      setGoogleImportList(null);
-
-      toast({
-        title: '가져오기 완료',
-        description: `선택한 ${toImport.length}개 중 ${importedCount}개를 저장했습니다.`,
-      });
-    } catch (error: any) {
-      toast({ title: '가져오기 실패', description: error?.message || '선택한 항목 가져오기에 실패했습니다.', variant: 'destructive' });
-    }
-  };
-
-  // 미리보기 체크박스 토글
-  const handleToggleItem = (id: string) => {
-    setGoogleImportList((prev) =>
-      prev ? prev.map((it) => (it.id === id && it.status === 'new' ? { ...it, checked: !it.checked } : it)) : prev
-    );
-  };
-
-  const handleToggleAll = (checked: boolean) => {
-    setGoogleImportList((prev) =>
-      prev ? prev.map((it) => (it.status === 'new' ? { ...it, checked } : it)) : prev
-    );
-  };
 
   // Edit event
   const handleEdit = (event: Event) => {
@@ -753,19 +641,15 @@ export function ScheduleManager({ onEventSelect }: ScheduleManagerProps) {
             </DialogContent>
           </Dialog>
           
-          {/* Google Calendar integration button */}
-          <Button variant="outline" size="sm" onClick={handleGoogleSync} disabled={googleSyncLoading}>
-            {googleSyncLoading ? (
-              <>
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                연동 중...
-              </>
-            ) : (
-              <>
-                <ExternalLink className="w-4 h-4 mr-2" />
-                구글 캘린더
-              </>
-            )}
+          {/* Google Calendar shortcut button */}
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={() => window.open('https://calendar.google.com/calendar/u/0/r/eventedit', '_blank')}
+            title="구글 캘린더 일정 등록 창을 새 탭에서 열어서 일정을 추가하세요"
+          >
+            <ExternalLink className="w-4 h-4 mr-2" />
+            구글 캘린더 일정 등록
           </Button>
         </div>
       </div>
@@ -851,70 +735,6 @@ export function ScheduleManager({ onEventSelect }: ScheduleManagerProps) {
         </div>
       </div>
 
-      {/* Google 가져오기 결과 미리보기 다이얼로그 */}
-      <Dialog open={isGooglePreviewOpen} onOpenChange={setIsGooglePreviewOpen}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle>구글 캘린더 가져오기 미리보기</DialogTitle>
-            <DialogDescription>
-              최근 3개월 범위에서 불러온 이벤트 중 신규 항목을 선택하여 가져올 수 있습니다.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-3 max-h-[55vh] overflow-y-auto">
-            {googleImportList && googleImportList.length > 0 ? (
-              <>
-                <div className="flex items-center justify-between px-1">
-                  <div className="text-sm text-gray-600">
-                    총 {googleImportList.length}개 · 신규 {googleImportList.filter(i=>i.status==='new').length}개 · 중복 {googleImportList.filter(i=>i.status==='duplicate').length}개
-                  </div>
-                  <div className="flex items-center gap-2 text-sm">
-                    <input
-                      type="checkbox"
-                      className="h-4 w-4"
-                      checked={googleImportList.filter(i=>i.status==='new').every(i=>i.checked)}
-                      onChange={(e) => handleToggleAll(e.target.checked)}
-                    />
-                    <span>신규 전체 선택</span>
-                  </div>
-                </div>
-                {googleImportList.map((item) => (
-                  <div key={item.id} className="flex items-center justify-between rounded border p-2">
-                    <div className="flex items-center gap-3 min-w-0">
-                      <input
-                        type="checkbox"
-                        className="h-4 w-4"
-                        checked={item.checked}
-                        onChange={() => handleToggleItem(item.id)}
-                        disabled={item.status === 'duplicate'}
-                      />
-                      <div className="truncate pr-2 text-sm">{item.title}</div>
-                    </div>
-                    {item.status === 'new' ? (
-                      <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100">신규</Badge>
-                    ) : (
-                      <Badge className="bg-gray-100 text-gray-700 hover:bg-gray-100">중복</Badge>
-                    )}
-                  </div>
-                ))}
-              </>
-            ) : (
-              <div className="text-sm text-gray-600">가져올 항목이 없습니다.</div>
-            )}
-          </div>
-          <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => setIsGooglePreviewOpen(false)}>
-              취소
-            </Button>
-            <Button
-              type="button"
-              onClick={handleConfirmGoogleImport}
-              disabled={googleSyncLoading || !(googleImportList && googleImportList.some(i=>i.status==='new' && i.checked))}
-            >
-              {googleSyncLoading ? '가져오는 중...' : '선택 항목 가져오기'}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }
