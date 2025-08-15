@@ -50,6 +50,8 @@ export function ScheduleManager({ onEventSelect }: ScheduleManagerProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingEvent, setEditingEvent] = useState<Event | null>(null);
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [eventToDelete, setEventToDelete] = useState<Event | null>(null);
 
 
   // Form state
@@ -164,16 +166,24 @@ export function ScheduleManager({ onEventSelect }: ScheduleManagerProps) {
     }
   };
 
+  // Show delete confirmation
+  const showDeleteConfirmation = (event: Event) => {
+    setEventToDelete(event);
+    setIsDeleteDialogOpen(true);
+  };
+
   // Delete event
-  const handleDelete = async (eventId: string) => {
-    if (!currentUser || !db) return;
+  const handleDelete = async () => {
+    if (!currentUser || !db || !eventToDelete) return;
 
     try {
-      await deleteDoc(doc(db!, `users/${currentUser.uid}/events`, eventId));
+      await deleteDoc(doc(db!, `users/${currentUser.uid}/events`, eventToDelete.id));
       toast({
         title: "성공",
         description: "일정이 삭제되었습니다.",
       });
+      setIsDeleteDialogOpen(false);
+      setEventToDelete(null);
       loadEvents();
     } catch (error) {
       console.error('일정 삭제 실패:', error);
@@ -309,6 +319,17 @@ export function ScheduleManager({ onEventSelect }: ScheduleManagerProps) {
     onEventSelect?.(event);
   };
 
+  // Handle event click with context menu
+  const handleEventClick = (event: Event, action?: 'edit' | 'delete') => {
+    if (action === 'edit') {
+      handleEdit(event);
+    } else if (action === 'delete') {
+      showDeleteConfirmation(event);
+    } else {
+      handleEventSelect(event);
+    }
+  };
+
   // Render calendar grid for month view
   const renderMonthGrid = () => {
     const start = startOfMonth(currentDate);
@@ -340,12 +361,38 @@ export function ScheduleManager({ onEventSelect }: ScheduleManagerProps) {
             {dayEvents.slice(0, 3).map((event, idx) => (
               <div
                 key={`${event.id}-${idx}`}
-                className={`text-xs px-1 py-0.5 rounded cursor-pointer truncate ${getCategoryColor(event.category)}`}
-                onClick={() => handleEventSelect(event)}
+                className={`group relative text-xs px-1 py-0.5 rounded cursor-pointer truncate ${getCategoryColor(event.category)} hover:shadow-sm`}
+                onClick={() => handleEventClick(event)}
                 title={event.title}
               >
-                {event.isImportant && <Target className="w-3 h-3 inline mr-1" />}
-                {event.title}
+                <div className="flex items-center justify-between">
+                  <span className="flex items-center min-w-0">
+                    {event.isImportant && <Target className="w-3 h-3 inline mr-1 flex-shrink-0" />}
+                    <span className="truncate">{event.title}</span>
+                  </span>
+                  <div className="hidden group-hover:flex items-center gap-0.5 ml-1 flex-shrink-0">
+                    <button
+                      className="p-0.5 hover:bg-black/10 rounded"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleEventClick(event, 'edit');
+                      }}
+                      title="편집"
+                    >
+                      <Edit className="w-2.5 h-2.5" />
+                    </button>
+                    <button
+                      className="p-0.5 hover:bg-red-500/20 rounded"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleEventClick(event, 'delete');
+                      }}
+                      title="삭제"
+                    >
+                      <Trash2 className="w-2.5 h-2.5" />
+                    </button>
+                  </div>
+                </div>
               </div>
             ))}
             {dayEvents.length > 3 && (
@@ -422,7 +469,7 @@ export function ScheduleManager({ onEventSelect }: ScheduleManagerProps) {
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => handleDelete(event.id)}
+                  onClick={() => showDeleteConfirmation(event)}
                   className="h-8 w-8 p-0 hover:bg-red-100 hover:text-red-600"
                 >
                   <Trash2 className="w-3 h-3" />
@@ -735,6 +782,53 @@ export function ScheduleManager({ onEventSelect }: ScheduleManagerProps) {
         </div>
       </div>
 
+    </div>
+
+      {/* Delete confirmation dialog */}
+      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>일정 삭제</DialogTitle>
+            <DialogDescription>
+              정말로 이 일정을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.
+            </DialogDescription>
+          </DialogHeader>
+          
+          {eventToDelete && (
+            <div className="py-4">
+              <div className="p-3 bg-gray-50 rounded-lg">
+                <h4 className="font-medium text-gray-900">{eventToDelete.title}</h4>
+                <p className="text-sm text-gray-600 mt-1">
+                  {format(new Date(eventToDelete.startDate), 'yyyy년 M월 d일', { locale: ko })}
+                  {eventToDelete.startTime && ` ${eventToDelete.startTime}`}
+                </p>
+                {eventToDelete.location && (
+                  <p className="text-sm text-gray-600">📍 {eventToDelete.location}</p>
+                )}
+              </div>
+            </div>
+          )}
+          
+          <DialogFooter>
+            <Button 
+              type="button" 
+              variant="outline" 
+              onClick={() => setIsDeleteDialogOpen(false)}
+            >
+              취소
+            </Button>
+            <Button 
+              type="button" 
+              variant="destructive" 
+              onClick={handleDelete}
+              disabled={saving}
+            >
+              {saving && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+              삭제
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
