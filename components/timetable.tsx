@@ -63,10 +63,18 @@ export function Timetable() {
 
   // Firebase 및 localStorage에서 시간표 데이터 불러오기
   const loadTimetableData = async () => {
+    console.log("📥 시간표 데이터 로딩 시작...")
+    
     // 먼저 localStorage에서 데이터 불러오기
     const savedSchedule = localStorage.getItem("dailySchedule")
     const savedWeeklySchedule = localStorage.getItem("weeklySchedule")
     const savedCustomSubjects = localStorage.getItem("customSubjects")
+    
+    console.log("📦 localStorage 데이터:", { 
+      dailySchedule: !!savedSchedule, 
+      weeklySchedule: !!savedWeeklySchedule, 
+      customSubjects: !!savedCustomSubjects 
+    })
     
     if (savedSchedule) {
       setSchedule(JSON.parse(savedSchedule))
@@ -80,9 +88,11 @@ export function Timetable() {
 
     // Firebase에서 데이터 불러오기 (사용자가 로그인한 경우)
     if (currentUser && db) {
+      console.log("🔥 Firebase에서 데이터 불러오기 시도...")
       try {
         const timetableDoc = await getDoc(doc(db, `users/${currentUser.uid}/timetable`, 'schedule'))
         if (timetableDoc.exists()) {
+          console.log("✅ Firebase에서 시간표 데이터 발견!")
           const firebaseData = timetableDoc.data()
           if (firebaseData.dailySchedule) {
             setSchedule(firebaseData.dailySchedule)
@@ -96,11 +106,18 @@ export function Timetable() {
             setCustomSubjects(firebaseData.customSubjects)
             localStorage.setItem("customSubjects", JSON.stringify(firebaseData.customSubjects))
           }
+          console.log("📱 Firebase 데이터를 localStorage에 동기화 완료")
+        } else {
+          console.log("ℹ️ Firebase에 저장된 시간표 데이터가 없음")
         }
       } catch (error) {
-        console.error("Firebase에서 시간표 데이터 불러오기 실패:", error)
+        console.error("❌ Firebase에서 시간표 데이터 불러오기 실패:", error)
       }
+    } else {
+      console.log("ℹ️ 사용자 미로그인 또는 Firebase DB 미연결")
     }
+    
+    setHasUnsavedChanges(false) // 로딩 완료 후 변경사항 없음으로 설정
   }
 
   useEffect(() => {
@@ -140,11 +157,16 @@ export function Timetable() {
 
   // 수동 저장 함수
   const handleManualSave = async () => {
+    console.log("🔍 저장 시작 - 현재 데이터:", { schedule, weeklySchedule, customSubjects })
+    console.log("🔍 현재 사용자:", currentUser?.email)
+    console.log("🔍 Firebase DB 상태:", !!db)
+    
     try {
       await saveToLocalStorage()
+      console.log("✅ 저장 완료!")
       alert("시간표가 저장되었습니다!")
     } catch (error) {
-      console.error("저장 중 오류:", error)
+      console.error("❌ 저장 중 오류:", error)
       alert("저장 중 오류가 발생했습니다. 다시 시도해주세요.")
     }
   }
@@ -438,44 +460,30 @@ export function Timetable() {
             주간
           </Button>
           
-          {/* 편집/저장 버튼 - 주간 시간표용 */}
+          {/* 주간 시간표 편집 버튼 */}
           {viewMode === "weekly" && Object.keys(weeklySchedule).length > 0 && (
-            <>
-              <Button
-                variant={isEditMode ? "default" : "outline"}
-                onClick={() => setIsEditMode(!isEditMode)}
-                size="sm"
-                className="text-blue-600 hover:text-blue-700"
-              >
-                <Edit3 className="w-4 h-4 mr-1" />
-                {isEditMode ? "편집완료" : "편집"}
-              </Button>
-              <Button
-                variant="outline"
-                onClick={handleManualSave}
-                size="sm"
-                className={hasUnsavedChanges ? "text-green-600 hover:text-green-700 border-green-300" : "text-gray-600"}
-                disabled={!hasUnsavedChanges}
-              >
-                <Save className="w-4 h-4 mr-1" />
-                저장{hasUnsavedChanges ? "*" : ""}
-              </Button>
-            </>
-          )}
-          
-          {/* 일간 시간표용 저장 버튼 */}
-          {viewMode === "daily" && (
             <Button
-              variant="outline"
-              onClick={handleManualSave}
+              variant={isEditMode ? "default" : "outline"}
+              onClick={() => setIsEditMode(!isEditMode)}
               size="sm"
-              className={hasUnsavedChanges ? "text-green-600 hover:text-green-700 border-green-300" : "text-gray-600"}
-              disabled={!hasUnsavedChanges}
+              className="text-blue-600 hover:text-blue-700"
             >
-              <Save className="w-4 h-4 mr-1" />
-              저장{hasUnsavedChanges ? "*" : ""}
+              <Edit3 className="w-4 h-4 mr-1" />
+              {isEditMode ? "편집완료" : "편집"}
             </Button>
           )}
+          
+          {/* 항상 표시되는 저장 버튼 */}
+          <Button
+            variant="outline"
+            onClick={handleManualSave}
+            size="sm"
+            className={hasUnsavedChanges ? "text-green-600 hover:text-green-700 border-green-300 font-semibold" : "text-blue-600 hover:text-blue-700 border-blue-300"}
+            title={hasUnsavedChanges ? "변경사항을 저장하세요" : "현재 시간표를 저장"}
+          >
+            <Save className="w-4 h-4 mr-1" />
+            저장{hasUnsavedChanges ? " *" : ""}
+          </Button>
           
           <Button
             variant="outline"
