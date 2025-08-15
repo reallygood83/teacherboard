@@ -5,7 +5,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Upload, FileImage, Loader2, Trash2, RotateCcw, Calendar, Clock, FileText } from "lucide-react"
+import { Upload, FileImage, Loader2, Trash2, RotateCcw, Calendar, Clock, FileText, Save, Edit3 } from "lucide-react"
+import { useAuth } from "@/contexts/AuthContext"
+import { db } from "@/lib/firebase"
+import { doc, setDoc, getDoc } from "firebase/firestore"
 
 const subjects = [
   "국어",
@@ -36,6 +39,7 @@ interface WeeklySchedule {
 }
 
 export function Timetable() {
+  const { currentUser } = useAuth()
   const [viewMode, setViewMode] = useState<"daily" | "weekly">("daily")
   const [schedule, setSchedule] = useState<{ [key: string]: string }>({
     "1교시": "",
@@ -52,10 +56,14 @@ export function Timetable() {
   const [uploadedFileType, setUploadedFileType] = useState<string>("")
   const [isProcessing, setIsProcessing] = useState(false)
   const [ocrResult, setOcrResult] = useState<string>("")
+  const [isEditMode, setIsEditMode] = useState(false)
+  const [editingCell, setEditingCell] = useState<{day: string, period: string} | null>(null)
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  // localStorage에서 시간표 데이터 불러오기
-  useEffect(() => {
+  // Firebase 및 localStorage에서 시간표 데이터 불러오기
+  const loadTimetableData = async () => {
+    // 먼저 localStorage에서 데이터 불러오기
     const savedSchedule = localStorage.getItem("dailySchedule")
     const savedWeeklySchedule = localStorage.getItem("weeklySchedule")
     const savedCustomSubjects = localStorage.getItem("customSubjects")
@@ -69,13 +77,89 @@ export function Timetable() {
     if (savedCustomSubjects) {
       setCustomSubjects(JSON.parse(savedCustomSubjects))
     }
-  }, [])
 
-  // 데이터 저장 함수
-  const saveToLocalStorage = () => {
+    // Firebase에서 데이터 불러오기 (사용자가 로그인한 경우)
+    if (currentUser && db) {
+      try {
+        const timetableDoc = await getDoc(doc(db, `users/${currentUser.uid}/timetable`, 'schedule'))
+        if (timetableDoc.exists()) {
+          const firebaseData = timetableDoc.data()
+          if (firebaseData.dailySchedule) {
+            setSchedule(firebaseData.dailySchedule)
+            localStorage.setItem("dailySchedule", JSON.stringify(firebaseData.dailySchedule))
+          }
+          if (firebaseData.weeklySchedule) {
+            setWeeklySchedule(firebaseData.weeklySchedule)
+            localStorage.setItem("weeklySchedule", JSON.stringify(firebaseData.weeklySchedule))
+          }
+          if (firebaseData.customSubjects) {
+            setCustomSubjects(firebaseData.customSubjects)
+            localStorage.setItem("customSubjects", JSON.stringify(firebaseData.customSubjects))
+          }
+        }
+      } catch (error) {
+        console.error("Firebase에서 시간표 데이터 불러오기 실패:", error)
+      }
+    }
+  }
+
+  useEffect(() => {
+    loadTimetableData()
+  }, [currentUser])
+
+  // 데이터 저장 함수 (localStorage + Firebase 연동)
+  const saveToLocalStorage = async () => {
+    // localStorage에 저장
     localStorage.setItem("dailySchedule", JSON.stringify(schedule))
     localStorage.setItem("weeklySchedule", JSON.stringify(weeklySchedule))
     localStorage.setItem("customSubjects", JSON.stringify(customSubjects))
+    
+    // Firebase에 저장 (사용자가 로그인한 경우)
+    if (currentUser && db) {
+      try {
+        await setDoc(doc(db, `users/${currentUser.uid}/timetable`, 'schedule'), {
+          dailySchedule: schedule,
+          weeklySchedule: weeklySchedule,
+          customSubjects: customSubjects,
+          lastUpdated: new Date().toISOString()
+        })
+        console.log("Firebase에 시간표 데이터 저장 완료")
+      } catch (error) {
+        console.error("Firebase 저장 실패:", error)
+        // Firebase 저장 실패해도 localStorage 저장은 유지
+      }
+    }
+    
+    setHasUnsavedChanges(false)
+    console.log("시간표 데이터 저장 완료:", { 
+      dailySchedule: schedule, 
+      weeklySchedule, 
+      customSubjects 
+    })
+  }
+
+  // 수동 저장 함수
+  const handleManualSave = async () => {
+    try {
+      await saveToLocalStorage()
+      alert("시간표가 저장되었습니다!")
+    } catch (error) {
+      console.error("저장 중 오류:", error)
+      alert("저장 중 오류가 발생했습니다. 다시 시도해주세요.")
+    }
+  }
+
+  // 주간 시간표 셀 편집 함수
+  const handleWeeklyScheduleChange = (day: string, period: string, value: string) => {
+    setWeeklySchedule(prev => ({
+      ...prev,
+      [day]: {
+        ...prev[day],
+        [period]: value
+      }
+    }))
+    setHasUnsavedChanges(true)
+    setEditingCell(null)
   }
 
   // PDF를 이미지로 변환하는 함수
@@ -234,8 +318,25 @@ export function Timetable() {
         const parsedSchedule = JSON.parse(jsonString)
         setWeeklySchedule(parsedSchedule)
         setViewMode("weekly")
-        saveToLocalStorage()
-        alert("시간표가 성공적으로 생성되었습니다!")
+        
+        // OCR로 생성된 데이터 즉시 저장 (localStorage + Firebase)
+        localStorage.setItem("weeklySchedule", JSON.stringify(parsedSchedule))
+        
+        if (currentUser && db) {
+          try {
+            await setDoc(doc(db, `users/${currentUser.uid}/timetable`, 'schedule'), {
+              dailySchedule: schedule,
+              weeklySchedule: parsedSchedule,
+              customSubjects: customSubjects,
+              lastUpdated: new Date().toISOString()
+            })
+          } catch (error) {
+            console.error("Firebase OCR 저장 실패:", error)
+          }
+        }
+        
+        setHasUnsavedChanges(false) // OCR로 생성된 것은 즉시 저장됨으로 처리
+        alert("시간표가 성공적으로 생성되어 저장되었습니다!")
       } catch (parseError) {
         console.error("JSON 파싱 오류:", parseError)
         console.error("원본 응답:", data.response)
@@ -259,10 +360,12 @@ export function Timetable() {
         return newCustom
       })
     }
+    setHasUnsavedChanges(true)
   }
 
   const handleCustomSubjectChange = (period: string, customSubject: string) => {
     setCustomSubjects((prev) => ({ ...prev, [period]: customSubject }))
+    setHasUnsavedChanges(true)
   }
 
   const getCurrentDate = () => {
@@ -317,7 +420,7 @@ export function Timetable() {
           </CardContent>
         </Card>
         
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
           <Button
             variant={viewMode === "daily" ? "default" : "outline"}
             onClick={() => setViewMode("daily")}
@@ -334,6 +437,46 @@ export function Timetable() {
             <Calendar className="w-4 h-4 mr-1" />
             주간
           </Button>
+          
+          {/* 편집/저장 버튼 - 주간 시간표용 */}
+          {viewMode === "weekly" && Object.keys(weeklySchedule).length > 0 && (
+            <>
+              <Button
+                variant={isEditMode ? "default" : "outline"}
+                onClick={() => setIsEditMode(!isEditMode)}
+                size="sm"
+                className="text-blue-600 hover:text-blue-700"
+              >
+                <Edit3 className="w-4 h-4 mr-1" />
+                {isEditMode ? "편집완료" : "편집"}
+              </Button>
+              <Button
+                variant="outline"
+                onClick={handleManualSave}
+                size="sm"
+                className={hasUnsavedChanges ? "text-green-600 hover:text-green-700 border-green-300" : "text-gray-600"}
+                disabled={!hasUnsavedChanges}
+              >
+                <Save className="w-4 h-4 mr-1" />
+                저장{hasUnsavedChanges ? "*" : ""}
+              </Button>
+            </>
+          )}
+          
+          {/* 일간 시간표용 저장 버튼 */}
+          {viewMode === "daily" && (
+            <Button
+              variant="outline"
+              onClick={handleManualSave}
+              size="sm"
+              className={hasUnsavedChanges ? "text-green-600 hover:text-green-700 border-green-300" : "text-gray-600"}
+              disabled={!hasUnsavedChanges}
+            >
+              <Save className="w-4 h-4 mr-1" />
+              저장{hasUnsavedChanges ? "*" : ""}
+            </Button>
+          )}
+          
           <Button
             variant="outline"
             onClick={resetSchedule}
@@ -458,9 +601,42 @@ export function Timetable() {
                       <td className="border p-3 bg-gray-50 font-medium text-center">{period}</td>
                       {weekDays.map((day) => (
                         <td key={`${day}-${period}`} className="border p-3 text-center">
-                          <span className="inline-block px-2 py-1 bg-green-100 text-green-800 rounded text-sm">
-                            {weeklySchedule[day]?.[period] || "-"}
-                          </span>
+                          {isEditMode ? (
+                            editingCell?.day === day && editingCell?.period === period ? (
+                              <Select
+                                value={weeklySchedule[day]?.[period] || ""}
+                                onValueChange={(value) => handleWeeklyScheduleChange(day, period, value)}
+                                onOpenChange={(open) => {
+                                  if (!open) setEditingCell(null)
+                                }}
+                                defaultOpen={true}
+                              >
+                                <SelectTrigger className="w-full min-w-20">
+                                  <SelectValue placeholder="과목 선택" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="">없음</SelectItem>
+                                  {subjects.map((subject) => (
+                                    <SelectItem key={subject} value={subject}>
+                                      {subject}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            ) : (
+                              <button
+                                className="inline-block px-2 py-1 bg-blue-100 text-blue-800 rounded text-sm hover:bg-blue-200 transition-colors w-full min-w-16 cursor-pointer"
+                                onClick={() => setEditingCell({ day, period })}
+                                title="클릭하여 편집"
+                              >
+                                {weeklySchedule[day]?.[period] || "-"}
+                              </button>
+                            )
+                          ) : (
+                            <span className="inline-block px-2 py-1 bg-green-100 text-green-800 rounded text-sm">
+                              {weeklySchedule[day]?.[period] || "-"}
+                            </span>
+                          )}
                         </td>
                       ))}
                     </tr>
