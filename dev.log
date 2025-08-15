@@ -107,3 +107,114 @@ Import trace for requested module:
  ✓ Compiled in 1514ms (1494 modules)
  ✓ Compiled in 1261ms (1494 modules)
  ✓ Compiled in 1081ms (1494 modules)
+ ✓ Compiled in 890ms (1494 modules)
+ ✓ Compiled in 388ms (1494 modules)
+ ✓ Compiled in 460ms (1494 modules)
+ ✓ Compiled in 1139ms (1494 modules)
+ ✓ Compiled in 565ms (1494 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/Users/moon/Desktop/teacher-board/teacherboard/teacherboard/.next/cache/webpack/client-development/0.pack.gz_' -> '/Users/moon/Desktop/teacher-board/teacherboard/teacherboard/.next/cache/webpack/client-development/0.pack.gz'
+ ○ Compiling /class ...
+ ✓ Compiled /class in 893ms (3183 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+🔥 Firebase 환경 변수가 올바르게 설정되지 않았습니다.
+📝 Vercel 대시보드에서 실제 Firebase 설정 값을 입력해주세요.
+🔍 확인 필요 변수: {
+  apiKey: '❌ 누락',
+  authDomain: '❌ 누락',
+  projectId: '❌ 누락',
+  storageBucket: '❌ 누락',
+  messagingSenderId: '❌ 누락',
+  appId: '❌ 누락'
+}
+⚠️ Firebase 초기화 건너뜀 - 환경 변수 미설정
+ GET /class 200 in 2241ms
+ ○ Compiling / ...
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 1852ms
+ ✓ Compiled / in 3.4s (3192 modules)
+ ✓ Compiled in 1ms (1705 modules)
+ ✓ Compiled in 2.1s (3192 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /offline. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /offline. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /styles/globals.css. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /styles/globals.css. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+🔥 Firebase 환경 변수가 올바르게 설정되지 않았습니다.
+📝 Vercel 대시보드에서 실제 Firebase 설정 값을 입력해주세요.
+🔍 확인 필요 변수: {
+  apiKey: '❌ 누락',
+  authDomain: '❌ 누락',
+  projectId: '❌ 누락',
+  storageBucket: '❌ 누락',
+  messagingSenderId: '❌ 누락',
+  appId: '❌ 누락'
+}
+⚠️ Firebase 초기화 건너뜀 - 환경 변수 미설정
+ GET /styles/globals.css 404 in 5114ms
+ GET / 200 in 6999ms
+ GET /offline 404 in 6991ms
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 3667ms
+ ✓ Compiled in 2.5s (1498 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 104ms
+ ✓ Compiled in 345ms (1498 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 66ms
+ ✓ Compiled in 639ms (1498 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 233ms
+ ✓ Compiled in 274ms (1498 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 51ms
+ ✓ Compiled in 490ms (1498 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 56ms
+ ✓ Compiled in 886ms (1498 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 206ms
+ ✓ Compiled in 519ms (1498 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 80ms
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/Users/moon/Desktop/teacher-board/teacherboard/teacherboard/.next/cache/webpack/client-development/0.pack.gz_' -> '/Users/moon/Desktop/teacher-board/teacherboard/teacherboard/.next/cache/webpack/client-development/0.pack.gz'
+ ✓ Compiled in 468ms (1498 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/Users/moon/Desktop/teacher-board/teacherboard/teacherboard/.next/cache/webpack/client-development/0.pack.gz_' -> '/Users/moon/Desktop/teacher-board/teacherboard/teacherboard/.next/cache/webpack/client-development/0.pack.gz'
+ ✓ Compiled in 1078ms (1498 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/Users/moon/Desktop/teacher-board/teacherboard/teacherboard/.next/cache/webpack/client-development/0.pack.gz_' -> '/Users/moon/Desktop/teacher-board/teacherboard/teacherboard/.next/cache/webpack/client-development/0.pack.gz'
