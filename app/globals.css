@@ -249,3 +249,163 @@
 .stagger-animation:nth-child(6) {
   animation-delay: 0.6s;
 }
+
+/* Mobile-specific optimizations */
+@media (max-width: 768px) {
+  .card-hover:hover {
+    transform: none;
+    box-shadow: 0 4px 12px rgba(21, 128, 61, 0.1);
+  }
+  
+  /* Touch-friendly buttons */
+  button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Improve text readability on mobile */
+  body {
+    -webkit-text-size-adjust: 100%;
+    -moz-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+  
+  /* Prevent horizontal scroll on mobile */
+  .overflow-x-auto {
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Mobile-friendly animations */
+  @media (prefers-reduced-motion: reduce) {
+    .card-hover {
+      transition: none;
+    }
+    
+    .animate-fade-in,
+    .animate-slide-in-up,
+    .animate-wiggle {
+      animation: none;
+    }
+  }
+}
+
+/* Enhanced mobile navigation styles */
+.mobile-nav-backdrop {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Touch-optimized form inputs */
+@media (max-width: 768px) {
+  input, textarea, select {
+    font-size: 16px; /* Prevents zoom on iOS */
+    min-height: 44px;
+  }
+  
+  /* Better spacing for mobile forms */
+  .space-y-4 > :not(:first-child) {
+    margin-top: 1.5rem;
+  }
+}
+
+/* Mobile-friendly modal positioning */
+@media (max-width: 640px) {
+  .fixed.inset-0.flex.items-center.justify-center {
+    align-items: flex-end;
+    padding: 0;
+  }
+  
+  .fixed.inset-0.flex.items-center.justify-center > * {
+    border-radius: 20px 20px 0 0;
+    margin-bottom: 0;
+    width: 100%;
+  }
+}
+
+/* Improved mobile scrolling */
+.mobile-scroll {
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
+/* Better mobile typography */
+@media (max-width: 768px) {
+  h1 {
+    font-size: 1.875rem; /* text-3xl instead of text-4xl */
+    line-height: 2.25rem;
+  }
+  
+  h2 {
+    font-size: 1.5rem; /* text-2xl instead of text-3xl */
+    line-height: 2rem;
+  }
+  
+  h3 {
+    font-size: 1.25rem; /* text-xl instead of text-2xl */
+    line-height: 1.75rem;
+  }
+  
+  /* Improved mobile padding */
+  .p-6 {
+    padding: 1rem;
+  }
+  
+  .py-8 {
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+  }
+}
+
+/* Touch gesture container optimization */
+.mobile-swipe-container {
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Enhanced mobile interaction feedback */
+@media (max-width: 768px) {
+  /* Better touch feedback for buttons */
+  button:active {
+    transform: scale(0.98);
+    transition: transform 0.1s ease;
+  }
+  
+  /* Improved focus states for touch navigation */
+  button:focus-visible,
+  [role="tab"]:focus-visible {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+  
+  /* Prevent text selection on touch interactions */
+  .mobile-nav-item,
+  .mobile-button-group button {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+  }
+  
+  /* Better card spacing on mobile */
+  .card-hover {
+    margin-bottom: 0.75rem;
+  }
+  
+  /* Optimized mobile grid gaps */
+  .grid.gap-4 {
+    gap: 0.75rem;
+  }
+  
+  /* Enhanced mobile modal positioning */
+  .fixed.inset-0 {
+    padding: 1rem;
+  }
+  
+  /* Better mobile scrollable areas */
+  .overflow-y-auto {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
+}

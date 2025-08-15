@@ -4,6 +4,9 @@ import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import MobileNavigation from "@/components/mobile-navigation"
+import { MobileCard, MobileGrid, MobileButtonGroup } from "@/components/mobile-card"
+import TouchGesture, { useTabSwipeGesture } from "@/components/touch-gestures"
 import {
   Clock,
   Calendar,
@@ -67,6 +70,81 @@ export default function ClassHomepage() {
   const [isQuickLinksCollapsed, setIsQuickLinksCollapsed] = useState(false)
   const [savedLinks, setSavedLinks] = useState<SavedLink[]>([])
   const [activeTab, setActiveTab] = useState("tools")
+
+  // Touch gesture setup for tab navigation
+  const tabIds = tabConfig.map(tab => tab.id)
+  const { handleSwipeLeft, handleSwipeRight } = useTabSwipeGesture(
+    tabIds,
+    activeTab,
+    setActiveTab
+  )
+
+  // Tab configuration for mobile navigation
+  const tabConfig = [
+    {
+      id: "tools",
+      label: "수업 도구",
+      icon: BookOpen,
+      description: "수업 칠판과 빠른 링크",
+      category: "main" as const
+    },
+    {
+      id: "ai-tools",
+      label: "AI 도구",
+      icon: Brain,
+      description: "AI 기반 문서 생성",
+      category: "tools" as const
+    },
+    {
+      id: "schedule",
+      label: "시간표",
+      icon: Calendar,
+      description: "오늘의 수업 일정",
+      category: "main" as const
+    },
+    {
+      id: "schedule-management",
+      label: "일정 관리",
+      icon: Calendar,
+      description: "방학, 행사 등 전체 일정",
+      category: "management" as const
+    },
+    {
+      id: "students",
+      label: "학생 관리",
+      icon: Users,
+      description: "학생 뽑기와 모둠 편성",
+      category: "tools" as const
+    },
+    {
+      id: "youtube",
+      label: "YouTube",
+      icon: Play,
+      description: "교육 동영상 검색",
+      category: "tools" as const
+    },
+    {
+      id: "links",
+      label: "외부 링크",
+      icon: Link,
+      description: "외부 사이트 임베딩",
+      category: "tools" as const
+    },
+    {
+      id: "time",
+      label: "시간 관리",
+      icon: Clock,
+      description: "현재 시간과 수업 타이머",
+      category: "main" as const
+    },
+    {
+      id: "settings",
+      label: "설정",
+      icon: SettingsIcon,
+      description: "홈페이지 설정 관리",
+      category: "management" as const
+    }
+  ]
   const [settings, setSettings] = useState<SettingsData>({
     title: "우리 학급 홈페이지",
     subtitle: "함께 배우고 성장하는 공간입니다 ❤️",
@@ -200,17 +278,17 @@ export default function ClassHomepage() {
   return (
     <div className={`min-h-screen ${getBackgroundClass()}`}>
       {/* Header */}
-      <header className={`${getGradientClass()} text-white py-8 px-4`}>
+      <header className={`${getGradientClass()} text-white md:py-8 py-6 px-4`}>
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="font-serif font-black text-4xl mb-2">{settings.title}</h1>
-              <p className="text-green-100 text-lg">{settings.subtitle}</p>
+              <h1 className="font-serif font-black md:text-4xl text-2xl mb-2">{settings.title}</h1>
+              <p className="text-green-100 md:text-lg text-base">{settings.subtitle}</p>
             </div>
             <div className="flex items-center gap-4">
               <div className="text-right">
                 <p className="text-green-100 text-sm">오늘은</p>
-                <p className="font-semibold text-xl">{currentDate}</p>
+                <p className="font-semibold md:text-xl text-lg">{currentDate}</p>
                 {countdownText && (
                   <p className="text-yellow-200 text-sm mt-1 truncate max-w-[220px]">
                     {selectedImportantEvent?.title}: {countdownText}
@@ -224,13 +302,26 @@ export default function ClassHomepage() {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 py-8">
-        <div className="mb-8 text-center">
-          <p className="text-gray-600 text-lg">안녕하세요 {currentUser.displayName}님, 오늘 하루도 평안하세요 ❤️</p>
+      <main className="max-w-7xl mx-auto px-4 md:py-8 py-4">
+        <div className="mb-6 md:mb-8 text-center">
+          <p className="text-gray-600 md:text-lg text-base">안녕하세요 {currentUser.displayName}님, 오늘 하루도 평안하세요 ❤️</p>
         </div>
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-9 mb-8">
+        <TouchGesture
+          onSwipeLeft={handleSwipeLeft}
+          onSwipeRight={handleSwipeRight}
+          className="mobile-swipe-container"
+        >
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          {/* Mobile Navigation */}
+          <MobileNavigation
+            activeTab={activeTab}
+            onTabChange={setActiveTab}
+            tabs={tabConfig}
+          />
+          
+          {/* Desktop Navigation */}
+          <TabsList className="hidden md:grid w-full grid-cols-9 mb-8">
             <TabsTrigger value="tools" className="flex items-center gap-2">
               <BookOpen className="w-4 h-4" />
               수업 도구
@@ -271,7 +362,7 @@ export default function ClassHomepage() {
 
           {/* 수업 도구 탭 */}
           <TabsContent value="tools" className="space-y-6">
-            <div className="flex gap-4">
+            <div className="flex flex-col md:flex-row gap-4">
               {/* 수업 칠판 - 75% */}
               <div className={`transition-all duration-300 ${isQuickLinksCollapsed ? 'flex-1' : 'flex-[3]'}`}>
                 <Card className="card-hover h-full">
@@ -393,7 +484,7 @@ export default function ClassHomepage() {
 
           {/* AI 도구 탭 */}
           <TabsContent value="ai-tools" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
               {/* 공문 생성기 */}
               <Card className="card-hover">
                 <CardHeader>
@@ -510,7 +601,7 @@ export default function ClassHomepage() {
 
           {/* 학생 관리 탭 */}
           <TabsContent value="students" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
               <Card className="card-hover">
                 <CardHeader>
                   <CardTitle className={`flex items-center gap-2 font-serif`}>
@@ -591,7 +682,8 @@ export default function ClassHomepage() {
           <TabsContent value="settings">
             <Settings onSettingsChange={handleSettingsChange} />
           </TabsContent>
-        </Tabs>
+          </Tabs>
+        </TouchGesture>
       </main>
 
       {/* Footer */}
