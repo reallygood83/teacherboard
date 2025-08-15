@@ -20,6 +20,7 @@ import {
   Plus,
   Trash2,
   FileText,
+  Settings as SettingsIcon,
 } from "lucide-react"
 import { DigitalClock } from "@/components/digital-clock"
 import { Chalkboard } from "@/components/chalkboard"

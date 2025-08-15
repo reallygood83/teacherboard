@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { SettingsIcon, Palette, Type, FileText, Bot } from "lucide-react"
+import { Settings, Palette, Type, FileText, Bot } from "lucide-react"
 
 interface SettingsData {
   title: string
@@ -205,7 +205,7 @@ export function Settings({ onSettingsChange }: SettingsProps) {
       <Card className="card-hover">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 font-serif">
-            <SettingsIcon className="w-5 h-5 text-green-600" />
+            <Settings className="w-5 h-5 text-green-600" />
             설정 관리
           </CardTitle>
           <CardDescription>설정을 초기화하거나 백업할 수 있습니다</CardDescription>

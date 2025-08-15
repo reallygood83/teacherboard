@@ -9,7 +9,7 @@ import {
   Play, 
   Link, 
   Clock, 
-  SettingsIcon 
+  Settings 
 } from "lucide-react"
 
 export interface TabInfo {
@@ -80,7 +80,7 @@ export const tabConfig: TabInfo[] = [
   {
     id: "settings",
     label: "설정",
-    icon: SettingsIcon,
+    icon: Settings,
     description: "홈페이지 설정 관리",
     category: "management" as const
   }
