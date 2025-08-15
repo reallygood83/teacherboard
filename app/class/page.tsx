@@ -89,6 +89,15 @@ export default function ClassHomepage() {
   const [importantEvents, setImportantEvents] = useState<ImportantEvent[]>([])
   const [selectedDDayEvent, setSelectedDDayEvent] = useState<ImportantEvent | null>(null)
 
+  // 탭 변경 시 중요 일정 새로고침 (일정 관리 탭에서 돌아올 때)
+  const handleTabChange = (tabValue: string) => {
+    setActiveTab(tabValue);
+    // 일정 관리 탭에서 다른 탭으로 이동할 때 중요 일정 새로고침
+    if (activeTab === 'schedule-management' && tabValue !== 'schedule-management') {
+      setTimeout(() => loadImportantEvents(), 300);
+    }
+  };
+
   // Touch gesture setup for tab navigation
   const tabIds = getTabIds()
   const { handleSwipeLeft, handleSwipeRight } = useTabSwipeGesture(
@@ -236,14 +245,6 @@ export default function ClassHomepage() {
     setActiveTab('schedule-management'); // 일정 관리 탭으로 이동
   };
 
-  // 탭 변경 시 중요 일정 새로고침 (일정 관리 탭에서 돌아올 때)
-  const handleTabChange = (tabValue: string) => {
-    setActiveTab(tabValue);
-    // 일정 관리 탭에서 다른 탭으로 이동할 때 중요 일정 새로고침
-    if (activeTab === 'schedule-management' && tabValue !== 'schedule-management') {
-      setTimeout(() => loadImportantEvents(), 300);
-    }
-  };
   useEffect(() => {
     // 인증되지 않은 사용자는 로그인 페이지로 리다이렉트
     if (!loading && !currentUser) {

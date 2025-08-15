@@ -241,3 +241,14 @@ Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
  ✓ Compiled in 1007ms (3205 modules)
  ✓ Compiled in 928ms (3205 modules)
 <w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/Users/moon/Desktop/teacher-board/teacherboard/teacherboard/.next/cache/webpack/client-development/0.pack.gz_' -> '/Users/moon/Desktop/teacher-board/teacherboard/teacherboard/.next/cache/webpack/client-development/0.pack.gz'
+ ⨯ ./app/class/page.tsx
+Module parse failed: Identifier 'handleTabChange' has already been declared (181:10)
+|     };
+|     // 탭 변경 시 중요 일정 새로고침 (일정 관리 탭에서 돌아올 때)
+>     const handleTabChange = (tabValue)=>{
+|         setActiveTab(tabValue);
+|         // 일정 관리 탭에서 다른 탭으로 이동할 때 중요 일정 새로고침
+
+Import trace for requested module:
+./app/class/page.tsx
+ ✓ Compiled in 2.2s (3205 modules)
