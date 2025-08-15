@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { ExternalLink, Plus, Trash2, BookOpen, Globe, Video, Calculator } from "lucide-react"
+import { ExternalLink, Plus, Trash2, BookOpen, Globe, Video, Calculator, Star, StarOff } from "lucide-react"
 
 interface SavedLink {
   id: string
@@ -15,6 +15,7 @@ interface SavedLink {
   description?: string
   category: string
   addedDate: string
+  isQuickLink?: boolean
 }
 
 const educationalSites = [
@@ -120,6 +121,17 @@ export function LinkEmbedder({ onLinksUpdate }: LinkEmbedderProps = {}) {
 
   const openLink = (url: string) => {
     window.open(url, "_blank")
+  }
+
+  const toggleQuickLink = (id: string) => {
+    const updatedLinks = savedLinks.map((link) => {
+      if (link.id === id) {
+        return { ...link, isQuickLink: !link.isQuickLink }
+      }
+      return link
+    })
+    setSavedLinks(updatedLinks)
+    saveLinksToStorage(updatedLinks)
   }
 
   const getCategoryIcon = (category: string) => {
@@ -258,6 +270,15 @@ export function LinkEmbedder({ onLinksUpdate }: LinkEmbedderProps = {}) {
                     </div>
                   </div>
                   <div className="flex gap-2 ml-4">
+                    <Button 
+                      size="sm" 
+                      variant={link.isQuickLink ? "default" : "outline"}
+                      onClick={() => toggleQuickLink(link.id)}
+                      className={link.isQuickLink ? "bg-amber-500 hover:bg-amber-600" : "border-amber-300 text-amber-600 hover:bg-amber-50"}
+                      title={link.isQuickLink ? "빠른 링크에서 제거" : "빠른 링크에 추가"}
+                    >
+                      {link.isQuickLink ? <Star className="w-4 h-4" /> : <StarOff className="w-4 h-4" />}
+                    </Button>
                     <Button size="sm" onClick={() => openLink(link.url)} className="bg-green-600 hover:bg-green-700">
                       <ExternalLink className="w-4 h-4" />
                     </Button>

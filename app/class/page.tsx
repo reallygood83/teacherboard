@@ -55,6 +55,7 @@ interface SavedLink {
   description?: string
   category: string
   addedDate: string
+  isQuickLink?: boolean
 }
 
 export default function ClassHomepage() {
@@ -64,6 +65,7 @@ export default function ClassHomepage() {
   const [currentDate, setCurrentDate] = useState("")
   const [isQuickLinksCollapsed, setIsQuickLinksCollapsed] = useState(false)
   const [savedLinks, setSavedLinks] = useState<SavedLink[]>([])
+  const [activeTab, setActiveTab] = useState("tools")
   const [settings, setSettings] = useState<SettingsData>({
     title: "우리 학급 홈페이지",
     subtitle: "함께 배우고 성장하는 공간입니다 ❤️",
@@ -123,9 +125,14 @@ export default function ClassHomepage() {
     setSettings(newSettings)
   }
 
-  // 빠른링크에서 링크 제거
+  // 빠른링크에서 링크 제거 (빠른 링크 상태만 해제)
   const removeQuickLink = (id: string) => {
-    const updatedLinks = savedLinks.filter((link) => link.id !== id)
+    const updatedLinks = savedLinks.map((link) => {
+      if (link.id === id) {
+        return { ...link, isQuickLink: false }
+      }
+      return link
+    })
     setSavedLinks(updatedLinks)
     localStorage.setItem("classHomepageLinks", JSON.stringify(updatedLinks))
   }
@@ -213,7 +220,7 @@ export default function ClassHomepage() {
           <p className="text-gray-600 text-lg">안녕하세요 {currentUser.displayName}님, 오늘 하루도 평안하세요 ❤️</p>
         </div>
 
-        <Tabs defaultValue="tools" className="w-full">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-8 mb-8">
             <TabsTrigger value="tools" className="flex items-center gap-2">
               <BookOpen className="w-4 h-4" />
@@ -300,26 +307,23 @@ export default function ClassHomepage() {
                         className="w-full justify-center bg-blue-50 border-blue-200 text-blue-700 hover:bg-blue-100"
                         onClick={() => {
                           // 외부 링크 탭으로 이동
-                          const linksTab = document.querySelector('[value="links"]') as HTMLElement
-                          if (linksTab) {
-                            linksTab.click()
-                          }
+                          setActiveTab("links")
                         }}
                       >
                         <Plus className="w-4 h-4 mr-1" />
                         새 링크 추가
                       </Button>
                       {/* 링크 추가 안내 */}
-                      {savedLinks.length === 0 && (
+                      {savedLinks.filter(link => link.isQuickLink).length === 0 && (
                         <div className="text-center py-6 text-gray-500 text-sm">
-                          <p className="mb-2">저장된 링크가 없습니다</p>
-                          <p>외부 링크 탭에서 사이트를 추가해보세요</p>
+                          <p className="mb-2">빠른 링크가 없습니다</p>
+                          <p>외부 링크 탭에서 ⭐ 버튼을 눌러 빠른 링크로 추가하세요</p>
                         </div>
                       )}
 
-                      {/* 저장된 링크들 표시 */}
+                      {/* 빠른 링크들만 표시 */}
                       <div className="space-y-2 max-h-96 overflow-y-auto">
-                        {savedLinks.slice(0, 8).map((link) => (
+                        {savedLinks.filter(link => link.isQuickLink).slice(0, 8).map((link) => (
                           <div key={link.id} className="group flex items-center justify-between bg-white/50 rounded-lg p-2 hover:bg-white/80 transition-colors">
                             <Button
                               variant="ghost"
@@ -346,10 +350,10 @@ export default function ClassHomepage() {
                         ))}
                       </div>
 
-                      {/* 링크가 8개 이상일 때 안내 */}
-                      {savedLinks.length > 8 && (
+                      {/* 빠른 링크가 8개 이상일 때 안내 */}
+                      {savedLinks.filter(link => link.isQuickLink).length > 8 && (
                         <p className="text-xs text-gray-500 text-center pt-2">
-                          {savedLinks.length}개 중 8개 표시 중 (외부 링크 탭에서 전체 보기)
+                          {savedLinks.filter(link => link.isQuickLink).length}개 중 8개 표시 중 (외부 링크 탭에서 전체 보기)
                         </p>
                       )}
                     </CardContent>
