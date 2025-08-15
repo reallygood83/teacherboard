@@ -782,8 +782,6 @@ export function ScheduleManager({ onEventSelect }: ScheduleManagerProps) {
         </div>
       </div>
 
-    </div>
-
       {/* Delete confirmation dialog */}
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <DialogContent className="max-w-md">
