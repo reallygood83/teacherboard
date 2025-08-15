@@ -1,0 +1,109 @@
+
+> my-v0-project@0.1.0 dev
+> next dev
+
+ ⚠ Port 3000 is in use, trying 3001 instead.
+ ⚠ Port 3001 is in use, trying 3002 instead.
+ ⚠ Port 3002 is in use, trying 3003 instead.
+   ▲ Next.js 15.2.4
+   - Local:        http://localhost:3003
+   - Network:      http://192.168.123.112:3003
+
+ ✓ Starting...
+ ✓ Ready in 3.5s
+ ○ Compiling /class ...
+ ✓ Compiled /class in 13.7s (3182 modules)
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 7.7s (3186 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+🔥 Firebase 환경 변수가 올바르게 설정되지 않았습니다.
+📝 Vercel 대시보드에서 실제 Firebase 설정 값을 입력해주세요.
+🔍 확인 필요 변수: {
+  apiKey: '❌ 누락',
+  authDomain: '❌ 누락',
+  projectId: '❌ 누락',
+  storageBucket: '❌ 누락',
+  messagingSenderId: '❌ 누락',
+  appId: '❌ 누락'
+}
+⚠️ Firebase 초기화 건너뜀 - 환경 변수 미설정
+ GET /class 404 in 23098ms
+ ✓ Compiled in 3.4s (1490 modules)
+ ✓ Compiled in 1354ms (1490 modules)
+ ✓ Compiled in 445ms (1490 modules)
+ ✓ Compiled in 511ms (1490 modules)
+ ✓ Compiled / in 462ms (2048 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+🔥 Firebase 환경 변수가 올바르게 설정되지 않았습니다.
+📝 Vercel 대시보드에서 실제 Firebase 설정 값을 입력해주세요.
+🔍 확인 필요 변수: {
+  apiKey: '❌ 누락',
+  authDomain: '❌ 누락',
+  projectId: '❌ 누락',
+  storageBucket: '❌ 누락',
+  messagingSenderId: '❌ 누락',
+  appId: '❌ 누락'
+}
+⚠️ Firebase 초기화 건너뜀 - 환경 변수 미설정
+ GET / 200 in 848ms
+ ✓ Compiled in 707ms (1492 modules)
+ ✓ Compiled in 1206ms (1492 modules)
+ ✓ Compiled in 1513ms (1492 modules)
+ ✓ Compiled in 1187ms (1492 modules)
+ ✓ Compiled in 1177ms (1492 modules)
+ ✓ Compiled in 1013ms (1492 modules)
+ ✓ Compiled in 916ms (1492 modules)
+ ✓ Compiled in 748ms (1492 modules)
+ ✓ Compiled in 656ms (1492 modules)
+ ✓ Compiled in 489ms (1492 modules)
+ ⨯ ./contexts/AuthContext.tsx
+Error:   [31mx[0m Expression expected
+     ,-[[36;1;4m/Users/moon/Desktop/teacher-board/teacherboard/teacherboard/contexts/AuthContext.tsx[0m:135:1]
+ [2m132[0m |     </AuthContext.Provider>
+ [2m133[0m |   );
+ [2m134[0m | }
+ [2m135[0m | }
+     : [35;1m^[0m
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./contexts/AuthContext.tsx
+ ✓ Compiled in 1036ms (1492 modules)
+ ⨯ ./components/settings.tsx:10:1
+Module not found: Can't resolve '@/components/ui/alert'
+   8 | import { Textarea } from "@/components/ui/textarea"
+   9 | import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+> 10 | import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+     | ^
+  11 | import { Settings as SettingsIcon, Palette, Type, FileText, Bot, AlertTriangle, CheckCircle, WifiOff } from "lucide-react"
+  12 | import { useAuth } from "@/contexts/AuthContext"
+  13 |
+
+https://nextjs.org/docs/messages/module-not-found
+
+Import trace for requested module:
+./app/class/page.tsx
+ ✓ Compiled in 214ms (1494 modules)
+ ✓ Compiled in 369ms (1494 modules)
+ ✓ Compiled in 212ms (1494 modules)
+ ✓ Compiled in 371ms (1494 modules)
+ ✓ Compiled in 501ms (1494 modules)
+ ✓ Compiled in 900ms (1494 modules)
+ ✓ Compiled in 315ms (1494 modules)
+ ✓ Compiled in 520ms (1494 modules)
+ ✓ Compiled in 447ms (1494 modules)
+ ✓ Compiled in 2.1s (1494 modules)
+ ✓ Compiled in 2s (1494 modules)
+ ✓ Compiled in 3.3s (1494 modules)
+ ✓ Compiled in 1514ms (1494 modules)
+ ✓ Compiled in 1261ms (1494 modules)
+ ✓ Compiled in 1081ms (1494 modules)

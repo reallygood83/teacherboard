@@ -257,42 +257,42 @@ export default function ClassHomepage() {
           </div>
           
           {/* Desktop Navigation - only show on desktop */}
-          <TabsList className="hidden md:grid w-full grid-cols-9 mb-8">
-            <TabsTrigger value="tools" className="flex items-center gap-2">
-              <BookOpen className="w-4 h-4" />
-              수업 도구
+          <TabsList className="hidden md:flex w-full justify-between items-center gap-1 mb-8 overflow-hidden">
+            <TabsTrigger value="tools" className="flex items-center gap-1 px-3 py-2 text-sm truncate min-w-0 flex-1">
+              <BookOpen className="w-4 h-4 flex-shrink-0" />
+              <span className="truncate">도구</span>
             </TabsTrigger>
-            <TabsTrigger value="ai-tools" className="flex items-center gap-2">
-              <Brain className="w-4 h-4" />
-              AI 도구
+            <TabsTrigger value="ai-tools" className="flex items-center gap-1 px-3 py-2 text-sm truncate min-w-0 flex-1">
+              <Brain className="w-4 h-4 flex-shrink-0" />
+              <span className="truncate">AI</span>
             </TabsTrigger>
-            <TabsTrigger value="schedule" className="flex items-center gap-2">
-              <Calendar className="w-4 h-4" />
-              시간표
+            <TabsTrigger value="schedule" className="flex items-center gap-1 px-3 py-2 text-sm truncate min-w-0 flex-1">
+              <Calendar className="w-4 h-4 flex-shrink-0" />
+              <span className="truncate">시간표</span>
             </TabsTrigger>
-+           <TabsTrigger value="schedule-management" className="flex items-center gap-2">
-+             <Calendar className="w-4 h-4" />
-+             일정 관리
-+           </TabsTrigger>
-            <TabsTrigger value="students" className="flex items-center gap-2">
-              <Users className="w-4 h-4" />
-              학생 관리
+            <TabsTrigger value="schedule-management" className="flex items-center gap-1 px-3 py-2 text-sm truncate min-w-0 flex-1">
+              <Calendar className="w-4 h-4 flex-shrink-0" />
+              <span className="truncate">일정</span>
             </TabsTrigger>
-            <TabsTrigger value="youtube" className="flex items-center gap-2">
-              <Play className="w-4 h-4" />
-              YouTube
+            <TabsTrigger value="students" className="flex items-center gap-1 px-3 py-2 text-sm truncate min-w-0 flex-1">
+              <Users className="w-4 h-4 flex-shrink-0" />
+              <span className="truncate">학생</span>
             </TabsTrigger>
-            <TabsTrigger value="links" className="flex items-center gap-2">
-              <Link className="w-4 h-4" />
-              외부 링크
+            <TabsTrigger value="youtube" className="flex items-center gap-1 px-3 py-2 text-sm truncate min-w-0 flex-1">
+              <Play className="w-4 h-4 flex-shrink-0" />
+              <span className="truncate">YouTube</span>
             </TabsTrigger>
-            <TabsTrigger value="time" className="flex items-center gap-2">
-              <Clock className="w-4 h-4" />
-              시간 관리
+            <TabsTrigger value="links" className="flex items-center gap-1 px-3 py-2 text-sm truncate min-w-0 flex-1">
+              <Link className="w-4 h-4 flex-shrink-0" />
+              <span className="truncate">링크</span>
             </TabsTrigger>
-            <TabsTrigger value="settings" className="flex items-center gap-2">
-              <SettingsIcon className="w-4 h-4" />
-              설정
+            <TabsTrigger value="time" className="flex items-center gap-1 px-3 py-2 text-sm truncate min-w-0 flex-1">
+              <Clock className="w-4 h-4 flex-shrink-0" />
+              <span className="truncate">시간</span>
+            </TabsTrigger>
+            <TabsTrigger value="settings" className="flex items-center gap-1 px-3 py-2 text-sm truncate min-w-0 flex-1">
+              <SettingsIcon className="w-4 h-4 flex-shrink-0" />
+              <span className="truncate">설정</span>
             </TabsTrigger>
           </TabsList>
 

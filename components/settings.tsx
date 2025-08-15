@@ -7,7 +7,9 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Settings, Palette, Type, FileText, Bot } from "lucide-react"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { Settings as SettingsIcon, Palette, Type, FileText, Bot, AlertTriangle, CheckCircle, WifiOff } from "lucide-react"
+import { useAuth } from "@/contexts/AuthContext"
 
 interface SettingsData {
   title: string
@@ -24,6 +26,7 @@ interface SettingsProps {
 }
 
 export function Settings({ onSettingsChange }: SettingsProps) {
+  const { loading, firebaseAvailable, error } = useAuth()
   const [settings, setSettings] = useState<SettingsData>({
     title: "우리 학급 홈페이지",
     subtitle: "함께 배우고 성장하는 공간입니다 ❤️",
@@ -33,41 +36,111 @@ export function Settings({ onSettingsChange }: SettingsProps) {
     geminiApiKey: "",
     geminiModel: "gemini-1.5-flash",
   })
+  const [isInitialized, setIsInitialized] = useState(false)
 
   useEffect(() => {
-    // localStorage에서 설정 불러오기
-    const savedSettings = localStorage.getItem("classHomepageSettings")
-    if (savedSettings) {
-      const parsed = JSON.parse(savedSettings)
-      setSettings(parsed)
-      onSettingsChange(parsed)
+    // localStorage에서 설정 불러오기 - 안전하게 처리
+    try {
+      const savedSettings = localStorage.getItem("classHomepageSettings")
+      if (savedSettings) {
+        const parsed = JSON.parse(savedSettings)
+        setSettings(parsed)
+        onSettingsChange(parsed)
+      }
+    } catch (error) {
+      console.error('설정 로드 실패:', error)
+      // 기본 설정 유지
+    } finally {
+      setIsInitialized(true)
     }
   }, []) // 🔧 무한 루프 수정: 빈 의존성 배열
 
   const handleSettingChange = (key: keyof SettingsData, value: string) => {
-    const newSettings = { ...settings, [key]: value }
-    setSettings(newSettings)
-    localStorage.setItem("classHomepageSettings", JSON.stringify(newSettings))
-    onSettingsChange(newSettings)
+    try {
+      const newSettings = { ...settings, [key]: value }
+      setSettings(newSettings)
+      localStorage.setItem("classHomepageSettings", JSON.stringify(newSettings))
+      onSettingsChange(newSettings)
+    } catch (error) {
+      console.error('설정 저장 실패:', error)
+    }
   }
 
   const resetSettings = () => {
-    const defaultSettings: SettingsData = {
-      title: "우리 학급 홈페이지",
-      subtitle: "함께 배우고 성장하는 공간입니다 ❤️",
-      footerText: "교육을 위한 따뜻한 기술",
-      footerSubtext: "© 2025 우리 학급 홈페이지. 모든 권리 보유.",
-      backgroundMode: "green",
-      geminiApiKey: "",
-      geminiModel: "gemini-1.5-flash",
+    try {
+      const defaultSettings: SettingsData = {
+        title: "우리 학급 홈페이지",
+        subtitle: "함께 배우고 성장하는 공간입니다 ❤️",
+        footerText: "교육을 위한 따뜻한 기술",
+        footerSubtext: "© 2025 우리 학급 홈페이지. 모든 권리 보유.",
+        backgroundMode: "green",
+        geminiApiKey: "",
+        geminiModel: "gemini-1.5-flash",
+      }
+      setSettings(defaultSettings)
+      localStorage.setItem("classHomepageSettings", JSON.stringify(defaultSettings))
+      onSettingsChange(defaultSettings)
+    } catch (error) {
+      console.error('설정 초기화 실패:', error)
     }
-    setSettings(defaultSettings)
-    localStorage.setItem("classHomepageSettings", JSON.stringify(defaultSettings))
-    onSettingsChange(defaultSettings)
+  }
+
+  // 로딩 중일 때 스켈레톤 UI 표시
+  if (!isInitialized) {
+    return (
+      <div className="space-y-6">
+        <div className="animate-pulse">
+          {[...Array(4)].map((_, i) => (
+            <Card key={i} className="mb-6">
+              <CardHeader>
+                <div className="h-6 bg-gray-200 rounded w-1/3"></div>
+                <div className="h-4 bg-gray-100 rounded w-2/3"></div>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  <div className="h-4 bg-gray-100 rounded w-1/4"></div>
+                  <div className="h-10 bg-gray-100 rounded w-full"></div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
+    )
   }
 
   return (
     <div className="space-y-6">
+      {/* Firebase 상태 알림 */}
+      {error && (
+        <Alert variant="destructive">
+          <AlertTriangle className="h-4 w-4" />
+          <AlertTitle>연결 문제</AlertTitle>
+          <AlertDescription>
+            {error} 기본 설정은 정상적으로 작동하지만, 일부 고급 기능(로그인, 데이터 동기화)은 사용할 수 없습니다.
+          </AlertDescription>
+        </Alert>
+      )}
+      
+      {!firebaseAvailable && !error && (
+        <Alert>
+          <WifiOff className="h-4 w-4" />
+          <AlertTitle>오프라인 모드</AlertTitle>
+          <AlertDescription>
+            현재 오프라인 모드에서 실행 중입니다. 기본 설정은 사용 가능하지만, 로그인 및 클라우드 동기화 기능은 제한됩니다.
+          </AlertDescription>
+        </Alert>
+      )}
+      
+      {firebaseAvailable && !loading && (
+        <Alert className="border-green-200 bg-green-50">
+          <CheckCircle className="h-4 w-4 text-green-600" />
+          <AlertTitle className="text-green-800">연결 성공</AlertTitle>
+          <AlertDescription className="text-green-700">
+            모든 시스템이 정상적으로 작동하고 있습니다. 전체 기능을 사용할 수 있습니다.
+          </AlertDescription>
+        </Alert>
+      )}
       <Card className="card-hover">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 font-serif">
@@ -205,7 +278,7 @@ export function Settings({ onSettingsChange }: SettingsProps) {
       <Card className="card-hover">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 font-serif">
-            <Settings className="w-5 h-5 text-green-600" />
+            <SettingsIcon className="w-5 h-5 text-green-600" />
             설정 관리
           </CardTitle>
           <CardDescription>설정을 초기화하거나 백업할 수 있습니다</CardDescription>

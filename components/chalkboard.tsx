@@ -242,7 +242,7 @@ export function Chalkboard({ geminiApiKey = "", geminiModel = "gemini-1.5-flash"
           description: "네트워크 문제입니다. 잠시 후 다시 시도해주세요.", 
           variant: "destructive",
           action: {
-            altText: "재시도",
+            label: "재시도",
             onClick: () => handleSave(retryCount + 1)
           }
         })
