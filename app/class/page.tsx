@@ -33,7 +33,7 @@ import {
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 import { DigitalClock } from '@/components/digital-clock';
-import { Settings } from '@/components/Settings';
+import { Settings } from '@/components/settings';
 
 interface SettingsData {
   title: string
