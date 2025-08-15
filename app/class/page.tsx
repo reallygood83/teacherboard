@@ -375,18 +375,9 @@ export default function ClassHomepage() {
       <header className={`${getGradientClass()} text-white md:py-8 py-6 px-4`}>
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="hidden md:block">
-                <img 
-                  src="/teaboard-logo.svg" 
-                  alt="Teaboard" 
-                  className="h-12 w-auto opacity-90 hover:opacity-100 transition-opacity"
-                />
-              </div>
-              <div>
-                <h1 className="font-serif font-black md:text-4xl text-2xl mb-2">{settings.title}</h1>
-                <p className="text-green-100 md:text-lg text-base">{settings.subtitle}</p>
-              </div>
+            <div>
+              <h1 className="font-serif font-black md:text-4xl text-2xl mb-2">{settings.title}</h1>
+              <p className="text-green-100 md:text-lg text-base">{settings.subtitle}</p>
             </div>
             <div className="flex items-center gap-4">
               <div className="text-right">
