@@ -242,28 +242,6 @@ export function MobileNavigation({ activeTab, onTabChange, tabs }: MobileNavigat
           </>
         )}
       </AnimatePresence>
-
-      {/* Desktop Navigation (unchanged) */}
-      <div className="hidden md:block">
-        <div className="grid grid-cols-9 gap-2 mb-8">
-          {tabs.map((tab) => {
-            const Icon = tab.icon
-            const isActive = tab.id === activeTab
-            
-            return (
-              <Button
-                key={tab.id}
-                variant={isActive ? "default" : "outline"}
-                onClick={() => onTabChange(tab.id)}
-                className="flex items-center gap-2 justify-center p-3 h-auto"
-              >
-                <Icon className="w-4 h-4" />
-                <span className="text-sm font-medium">{tab.label}</span>
-              </Button>
-            )
-          })}
-        </div>
-      </div>
     </>
   )
 }
