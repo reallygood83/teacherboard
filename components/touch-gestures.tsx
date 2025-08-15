@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useCallback } from 'react'
+import { useEffect, useCallback, useRef } from 'react'
 
 interface TouchGestureProps {
   onSwipeLeft?: () => void
@@ -21,26 +21,25 @@ export function TouchGesture({
   children,
   className = ""
 }: TouchGestureProps) {
-  let startX = 0
-  let startY = 0
-  let endX = 0
-  let endY = 0
+  const startXRef = useRef(0)
+  const startYRef = useRef(0)
+  const containerRef = useRef<HTMLDivElement>(null)
 
   const handleTouchStart = useCallback((e: TouchEvent) => {
     const touch = e.touches[0]
-    startX = touch.clientX
-    startY = touch.clientY
+    startXRef.current = touch.clientX
+    startYRef.current = touch.clientY
   }, [])
 
   const handleTouchEnd = useCallback((e: TouchEvent) => {
     if (!e.changedTouches.length) return
     
     const touch = e.changedTouches[0]
-    endX = touch.clientX
-    endY = touch.clientY
+    const endX = touch.clientX
+    const endY = touch.clientY
     
-    const deltaX = endX - startX
-    const deltaY = endY - startY
+    const deltaX = endX - startXRef.current
+    const deltaY = endY - startYRef.current
     
     // Determine if this is primarily a horizontal or vertical swipe
     if (Math.abs(deltaX) > Math.abs(deltaY)) {
@@ -65,7 +64,7 @@ export function TouchGesture({
   }, [onSwipeLeft, onSwipeRight, onSwipeUp, onSwipeDown, threshold])
 
   useEffect(() => {
-    const element = document.querySelector(`.${className}`) as HTMLElement
+    const element = containerRef.current
     if (!element) return
 
     element.addEventListener('touchstart', handleTouchStart, { passive: true })
@@ -75,10 +74,10 @@ export function TouchGesture({
       element.removeEventListener('touchstart', handleTouchStart)
       element.removeEventListener('touchend', handleTouchEnd)
     }
-  }, [handleTouchStart, handleTouchEnd, className])
+  }, [handleTouchStart, handleTouchEnd])
 
   return (
-    <div className={className}>
+    <div ref={containerRef} className={className}>
       {children}
     </div>
   )

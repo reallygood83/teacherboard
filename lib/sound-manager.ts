@@ -9,8 +9,10 @@ export class SoundManager {
   private volume: number = 0.7;
 
   private constructor() {
-    // Initialize audio context on first user interaction
-    this.initializeAudioContext();
+    // Initialize audio context only in browser environment
+    if (typeof window !== 'undefined') {
+      this.initializeAudioContext();
+    }
   }
 
   static getInstance(): SoundManager {
@@ -21,14 +23,26 @@ export class SoundManager {
   }
 
   private async initializeAudioContext() {
+    // Only initialize in browser environment
+    if (typeof window === 'undefined') {
+      return;
+    }
+    
     try {
       // Create audio context with user gesture requirement
       const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+      if (!AudioContextClass) {
+        console.warn('AudioContext not supported in this browser');
+        return;
+      }
+      
       this.audioContext = new AudioContextClass();
       
       // Resume context on user interaction (required by browsers)
-      document.addEventListener('click', this.resumeAudioContext.bind(this), { once: true });
-      document.addEventListener('touchstart', this.resumeAudioContext.bind(this), { once: true });
+      if (typeof document !== 'undefined') {
+        document.addEventListener('click', this.resumeAudioContext.bind(this), { once: true });
+        document.addEventListener('touchstart', this.resumeAudioContext.bind(this), { once: true });
+      }
     } catch (error) {
       console.warn('Audio context not supported:', error);
     }
@@ -166,7 +180,13 @@ export class SoundManager {
   // Volume and settings
   setVolume(volume: number): void {
     this.volume = Math.max(0, Math.min(1, volume));
-    localStorage.setItem('timer-sound-volume', volume.toString());
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.setItem('timer-sound-volume', volume.toString());
+      } catch (error) {
+        console.warn('Failed to save volume setting:', error);
+      }
+    }
   }
 
   getVolume(): number {
@@ -175,7 +195,13 @@ export class SoundManager {
 
   setEnabled(enabled: boolean): void {
     this.isEnabled = enabled;
-    localStorage.setItem('timer-sound-enabled', enabled.toString());
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.setItem('timer-sound-enabled', enabled.toString());
+      } catch (error) {
+        console.warn('Failed to save sound enabled setting:', error);
+      }
+    }
   }
 
   isEnabledSound(): boolean {
@@ -184,14 +210,23 @@ export class SoundManager {
 
   // Load settings from localStorage
   loadSettings(): void {
-    const savedVolume = localStorage.getItem('timer-sound-volume');
-    if (savedVolume) {
-      this.volume = parseFloat(savedVolume);
+    // Only load from localStorage in browser environment
+    if (typeof window === 'undefined') {
+      return;
     }
+    
+    try {
+      const savedVolume = localStorage.getItem('timer-sound-volume');
+      if (savedVolume) {
+        this.volume = parseFloat(savedVolume);
+      }
 
-    const savedEnabled = localStorage.getItem('timer-sound-enabled');
-    if (savedEnabled) {
-      this.isEnabled = savedEnabled === 'true';
+      const savedEnabled = localStorage.getItem('timer-sound-enabled');
+      if (savedEnabled) {
+        this.isEnabled = savedEnabled === 'true';
+      }
+    } catch (error) {
+      console.warn('Failed to load sound settings:', error);
     }
   }
 
