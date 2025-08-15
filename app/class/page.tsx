@@ -247,14 +247,16 @@ export default function ClassHomepage() {
           className="mobile-swipe-container"
         >
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          {/* Mobile Navigation */}
-          <MobileNavigation
-            activeTab={activeTab}
-            onTabChange={setActiveTab}
-            tabs={tabConfig}
-          />
+          {/* Mobile Navigation - only show on mobile */}
+          <div className="md:hidden">
+            <MobileNavigation
+              activeTab={activeTab}
+              onTabChange={setActiveTab}
+              tabs={tabConfig}
+            />
+          </div>
           
-          {/* Desktop Navigation */}
+          {/* Desktop Navigation - only show on desktop */}
           <TabsList className="hidden md:grid w-full grid-cols-9 mb-8">
             <TabsTrigger value="tools" className="flex items-center gap-2">
               <BookOpen className="w-4 h-4" />
