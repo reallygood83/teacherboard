@@ -22,6 +22,26 @@ service cloud.firestore {
       allow delete: if request.auth != null && request.auth.uid == userId;
     }
     
+    // 사용자별 일정 데이터 보안 규칙
+    match /users/{userId}/events/{eventId} {
+      // 읽기: 본인만 가능
+      allow read: if request.auth != null && request.auth.uid == userId;
+      
+      // 쓰기/수정: 본인만 가능하며 필수 필드 검증
+      allow write: if request.auth != null 
+        && request.auth.uid == userId
+        && resource == null // 새 문서 생성 시
+        && validateEvent();
+      
+      // 업데이트: 본인만 가능하며 필수 필드 검증
+      allow update: if request.auth != null 
+        && request.auth.uid == userId
+        && validateEvent();
+      
+      // 삭제: 본인만 가능
+      allow delete: if request.auth != null && request.auth.uid == userId;
+    }
+    
     // 사용자 프로필 데이터 (필요 시)
     match /users/{userId} {
       allow read, write: if request.auth != null && request.auth.uid == userId;
@@ -52,4 +72,19 @@ function validateChalkboardNote() {
     && data.contentText.size() <= 50000  // 50KB 제한
     && data.createdAt is timestamp
     && data.updatedAt is timestamp;
+}
+
+// 일정 유효성 검증 함수
+function validateEvent() {
+  let data = request.resource.data;
+  return data.keys().hasAll(['title', 'startDate', 'endDate', 'category', 'isAllDay', 'isImportant', 'createdAt', 'userId'])
+    && data.title is string
+    && data.title.size() > 0 && data.title.size() <= 100
+    && data.startDate is string
+    && data.endDate is string
+    && data.category in ['holiday', 'school-event', 'personal', 'meeting', 'consultation']
+    && data.isAllDay is bool
+    && data.isImportant is bool
+    && data.userId == request.auth.uid
+    && data.createdAt is string;
 }

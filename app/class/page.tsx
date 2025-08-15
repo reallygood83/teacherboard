@@ -34,6 +34,7 @@ import { YoutubeSearch } from "@/components/youtube-search"
 import { Settings } from "@/components/settings"
 // import { OfficialDocGenerator } from "@/components/official-doc-generator"
 import { DocumentGenerator } from "@/components/document-generator"
+import { ScheduleManager } from "@/components/schedule-manager"
 import { useAuth } from "@/contexts/AuthContext"
 import { useRouter } from "next/navigation"
 import UserProfile from "@/components/auth/UserProfile"
@@ -76,6 +77,9 @@ export default function ClassHomepage() {
     geminiModel: "gemini-1.5-flash",
   })
 
+  // 헤더 카운트다운 관련 상태
+  const [selectedImportantEvent, setSelectedImportantEvent] = useState<any | null>(null)
+  const [countdownText, setCountdownText] = useState<string>("")
   useEffect(() => {
     // 인증되지 않은 사용자는 로그인 페이지로 리다이렉트
     if (!loading && !currentUser) {
@@ -207,6 +211,11 @@ export default function ClassHomepage() {
               <div className="text-right">
                 <p className="text-green-100 text-sm">오늘은</p>
                 <p className="font-semibold text-xl">{currentDate}</p>
+                {countdownText && (
+                  <p className="text-yellow-200 text-sm mt-1 truncate max-w-[220px]">
+                    {selectedImportantEvent?.title}: {countdownText}
+                  </p>
+                )}
               </div>
               <UserProfile />
             </div>
@@ -221,7 +230,7 @@ export default function ClassHomepage() {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-8 mb-8">
+          <TabsList className="grid w-full grid-cols-9 mb-8">
             <TabsTrigger value="tools" className="flex items-center gap-2">
               <BookOpen className="w-4 h-4" />
               수업 도구
@@ -234,6 +243,10 @@ export default function ClassHomepage() {
               <Calendar className="w-4 h-4" />
               시간표
             </TabsTrigger>
++           <TabsTrigger value="schedule-management" className="flex items-center gap-2">
++             <Calendar className="w-4 h-4" />
++             일정 관리
++           </TabsTrigger>
             <TabsTrigger value="students" className="flex items-center gap-2">
               <Users className="w-4 h-4" />
               학생 관리
@@ -323,7 +336,7 @@ export default function ClassHomepage() {
 
                       {/* 빠른 링크들만 표시 */}
                       <div className="space-y-2 max-h-96 overflow-y-auto">
-                        {savedLinks.filter(link => link.isQuickLink).slice(0, 8).map((link) => (
+                        {savedLinks.filter(link => link.isQuickLink).slice(0, 8).map((link: SavedLink) => (
                           <div key={link.id} className="group flex items-center justify-between bg-white/50 rounded-lg p-2 hover:bg-white/80 transition-colors">
                             <Button
                               variant="ghost"
@@ -469,6 +482,28 @@ export default function ClassHomepage() {
               </CardHeader>
               <CardContent>
                 <Timetable />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* 일정 관리 탭 */}
+          <TabsContent value="schedule-management" className="space-y-6">
+            <Card className="card-hover">
+              <CardHeader>
+                <CardTitle className={`flex items-center gap-2 font-serif`}>
+                  <Calendar className={`w-5 h-5 ${getAccentColor()}`} />
+                  일정 관리
+                </CardTitle>
+                <CardDescription>방학, 학교행사, 개인 일정 등을 하루/주간/월간/연간으로 관리하세요</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ScheduleManager onEventSelect={(event: any | null) => {
+                  if (event && event.isImportant) {
+                    setSelectedImportantEvent(event)
+                  } else {
+                    setSelectedImportantEvent(null)
+                  }
+                }} />
               </CardContent>
             </Card>
           </TabsContent>
