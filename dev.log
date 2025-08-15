@@ -218,3 +218,4 @@ Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
 <w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/Users/moon/Desktop/teacher-board/teacherboard/teacherboard/.next/cache/webpack/client-development/0.pack.gz_' -> '/Users/moon/Desktop/teacher-board/teacherboard/teacherboard/.next/cache/webpack/client-development/0.pack.gz'
  ✓ Compiled in 1078ms (1498 modules)
 <w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/Users/moon/Desktop/teacher-board/teacherboard/teacherboard/.next/cache/webpack/client-development/0.pack.gz_' -> '/Users/moon/Desktop/teacher-board/teacherboard/teacherboard/.next/cache/webpack/client-development/0.pack.gz'
+ ✓ Compiled in 436ms (1498 modules)
