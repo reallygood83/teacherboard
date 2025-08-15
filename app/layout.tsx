@@ -21,16 +21,60 @@ const openSans = Open_Sans({
 })
 
 export const metadata: Metadata = {
-  title: "우리 학급 홈페이지",
-  description: "AI 기반 교육 도구와 학급 관리를 위한 모바일 친화적 플랫폼",
-  generator: "v0.app",
+  metadataBase: new URL('https://teaboard.link'),
+  title: "Teaboard - AI 기반 스마트 학급 관리",
+  description: "🎯 출석체크부터 학급도구까지! 선생님을 위한 올인원 디지털 교실 플랫폼. 모바일 최적화로 언제 어디서나 편리하게!",
+  generator: "Teaboard",
   manifest: "/manifest.json",
-  themeColor: "#16a34a",
+  keywords: ["학급관리", "교육도구", "AI교육", "출석체크", "디지털교실", "스마트교육", "모바일교육"],
+  authors: [{ name: "Teaboard Team" }],
+  creator: "Teaboard",
+  publisher: "Teaboard",
+  category: "Education",
+  
+  // Open Graph 메타데이터
+  openGraph: {
+    type: "website",
+    locale: "ko_KR",
+    url: "https://teaboard.link/class",
+    siteName: "Teaboard",
+    title: "Teaboard - 선생님을 위한 스마트 학급 관리",
+    description: "🎯 출석체크부터 학급도구까지! AI 기반 올인원 교실 플랫폼으로 수업을 더 스마트하게 관리하세요.",
+    images: [
+      {
+        url: "/teaboard-og-image.svg",
+        width: 1200,
+        height: 630,
+        alt: "Teaboard - AI 기반 스마트 학급 관리 플랫폼",
+        type: "image/svg+xml"
+      },
+      {
+        url: "/teaboard-logo.svg",
+        width: 400,
+        height: 120,
+        alt: "Teaboard 로고",
+        type: "image/svg+xml"
+      }
+    ],
+  },
+  
+  // Twitter 카드 메타데이터
+  twitter: {
+    card: "summary_large_image",
+    site: "@teaboard",
+    creator: "@teaboard",
+    title: "Teaboard - 선생님을 위한 스마트 학급 관리",
+    description: "🎯 출석체크부터 학급도구까지! AI 기반 올인원 교실 플랫폼",
+    images: ["/teaboard-og-image.svg"],
+  },
+  
+  // 기존 설정들
+  themeColor: "#3B82F6",
   viewport: "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "학급 홈페이지",
+    title: "Teaboard",
   },
   formatDetection: {
     telephone: false,
@@ -46,13 +90,49 @@ export default function RootLayout({
     <html lang="ko" className={`${montserrat.variable} ${openSans.variable} antialiased`}>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
-        <meta name="theme-color" content="#16a34a" />
+        <meta name="theme-color" content="#3B82F6" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <meta name="apple-mobile-web-app-title" content="학급 홈페이지" />
+        <meta name="apple-mobile-web-app-title" content="Teaboard" />
         <meta name="format-detection" content="telephone=no" />
-        <link rel="manifest" href="/manifest.json" />
+        
+        {/* 파비콘 */}
+        <link rel="icon" href="/teaboard-logo.svg" type="image/svg+xml" />
         <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
+        
+        {/* PWA 매니페스트 */}
+        <link rel="manifest" href="/manifest.json" />
+        
+        {/* 추가 SEO 메타태그 */}
+        <meta name="robots" content="index, follow" />
+        <meta name="author" content="Teaboard Team" />
+        <meta name="language" content="Korean" />
+        
+        {/* Open Graph 추가 메타태그 */}
+        <meta property="og:site_name" content="Teaboard" />
+        <meta property="og:locale" content="ko_KR" />
+        
+        {/* 구조화된 데이터 */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebApplication",
+            "name": "Teaboard",
+            "description": "AI 기반 스마트 학급 관리 플랫폼",
+            "url": "https://teaboard.link/class",
+            "applicationCategory": "EducationalApplication",
+            "operatingSystem": "All",
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "KRW"
+            },
+            "author": {
+              "@type": "Organization",
+              "name": "Teaboard Team"
+            }
+          })}
+        </script>
       </head>
       <body className="font-sans">
         <ErrorBoundary>

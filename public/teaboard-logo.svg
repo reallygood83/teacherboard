@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 120" width="400" height="120">
+  <defs>
+    <!-- 그라데이션 정의 -->
+    <linearGradient id="primaryGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3B82F6;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#1D4ED8;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1E40AF;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- 따뜻한 색상 그라데이션 -->
+    <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F59E0B;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#EF4444;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- 배경 원형 -->
+  <circle cx="50" cy="60" r="35" fill="url(#primaryGradient)" opacity="0.1"/>
+  
+  <!-- 칠판 아이콘 -->
+  <rect x="20" y="35" width="60" height="40" rx="4" fill="url(#primaryGradient)" stroke="#1E40AF" stroke-width="2"/>
+  
+  <!-- 칠판 내부 -->
+  <rect x="24" y="39" width="52" height="32" rx="2" fill="#1F2937"/>
+  
+  <!-- 칠판 위 수학 공식들 -->
+  <text x="30" y="52" font-family="Arial, sans-serif" font-size="8" fill="#10B981" font-weight="bold">A+B=C</text>
+  <text x="55" y="52" font-family="Arial, sans-serif" font-size="6" fill="#F59E0B">📚</text>
+  <text x="32" y="64" font-family="Arial, sans-serif" font-size="6" fill="#EF4444">√x² = |x|</text>
+  
+  <!-- 칠판 프레임 하이라이트 -->
+  <rect x="20" y="35" width="60" height="40" rx="4" fill="none" stroke="url(#accentGradient)" stroke-width="1" opacity="0.5"/>
+  
+  <!-- 텍스트 부분 -->
+  <text x="110" y="45" font-family="Montserrat, Arial, sans-serif" font-size="28" font-weight="900" fill="url(#primaryGradient)">Tea</text>
+  <text x="195" y="45" font-family="Montserrat, Arial, sans-serif" font-size="28" font-weight="900" fill="url(#accentGradient)">board</text>
+  
+  <!-- 부제목 -->
+  <text x="110" y="70" font-family="Open Sans, Arial, sans-serif" font-size="12" font-weight="500" fill="#6B7280">AI 기반 스마트 학급 관리 플랫폼</text>
+  
+  <!-- 장식적 요소 -->
+  <circle cx="85" cy="25" r="3" fill="url(#accentGradient)" opacity="0.7"/>
+  <circle cx="320" cy="35" r="2" fill="url(#primaryGradient)" opacity="0.5"/>
+  <circle cx="350" cy="85" r="2.5" fill="url(#accentGradient)" opacity="0.6"/>
+  
+  <!-- 연결선 -->
+  <path d="M85 28 Q95 30 105 35" stroke="url(#primaryGradient)" stroke-width="2" fill="none" opacity="0.3"/>
+</svg>
