@@ -5,28 +5,13 @@ import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import {
-  BookOpen,
-  Brain,
-  Calendar,
-  Users,
-  Play,
-  Link,
-  Clock,
-  SettingsIcon,
   Menu,
   X,
   ChevronDown,
   ChevronUp
 } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
-
-interface TabInfo {
-  id: string
-  label: string
-  icon: React.ElementType
-  description: string
-  category: 'main' | 'tools' | 'management'
-}
+import { type TabInfo } from "@/lib/tab-config"
 
 interface MobileNavigationProps {
   activeTab: string

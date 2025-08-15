@@ -7,24 +7,18 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import MobileNavigation from "@/components/mobile-navigation"
 import { MobileCard, MobileGrid, MobileButtonGroup } from "@/components/mobile-card"
 import TouchGesture, { useTabSwipeGesture } from "@/components/touch-gestures"
+import { tabConfig, getTabIds, type TabInfo } from "@/lib/tab-config"
 import {
   Clock,
-  Calendar,
-  Users,
-  BookOpen,
-  Link,
   Timer,
   Shuffle,
   UserCheck,
   ExternalLink,
   Heart,
-  Play,
-  SettingsIcon,
   ChevronLeft,
   ChevronRight,
   Plus,
   Trash2,
-  Brain,
   FileText,
 } from "lucide-react"
 import { DigitalClock } from "@/components/digital-clock"
@@ -72,79 +66,12 @@ export default function ClassHomepage() {
   const [activeTab, setActiveTab] = useState("tools")
 
   // Touch gesture setup for tab navigation
-  const tabIds = tabConfig.map(tab => tab.id)
+  const tabIds = getTabIds()
   const { handleSwipeLeft, handleSwipeRight } = useTabSwipeGesture(
     tabIds,
     activeTab,
     setActiveTab
   )
-
-  // Tab configuration for mobile navigation
-  const tabConfig = [
-    {
-      id: "tools",
-      label: "수업 도구",
-      icon: BookOpen,
-      description: "수업 칠판과 빠른 링크",
-      category: "main" as const
-    },
-    {
-      id: "ai-tools",
-      label: "AI 도구",
-      icon: Brain,
-      description: "AI 기반 문서 생성",
-      category: "tools" as const
-    },
-    {
-      id: "schedule",
-      label: "시간표",
-      icon: Calendar,
-      description: "오늘의 수업 일정",
-      category: "main" as const
-    },
-    {
-      id: "schedule-management",
-      label: "일정 관리",
-      icon: Calendar,
-      description: "방학, 행사 등 전체 일정",
-      category: "management" as const
-    },
-    {
-      id: "students",
-      label: "학생 관리",
-      icon: Users,
-      description: "학생 뽑기와 모둠 편성",
-      category: "tools" as const
-    },
-    {
-      id: "youtube",
-      label: "YouTube",
-      icon: Play,
-      description: "교육 동영상 검색",
-      category: "tools" as const
-    },
-    {
-      id: "links",
-      label: "외부 링크",
-      icon: Link,
-      description: "외부 사이트 임베딩",
-      category: "tools" as const
-    },
-    {
-      id: "time",
-      label: "시간 관리",
-      icon: Clock,
-      description: "현재 시간과 수업 타이머",
-      category: "main" as const
-    },
-    {
-      id: "settings",
-      label: "설정",
-      icon: SettingsIcon,
-      description: "홈페이지 설정 관리",
-      category: "management" as const
-    }
-  ]
   const [settings, setSettings] = useState<SettingsData>({
     title: "우리 학급 홈페이지",
     subtitle: "함께 배우고 성장하는 공간입니다 ❤️",
