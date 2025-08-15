@@ -252,3 +252,8 @@ Module parse failed: Identifier 'handleTabChange' has already been declared (181
 Import trace for requested module:
 ./app/class/page.tsx
  ✓ Compiled in 2.2s (3205 modules)
+ ✓ Compiled in 2s (3205 modules)
+ ✓ Compiled in 1439ms (3205 modules)
+   Reload env: .env.local
+ ✓ Compiled in 31.1s (3223 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/Users/moon/Desktop/teacher-board/teacherboard/teacherboard/.next/cache/webpack/client-development/0.pack.gz_' -> '/Users/moon/Desktop/teacher-board/teacherboard/teacherboard/.next/cache/webpack/client-development/0.pack.gz'
