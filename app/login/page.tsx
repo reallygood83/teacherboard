@@ -47,22 +47,22 @@ export default function LoginPage() {
               </svg>
             </div>
             <h1 className="text-3xl font-bold text-white mb-2">Teacher Board</h1>
-            <p className="text-white/80 text-lg">스마트한 교육 관리 플랫폼</p>
+            <p className="text-white/80 text-lg">AI 기반 스마트 교육 관리 플랫폼</p>
           </div>
 
           {/* 기능 소개 */}
           <div className="mb-8 space-y-3">
             <div className="flex items-center text-white/90">
               <div className="w-2 h-2 bg-green-400 rounded-full mr-3"></div>
-              <span className="text-sm">시간표 자동 생성 및 관리</span>
+              <span className="text-sm">AI 공문 생성 & 수업 칠판</span>
             </div>
             <div className="flex items-center text-white/90">
               <div className="w-2 h-2 bg-blue-400 rounded-full mr-3"></div>
-              <span className="text-sm">학생 데이터 분석 및 관리</span>
+              <span className="text-sm">학생 관리 & 모둠 편성</span>
             </div>
             <div className="flex items-center text-white/90">
               <div className="w-2 h-2 bg-purple-400 rounded-full mr-3"></div>
-              <span className="text-sm">교육 자료 통합 관리</span>
+              <span className="text-sm">시간표 & YouTube 교육 도구</span>
             </div>
           </div>
 
@@ -84,6 +84,30 @@ export default function LoginPage() {
           <p className="text-white/60 text-sm">
             교육의 디지털 혁신을 경험하세요
           </p>
+        </div>
+
+        {/* 푸터 */}
+        <div className="text-center mt-8 pt-6 border-t border-white/20">
+          <p className="text-white/50 text-xs mb-2">
+            © 2025 Moon-Jung Kim
+          </p>
+          <div className="flex items-center justify-center gap-4 text-xs">
+            <a 
+              href="https://www.youtube.com/@%EB%B0%B0%EC%9B%80%EC%9D%98%EB%8B%AC%EC%9D%B8-p5v" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-white/60 hover:text-white transition-colors underline"
+            >
+              유튜브 배움의 달인
+            </a>
+            <span className="text-white/30">|</span>
+            <a 
+              href="mailto:jpmjkim23@gmail.com?subject=Teacher Board 문의&body=안녕하세요, Teacher Board에 대해 문의드립니다." 
+              className="text-white/60 hover:text-white transition-colors underline"
+            >
+              개발자 Contact
+            </a>
+          </div>
         </div>
       </div>
 
