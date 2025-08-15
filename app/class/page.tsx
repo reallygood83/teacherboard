@@ -29,29 +29,20 @@ import {
   Brain,
   FileText,
 } from "lucide-react"
-import { DigitalClock } from "@/components/digital-clock"
-import { Chalkboard } from "@/components/chalkboard"
-import { StudentPicker } from "@/components/student-picker"
-import { GroupMaker } from "@/components/group-maker"
-import { LinkEmbedder } from "@/components/link-embedder"
-import { Timetable } from "@/components/timetable"
-import { YoutubeSearch } from "@/components/youtube-search"
-import { Settings } from "@/components/settings"
-// import { OfficialDocGenerator } from "@/components/official-doc-generator"
-import { DocumentGenerator } from "@/components/document-generator"
-import { ScheduleManager } from "@/components/schedule-manager"
-import { useAuth } from "@/contexts/AuthContext"
-import { useRouter } from "next/navigation"
-import UserProfile from "@/components/auth/UserProfile"
+
+import { useAuth } from '@/contexts/AuthContext';
+import { useRouter } from 'next/navigation';
+import { DigitalClock } from '@/components/digital-clock';
+import { Settings } from '@/components/Settings';
 
 interface SettingsData {
   title: string
   subtitle: string
+  backgroundMode: string
   footerText: string
   footerSubtext: string
-  backgroundMode: string
-  geminiApiKey: string
-  geminiModel: string
+  footerPosition: string
+  studentManagementSystem: string
 }
 
 interface SavedLink {
@@ -72,145 +63,32 @@ export default function ClassHomepage() {
   const [isQuickLinksCollapsed, setIsQuickLinksCollapsed] = useState(false)
   const [savedLinks, setSavedLinks] = useState<SavedLink[]>([])
   const [activeTab, setActiveTab] = useState("tools")
-  
-  // 탭 순서 관리
   const [tabOrder, setTabOrder] = useState([
-    "tools",
-    "ai-tools", 
-    "schedule",
-    "schedule-management",
-    "students",
-    "youtube",
-    "links", 
-    "time",
-    "settings"
+    "tools", "ai-tools", "schedule", "schedule-management", 
+    "students", "youtube", "links", "time", "settings"
   ])
-  
-  const [settings, setSettings] = useState<SettingsData>({
-    title: "우리 학급 홈페이지",
-    subtitle: "함께 배우고 성장하는 공간입니다 ❤️",
-    footerText: "교육을 위한 따뜻한 기술",
-    footerSubtext: "© 2025 우리 학급 홈페이지. 모든 권리 보유.",
-    backgroundMode: "green",
-    geminiApiKey: "",
-    geminiModel: "gemini-1.5-flash",
-  })
-
-  // 헤더 카운트다운 관련 상태
-  const [selectedImportantEvent, setSelectedImportantEvent] = useState<any | null>(null)
-  const [countdownText, setCountdownText] = useState<string>("")
   const [isMobile, setIsMobile] = useState(false)
-  
-  // Touch gesture handling for mobile
   const [touchStartX, setTouchStartX] = useState<number | null>(null)
   const [touchStartY, setTouchStartY] = useState<number | null>(null)
-  
-  // 드래그앤드롭 처리
-  const handleTabDragEnd = (result: any) => {
-    if (!result.destination) return
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const [countdownText, setCountdownText] = useState("")
 
-    const items = Array.from(tabOrder)
-    const [reorderedItem] = items.splice(result.source.index, 1)
-    items.splice(result.destination.index, 0, reorderedItem)
+  const [settings, setSettings] = useState<SettingsData>({
+    title: "우리 반 홈페이지",
+    subtitle: "함께 배우고 성장하는 공간",
+    backgroundMode: "green",
+    footerText: "모든 학생이 빛날 수 있도록",
+    footerSubtext: "박달초등학교 - 김문정",
+    footerPosition: "bottom",
+    studentManagementSystem: "custom"
+  })
 
-    setTabOrder(items)
-    // 탭 순서를 로컬 스토리지에 저장
-    localStorage.setItem('tabOrder', JSON.stringify(items))
-  }
-  
-  // Touch gesture handlers for mobile tab navigation
-  const handleTouchStart = (e: React.TouchEvent) => {
-    if (!isMobile) return
-    const touch = e.touches[0]
-    setTouchStartX(touch.clientX)
-    setTouchStartY(touch.clientY)
-  }
-  
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (!isMobile || touchStartX === null || touchStartY === null) return
-    
-    const touch = e.touches[0]
-    const deltaX = touchStartX - touch.clientX
-    const deltaY = touchStartY - touch.clientY
-    
-    // Only trigger if horizontal swipe is dominant
-    if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 50) {
-      const currentIndex = tabOrder.indexOf(activeTab)
-      
-      if (deltaX > 0 && currentIndex < tabOrder.length - 1) {
-        // Swipe left - next tab
-        setActiveTab(tabOrder[currentIndex + 1])
-      } else if (deltaX < 0 && currentIndex > 0) {
-        // Swipe right - previous tab
-        setActiveTab(tabOrder[currentIndex - 1])
-      }
-      
-      // Reset touch state
-      setTouchStartX(null)
-      setTouchStartY(null)
-    }
-  }
   useEffect(() => {
-    // 인증되지 않은 사용자는 로그인 페이지로 리다이렉트
-    if (!loading && !currentUser) {
-      router.push('/login');
+    if (!currentUser && !loading) {
+      router.push('/auth/login');
       return;
     }
   }, [currentUser, loading, router]);
-
-  useEffect(() => {
-    const today = new Date()
-    const options: Intl.DateTimeFormatOptions = {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      weekday: "long",
-    }
-    setCurrentDate(today.toLocaleDateString("ko-KR", options))
-
-    const savedSettings = localStorage.getItem("classHomepageSettings")
-    if (savedSettings) {
-      setSettings(JSON.parse(savedSettings))
-    }
-
-    // 저장된 링크 불러오기
-    const savedLinksData = localStorage.getItem("classHomepageLinks")
-    if (savedLinksData) {
-      setSavedLinks(JSON.parse(savedLinksData))
-    }
-    
-    // 저장된 탭 순서 불러오기
-    const savedTabOrder = localStorage.getItem("tabOrder")
-    if (savedTabOrder) {
-      setTabOrder(JSON.parse(savedTabOrder))
-    }
-
-    // 모바일 감지 및 성능 최적화
-    const checkIsMobile = () => {
-      const isMobileDevice = mobileUtils.device.isMobile() || window.innerWidth < 768
-      setIsMobile(isMobileDevice)
-    }
-    
-    checkIsMobile()
-    window.addEventListener('resize', checkIsMobile)
-    
-    // 모바일 성능 최적화 설정
-    if (mobileUtils.device.isMobile()) {
-      // 동적 뷰포트 높이 설정
-      mobileUtils.viewport.setDynamicViewportHeight()
-      
-      // 중요 리소스 프리로드
-      mobileUtils.performance.preloadCriticalResources()
-      
-      // 네트워크 상태에 따른 적응
-      const networkSpeed = mobileUtils.network.adaptToNetworkSpeed()
-      console.log('Network speed detected:', networkSpeed)
-    }
-    
-    return () => {
-      window.removeEventListener('resize', checkIsMobile)
-    }
-  }, [])
 
   if (loading) {
     return (
@@ -224,14 +102,13 @@ export default function ClassHomepage() {
   }
 
   if (!currentUser) {
-    return null; // useEffect에서 리다이렉트 처리
+    return null;
   }
 
   const handleSettingsChange = (newSettings: SettingsData) => {
     setSettings(newSettings)
   }
 
-  // 빠른링크에서 링크 제거 (빠른 링크 상태만 해제)
   const removeQuickLink = (id: string) => {
     const updatedLinks = savedLinks.map((link) => {
       if (link.id === id) {
@@ -243,7 +120,6 @@ export default function ClassHomepage() {
     localStorage.setItem("classHomepageLinks", JSON.stringify(updatedLinks))
   }
 
-  // 링크 열기
   const openLink = (url: string) => {
     window.open(url, "_blank")
   }
@@ -299,7 +175,6 @@ export default function ClassHomepage() {
     }
   }
 
-  // 탭 정보 정의
   const tabsInfo = {
     "tools": { icon: BookOpen, label: "수업 도구", shortLabel: "수업" },
     "ai-tools": { icon: Brain, label: "AI 도구", shortLabel: "AI" },
@@ -313,9 +188,8 @@ export default function ClassHomepage() {
   };
 
   return (
-    <div className={"mobile-layout " + getBackgroundClass()}>
-      {/* Mobile Optimized Header */}
-      <header className="mobile-header">
+    <div className={`mobile-layout ${getBackgroundClass()}`}>
+      <header className={`mobile-header ${getGradientClass()}`}>
         <div className="mobile-header-content">
           <div>
             <h1 className="mobile-header-title">{settings.title}</h1>
@@ -331,12 +205,11 @@ export default function ClassHomepage() {
                 </p>
               )}
             </div>
-            <UserProfile />
+            <div className="text-white">사용자</div>
           </div>
         </div>
       </header>
 
-      {/* Welcome Message - Mobile Optimized */}
       <div className="mobile-container">
         <div className="mb-4 text-center px-2">
           <p className="text-gray-600 text-sm sm:text-base">
@@ -346,457 +219,15 @@ export default function ClassHomepage() {
         </div>
       </div>
 
-      {/* Main Content */}
-      <main 
-        className="mobile-container"
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-      >
-
+      <main className="mobile-main">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          {/* 개선된 네비게이션 */}
-          <DragDropContext onDragEnd={handleTabDragEnd}>
-            <div className="mb-8">
-              {/* 데스크톱 네비게이션 */}
-              <div className="hidden lg:block">
-                <Droppable droppableId="tabs" direction="horizontal">
-                  {(provided, snapshot) => (
-                    <div
-                      {...provided.droppableProps}
-                      ref={provided.innerRef}
-                      className={`flex flex-wrap gap-2 justify-center bg-muted p-2 rounded-lg droppable-area ${
-                        snapshot.isDraggingOver ? "is-dragging-over" : ""
-                      }`}
-                    >
-                      {tabOrder.map((tabKey, index) => (
-                        <Draggable key={tabKey} draggableId={tabKey} index={index}>
-                          {(provided, snapshot) => {
-                            const tabInfo = tabsInfo[tabKey as keyof typeof tabsInfo]
-                            const IconComponent = tabInfo.icon
-                            return (
-                              <div
-                                ref={provided.innerRef}
-                                {...provided.draggableProps}
-                                {...provided.dragHandleProps}
-                                className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 cursor-move flex items-center gap-2 draggable-tab ${
-                                  activeTab === tabKey
-                                    ? "bg-background text-foreground shadow-md"
-                                    : "text-muted-foreground hover:text-foreground hover:bg-background/50"
-                                } ${snapshot.isDragging ? "is-dragging" : ""}`}
-                                onClick={() => setActiveTab(tabKey)}
-                                role="tab"
-                                aria-selected={activeTab === tabKey}
-                                tabIndex={0}
-                                onKeyDown={(e) => {
-                                  if (e.key === 'Enter' || e.key === ' ') {
-                                    setActiveTab(tabKey)
-                                  }
-                                }}
-                              >
-                                <IconComponent className="w-4 h-4" />
-                                <span className="whitespace-nowrap">{tabInfo.label}</span>
-                              </div>
-                            )
-                          }}
-                        </Draggable>
-                      ))}
-                      {provided.placeholder}
-                    </div>
-                  )}
-                </Droppable>
-              </div>
-
-              {/* 태블릿 네비게이션 (중간 화면) */}
-              <div className="hidden md:block lg:hidden">
-                <Droppable droppableId="tabs-tablet" direction="horizontal">
-                  {(provided, snapshot) => (
-                    <div
-                      {...provided.droppableProps}
-                      ref={provided.innerRef}
-                      className={`grid grid-cols-5 gap-2 bg-muted p-2 rounded-lg tablet-nav-grid droppable-area ${
-                        snapshot.isDraggingOver ? "is-dragging-over" : ""
-                      }`}
-                    >
-                      {tabOrder.map((tabKey, index) => (
-                        <Draggable key={tabKey} draggableId={tabKey} index={index}>
-                          {(provided, snapshot) => {
-                            const tabInfo = tabsInfo[tabKey as keyof typeof tabsInfo]
-                            const IconComponent = tabInfo.icon
-                            return (
-                              <div
-                                ref={provided.innerRef}
-                                {...provided.draggableProps}
-                                {...provided.dragHandleProps}
-                                className={`px-2 py-2 rounded-md text-xs font-medium transition-all duration-200 cursor-move flex flex-col items-center gap-1 draggable-tab ${
-                                  activeTab === tabKey
-                                    ? "bg-background text-foreground shadow-md"
-                                    : "text-muted-foreground hover:text-foreground hover:bg-background/50"
-                                } ${snapshot.isDragging ? "is-dragging" : ""}`}
-                                onClick={() => setActiveTab(tabKey)}
-                                role="tab"
-                                aria-selected={activeTab === tabKey}
-                                tabIndex={0}
-                                onKeyDown={(e) => {
-                                  if (e.key === 'Enter' || e.key === ' ') {
-                                    setActiveTab(tabKey)
-                                  }
-                                }}
-                              >
-                                <IconComponent className="w-4 h-4" />
-                                <span className="text-center leading-tight">{tabInfo.shortLabel}</span>
-                              </div>
-                            )
-                          }}
-                        </Draggable>
-                      ))}
-                      {provided.placeholder}
-                    </div>
-                  )}
-                </Droppable>
-              </div>
-
-              {/* 모바일 네비게이션 (드롭다운 형태) */}
-              <div className="block md:hidden">
-                <div className="bg-muted p-2 rounded-lg">
-                  <select
-                    value={activeTab}
-                    onChange={(e) => setActiveTab(e.target.value)}
-                    className="w-full p-3 rounded-md bg-background border border-border text-sm font-medium mobile-nav-select"
-                    aria-label="네비게이션 섹션 선택"
-                  >
-                    {tabOrder.map((tabKey) => {
-                      const tabInfo = tabsInfo[tabKey as keyof typeof tabsInfo]
-                      return (
-                        <option key={tabKey} value={tabKey}>
-                          {tabInfo.label}
-                        </option>
-                      )
-                    })}
-                  </select>
-                </div>
-              </div>
-            </div>
-          </DragDropContext>
-          
-          {/* 드래그앤드롭 도움말 */}
-          <div className="hidden lg:block mb-4">
-            <p className="text-xs text-muted-foreground text-center">
-              💡 탭을 드래그해서 순서를 변경할 수 있습니다
-            </p>
-          </div>
-
-          {/* 수업 도구 탭 - 모바일 최적화 */}
-          <TabsContent value="tools" className="mobile-grid">
-            {/* 수업 칠판 - 모바일에서 전체 너비 */}
-            <div className="card-mobile">
-              <div className="card-mobile-header">
-                <h3 className="card-mobile-title">
-                  <BookOpen className="mobile-icon text-green-600" />
-                  수업 칠판
-                </h3>
-                <p className="card-mobile-description">
-                  수업 중 필요한 내용을 자유롭게 작성하고 편집하세요
-                </p>
-              </div>
-              <div className="card-mobile-content">
-                <Chalkboard 
-                  geminiApiKey={settings.geminiApiKey}
-                  geminiModel={settings.geminiModel}
-                />
-              </div>
-            </div>
-
-            {/* 빠른 링크 - 모바일 최적화 */}
-            {!isQuickLinksCollapsed && (
-              <div className="card-mobile">
-                <div className="card-mobile-header">
-                  <div className="flex items-center justify-between">
-                    <h3 className="card-mobile-title">
-                      <ExternalLink className="mobile-icon text-green-600" />
-                      빠른 링크
-                    </h3>
-                    <Button 
-                      variant="ghost" 
-                      size="sm"
-                      onClick={() => setIsQuickLinksCollapsed(true)}
-                      className="btn-mobile-icon btn-mobile-sm"
-                      aria-label="빠른 링크 접기"
-                    >
-                      <ChevronRight className="mobile-icon-sm" />
-                    </Button>
-                  </div>
-                  <p className="card-mobile-description">자주 사용하는 교육 사이트에 빠르게 접속하세요</p>
-                </div>
-                <div className="card-mobile-content">
-                  {/* 새 링크 추가 버튼 */}
-                  <Button
-                    variant="outline"
-                    className="btn-mobile w-full mb-4 bg-blue-50 border-blue-200 text-blue-700 hover:bg-blue-100"
-                    onClick={() => setActiveTab("links")}
-                  >
-                    <Plus className="mobile-icon-sm" />
-                    새 링크 추가
-                  </Button>
-                  
-                  {/* 링크 추가 안내 */}
-                  {savedLinks.filter(link => link.isQuickLink).length === 0 && (
-                    <div className="text-center py-6 text-gray-500">
-                      <p className="mb-2 text-sm">빠른 링크가 없습니다</p>
-                      <p className="text-xs">외부 링크 탭에서 ⭐ 버튼을 눌러 빠른 링크로 추가하세요</p>
-                    </div>
-                  )}
-
-                  {/* 빠른 링크들만 표시 */}
-                  <div className="space-y-3 mobile-scroll-area" style={{maxHeight: '300px'}}>
-                    {savedLinks.filter(link => link.isQuickLink).slice(0, 8).map((link: SavedLink) => (
-                      <div key={link.id} className="swipeable-card haptic-light">
-                        <div className="swipeable-card-content">
-                          <div className="flex items-center justify-between">
-                            <Button
-                              variant="ghost"
-                              className="flex-1 justify-start text-left p-3 h-auto font-medium"
-                              onClick={() => openLink(link.url)}
-                              title={link.description || link.url}
-                            >
-                              <ExternalLink className="mobile-icon-sm mr-3 text-gray-400" />
-                              <span className="truncate">{link.title}</span>
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              className="btn-mobile-icon btn-mobile-sm hover:bg-red-100 hover:text-red-600"
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                removeQuickLink(link.id)
-                              }}
-                              title="링크 제거"
-                              aria-label="링크 제거"
-                            >
-                              <Trash2 className="mobile-icon-sm" />
-                            </Button>
-                          </div>
-                        </div>
-                        <div className="swipeable-card-actions">
-                          <Trash2 className="mobile-icon text-white" />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* 빠른 링크가 8개 이상일 때 안내 */}
-                  {savedLinks.filter(link => link.isQuickLink).length > 8 && (
-                    <p className="text-xs text-gray-500 text-center pt-3">
-                      {savedLinks.filter(link => link.isQuickLink).length}개 중 8개 표시 중 (외부 링크 탭에서 전체 보기)
-                    </p>
-                  )}
-                </div>
-              </div>
-            )}
-
-            {/* 접힌 상태에서 펼치기 버튼 */}
-            {isQuickLinksCollapsed && (
-              <div className="card-mobile">
-                <div className="card-mobile-content text-center">
-                  <Button 
-                    variant="outline" 
-                    className="btn-mobile-icon"
-                    onClick={() => setIsQuickLinksCollapsed(false)}
-                    title="빠른 링크 펼치기"
-                    aria-label="빠른 링크 펼치기"
-                  >
-                    <ChevronLeft className="mobile-icon" />
-                  </Button>
-                  <p className="text-xs text-gray-500 mt-2">빠른 링크 펼치기</p>
-                </div>
-              </div>
-            )}
-            </div>
-          </TabsContent>
-
-          {/* AI 도구 탭 - 모바일 최적화 */}
-          <TabsContent value="ai-tools" className="mobile-grid">
-            {/* 공문 생성기 */}
-            <div className="card-mobile">
-              <div className="card-mobile-header">
-                <h3 className="card-mobile-title">
-                  <FileText className={`mobile-icon ${getAccentColor()}`} />
-                  공문 생성기
-                </h3>
-                <p className="card-mobile-description">
-                  AI가 한국 공문서 표준 형식에 맞는 공문을 자동으로 작성해드립니다
-                </p>
-              </div>
-              <div className="card-mobile-content">
-                <DocumentGenerator 
-                  geminiApiKey={settings.geminiApiKey}
-                  geminiModel={settings.geminiModel}
-                />
-              </div>
-            </div>
-
-            {/* 추가 AI 도구 썸네일 (향후 확장용) */}
-            <div className="card-mobile opacity-60">
-              <div className="card-mobile-header">
-                <h3 className="card-mobile-title text-gray-500">
-                  <Brain className="mobile-icon text-gray-400" />
-                  수업 계획서 생성기
-                </h3>
-                <p className="card-mobile-description text-gray-400">
-                  곧 출시 예정 - AI가 교육과정에 맞는 수업 계획서를 자동 작성
-                </p>
-              </div>
-              <div className="card-mobile-content">
-                <div className="text-center py-8 text-gray-400">
-                  <Brain className="w-12 h-12 mx-auto mb-2 opacity-50" />
-                  <p className="text-sm">개발중...</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="card-mobile opacity-60">
-              <div className="card-mobile-header">
-                <h3 className="card-mobile-title text-gray-500">
-                  <Brain className="mobile-icon text-gray-400" />
-                  학생 평가서 생성기
-                </h3>
-                <p className="card-mobile-description text-gray-400">
-                  곧 출시 예정 - 학생별 맞춤형 평가서 및 생활기록부 작성 지원
-                </p>
-              </div>
-              <div className="card-mobile-content">
-                <div className="text-center py-8 text-gray-400">
-                  <Brain className="w-12 h-12 mx-auto mb-2 opacity-50" />
-                  <p className="text-sm">개발중...</p>
-                </div>
-              </div>
-            </div>
-
-            {/* AI 도구 안내 */}
-            <div className="card-mobile bg-blue-50 border-blue-200">
-              <div className="card-mobile-content">
-                <div className="flex items-start gap-3">
-                  <Brain className="w-6 h-6 text-blue-600 mt-1 flex-shrink-0" />
-                  <div>
-                    <h3 className="font-semibold text-blue-900 mb-2">AI 도구 사용 안내</h3>
-                    <ul className="text-sm text-blue-800 space-y-1">
-                      <li>• 설정 탭에서 Gemini API 키를 먼저 입력해주세요</li>
-                      <li>• 생성된 문서는 반드시 검토 후 사용하시기 바랍니다</li>
-                      <li>• 개인정보가 포함된 내용은 신중히 처리해주세요</li>
-                      <li>• 더 많은 AI 도구가 지속적으로 추가될 예정입니다</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </TabsContent>
-
-          {/* 시간표 탭 - 모바일 최적화 */}
-          <TabsContent value="schedule" className="mobile-grid">
-            <div className="card-mobile">
-              <div className="card-mobile-header">
-                <h3 className="card-mobile-title">
-                  <Calendar className={`mobile-icon ${getAccentColor()}`} />
-                  오늘의 시간표
-                </h3>
-                <p className="card-mobile-description">오늘의 수업 일정을 확인하고 관리하세요</p>
-              </div>
-              <div className="card-mobile-content">
-                <Timetable />
-              </div>
-            </div>
-          </TabsContent>
-
-          {/* 일정 관리 탭 - 모바일 최적화 */}
-          <TabsContent value="schedule-management" className="mobile-grid">
-            <div className="card-mobile">
-              <div className="card-mobile-header">
-                <h3 className="card-mobile-title">
-                  <Calendar className={`mobile-icon ${getAccentColor()}`} />
-                  일정 관리
-                </h3>
-                <p className="card-mobile-description">방학, 학교행사, 개인 일정 등을 하루/주간/월간/연간으로 관리하세요</p>
-              </div>
-              <div className="card-mobile-content">
-                <ScheduleManager onEventSelect={(event: any | null) => {
-                  if (event && event.isImportant) {
-                    setSelectedImportantEvent(event)
-                  } else {
-                    setSelectedImportantEvent(null)
-                  }
-                }} />
-              </div>
-            </div>
-          </TabsContent>
-
-          {/* 학생 관리 탭 */}
-          <TabsContent value="students" className="mobile-grid">
-            <div className="card-mobile">
-              <div className="card-mobile-header">
-                <h3 className="card-mobile-title">
-                  <UserCheck className={`mobile-icon ${getAccentColor()}`} />
-                  학생 뽑기
-                </h3>
-                <p className="card-mobile-description">랜덤으로 학생을 선택하여 발표나 활동에 참여시키세요</p>
-              </div>
-              <div className="card-mobile-content">
-                <StudentPicker />
-              </div>
-            </div>
-
-            <div className="card-mobile">
-              <div className="card-mobile-header">
-                <h3 className="card-mobile-title">
-                  <Shuffle className={`mobile-icon ${getAccentColor()}`} />
-                  모둠 편성
-                </h3>
-                <p className="card-mobile-description">학생들을 균등하게 모둠으로 나누어 협력 학습을 진행하세요</p>
-              </div>
-              <div className="card-mobile-content">
-                <GroupMaker />
-              </div>
-            </div>
-          </TabsContent>
-
-          <TabsContent value="youtube" className="mobile-grid">
-            <div className="card-mobile">
-              <div className="card-mobile-header">
-                <h3 className="card-mobile-title">
-                  <Play className="mobile-icon text-red-600" />
-                  YouTube 교육 동영상
-                </h3>
-                <p className="card-mobile-description">교육용 YouTube 동영상을 검색하고 수업에 활용하세요</p>
-              </div>
-              <div className="card-mobile-content">
-                <YoutubeSearch />
-              </div>
-            </div>
-          </TabsContent>
-
-          {/* 외부 링크 탭 - 모바일 최적화 */}
-          <TabsContent value="links" className="mobile-grid">
-            <div className="card-mobile">
-              <div className="card-mobile-header">
-                <h3 className="card-mobile-title">
-                  <Link className={`mobile-icon ${getAccentColor()}`} />
-                  외부 사이트 임베딩
-                </h3>
-                <p className="card-mobile-description">유용한 외부 사이트를 쉽게 링크하고 임베드하세요</p>
-              </div>
-              <div className="card-mobile-content">
-                <LinkEmbedder onLinksUpdate={setSavedLinks} />
-              </div>
-            </div>
-          </TabsContent>
-
-          {/* 시간 관리 탭 - 모바일 최적화 */}
           <TabsContent value="time" className="mobile-grid">
             <div className="card-mobile">
               <div className="card-mobile-header">
                 <h3 className="card-mobile-title">
-                  <Timer className={`mobile-icon ${getAccentColor()}`} />
+                  <Clock className="mobile-icon text-green-600" />
                   시간 관리
                 </h3>
-                <p className="card-mobile-description">현재 시간을 확인하고 수업 타이머를 활용하세요</p>
               </div>
               <div className="card-mobile-content">
                 <DigitalClock />
@@ -804,10 +235,14 @@ export default function ClassHomepage() {
             </div>
           </TabsContent>
 
-
-
           <TabsContent value="settings" className="mobile-grid">
             <div className="card-mobile">
+              <div className="card-mobile-header">
+                <h3 className="card-mobile-title">
+                  <SettingsIcon className="mobile-icon text-green-600" />
+                  설정
+                </h3>
+              </div>
               <div className="card-mobile-content">
                 <Settings onSettingsChange={handleSettingsChange} />
               </div>
@@ -816,7 +251,6 @@ export default function ClassHomepage() {
         </Tabs>
       </main>
 
-      {/* Mobile Bottom Navigation */}
       {isMobile && (
         <nav className="mobile-bottom-nav">
           <div className="mobile-bottom-nav-container">
@@ -834,64 +268,13 @@ export default function ClassHomepage() {
                 </div>
               )
             })}
-            {/* More navigation - 5+ 탭을 위한 더보기 버튼 */}
-            <div 
-              className={`mobile-bottom-nav-item haptic-light`}
-              onClick={() => {
-                // Cycle through remaining tabs
-                const currentIndex = tabOrder.indexOf(activeTab)
-                const remainingTabs = tabOrder.slice(4)
-                if (remainingTabs.length > 0) {
-                  if (remainingTabs.includes(activeTab)) {
-                    const currentRemainingIndex = remainingTabs.indexOf(activeTab)
-                    const nextIndex = (currentRemainingIndex + 1) % remainingTabs.length
-                    setActiveTab(remainingTabs[nextIndex])
-                  } else {
-                    setActiveTab(remainingTabs[0])
-                  }
-                }
-              }}
-            >
-              <div className="mobile-bottom-nav-icon relative">
-                {tabOrder.slice(4).includes(activeTab) ? (
-                  // Show active tab's icon if in "more" section
-                  (() => {
-                    const activeTabInfo = tabsInfo[activeTab as keyof typeof tabsInfo]
-                    const ActiveIcon = activeTabInfo.icon
-                    return <ActiveIcon className="w-full h-full" />
-                  })()
-                ) : (
-                  // Show dots for "more" indicator
-                  <div className="flex justify-center items-center w-full h-full">
-                    <div className="grid grid-cols-2 gap-1">
-                      <div className="w-1 h-1 rounded-full bg-current opacity-60"></div>
-                      <div className="w-1 h-1 rounded-full bg-current opacity-60"></div>
-                      <div className="w-1 h-1 rounded-full bg-current opacity-60"></div>
-                      <div className="w-1 h-1 rounded-full bg-current opacity-60"></div>
-                    </div>
-                  </div>
-                )}
-              </div>
-              <span className="mobile-bottom-nav-label">
-                {tabOrder.slice(4).includes(activeTab) 
-                  ? tabsInfo[activeTab as keyof typeof tabsInfo].shortLabel
-                  : "더보기"
-                }
-              </span>
-            </div>
-          </div>
-          
-          {/* Swipe indicator for mobile */}
-          <div className="absolute top-1 left-1/2 transform -translate-x-1/2">
-            <div className="w-8 h-1 bg-gray-300 rounded-full opacity-50"></div>
           </div>
         </nav>
       )}
 
-      {/* Footer - Only show on desktop */}
-      {!isMobile && (
-        <footer className="bg-white border-t border-green-200 py-8 px-4 mt-16">
-          <div className="max-w-7xl mx-auto text-center">
+      {settings.footerPosition === "bottom" && (
+        <footer className="mobile-footer">
+          <div className="text-center">
             <p className="text-gray-600 mb-2">
               <Heart className="w-4 h-4 inline text-red-500 mr-1" />
               {settings.footerText}
@@ -901,14 +284,13 @@ export default function ClassHomepage() {
         </footer>
       )}
       
-      {/* Performance monitoring component */}
       <PerformanceMonitor />
     </div>
   )
 }
 
-// Add performance monitoring hook
 function ClassPageContent() {
   usePerformanceMonitor('ClassPage');
   
   return null;
+}
