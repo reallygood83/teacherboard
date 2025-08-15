@@ -28,7 +28,8 @@ export function DocumentGenerator({ geminiApiKey, geminiModel }: DocumentGenerat
     sender: '',
     content: '',
     deadline: '',
-    attachments: ''
+    attachments: '',
+    docType: 'notice',
   });
   
   const [generatedDoc, setGeneratedDoc] = useState('');
@@ -36,6 +37,53 @@ export function DocumentGenerator({ geminiApiKey, geminiModel }: DocumentGenerat
   const [copySuccess, setCopySuccess] = useState(false);
   const [error, setError] = useState('');
   const [viewMode, setViewMode] = useState<'formatted' | 'markdown'>('formatted');
+
+  // 문서 유형 목록 + 유형별 지침
+  const documentTypes = [
+    { value: 'notice', label: '안내문', hint: '행사/일정/절차 안내' },
+    { value: 'request', label: '협조요청', hint: '부서/학교 간 협조 요청' },
+    { value: 'report', label: '보고서', hint: '경과/실적/결과 보고' },
+    { value: 'proposal', label: '기안서', hint: '승인을 위한 결재 문안' },
+    { value: 'parent_letter', label: '가정통신문', hint: '가정에 전달할 안내' },
+    { value: 'announcement', label: '공지문', hint: '공식 공지/지침 알림' },
+  ] as const;
+
+  const docTypeGuidelines: Record<string, string> = {
+    notice: `
+- 대상과 목적을 첫 문단에서 명확히 안내
+- 일정/장소/방법 등 핵심 정보를 표처럼 정리하거나 항목화
+- 참여/준수 요청 사항은 불릿 목록으로 간결하게 명시
+    `.trim(),
+    request: `
+- 협조 배경과 필요성을 간단히 설명 후 구체 협조 사항을 번호 매김하여 제시
+- 관련 근거(지침/공문 번호)가 있으면 본문에 명시
+- 기한과 담당자 연락처를 결문에 포함
+    `.trim(),
+    report: `
+- 목적, 추진 경과, 주요 실적/결과, 문제점 및 개선방안 순으로 구성
+- 수치/지표/결과는 번호 목록 또는 표기법으로 가독성 있게 정리
+- 첨부 자료(사진, 통계표 등) 유무를 결문에 기재
+    `.trim(),
+    proposal: `
+- 배경 및 필요성 → 주요 내용(세부 항목) → 기대 효과 순으로 제시
+- 결재선 보고를 염두에 두고 근거 규정/예산/일정 등을 항목화
+- 선택/결정이 필요한 안건은 대안 비교 형식으로 기술
+    `.trim(),
+    parent_letter: `
+- 상단 인사말과 대상(학부모님 귀하)을 명시
+- 학생/가정에 필요한 안내 사항을 쉬운 문장과 목록으로 제시
+- 문의처(담당 교사/연락처)와 회신 필요시 회신 방법을 결문에 명확히 표기
+    `.trim(),
+    announcement: `
+- 공지 목적과 적용 대상/범위를 서두에 명확히 기재
+- 시행일, 준수 사항, 위반 시 조치 등을 조항식 또는 번호 목록으로 정리
+- 관련 근거 문서/규정을 결문에 표기
+    `.trim(),
+  };
+
+  const selectedDocType = useMemo(() => {
+    return documentTypes.find(d => d.value === formData.docType) || documentTypes[0];
+  }, [formData.docType]);
 
   // Markdown → 정돈된 일반 문서 텍스트로 변환
   const toPlainDocument = (md: string): string => {
@@ -136,12 +184,16 @@ export function DocumentGenerator({ geminiApiKey, geminiModel }: DocumentGenerat
 다음 정보를 바탕으로 한국 공문서 표준 형식에 맞는 공문을 작성해주세요:
 
 **문서 정보:**
+- 문서 유형: ${selectedDocType.label}
 - 제목: ${formData.title}
 - 수신: ${formData.recipient}
 - 발신: ${formData.sender || '(작성자)'}
 - 주요 내용: ${formData.content}
 ${formData.deadline ? `- 기한: ${formData.deadline}` : ''}
 ${formData.attachments ? `- 첨부: ${formData.attachments}` : ''}
+
+**유형별 지침(반드시 반영):**
+${docTypeGuidelines[formData.docType]}
 
 **작성 지침:**
 1. 문서 구조: 두문-본문-결문으로 구성
@@ -225,6 +277,32 @@ ${formData.attachments ? `- 첨부: ${formData.attachments}` : ''}
                 value={formData.recipient}
                 onChange={(e) => handleInputChange('recipient', e.target.value)}
               />
+            </div>
+          </div>
+
+          {/* 문서 유형 선택 */}
+          <div>
+            <Label htmlFor="docType">문서 유형</Label>
+            <select
+              id="docType"
+              value={formData.docType}
+              onChange={(e) => handleInputChange('docType', e.target.value)}
+              className="mt-1 w-full border rounded-md px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-200"
+            >
+              {documentTypes.map((t) => (
+                <option key={t.value} value={t.value}>{t.label}</option>
+              ))}
+            </select>
+            <p className="text-xs text-gray-500 mt-1">{documentTypes.find(d => d.value === formData.docType)?.hint}</p>
+            <div className="mt-2">
+              <div className="text-xs font-medium text-gray-600">{selectedDocType.label} 작성 가이드</div>
+              <ul className="mt-1 list-disc pl-5 text-sm text-gray-700 space-y-1">
+                {docTypeGuidelines[formData.docType].split('\n').map((line, idx) => {
+                  const text = line.replace(/^\s*-\s*/, '').trim();
+                  if (!text) return null;
+                  return <li key={idx}>{text}</li>;
+                })}
+              </ul>
             </div>
           </div>
 
