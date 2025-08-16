@@ -320,26 +320,25 @@ export function Chalkboard({ geminiApiKey = "", geminiModel = "gemini-1.5-flash"
 
   const handleAISubmit = (content: string) => {
     if (editorRef.current) {
-      // AI 응답을 HTML로 변환하여 칠판에 추가
+      // AI 응답을 HTML로 변환하여 칠판에 추가 (자연스러운 필기 스타일)
       const aiResponseElement = document.createElement('div')
       aiResponseElement.className = 'ai-response-block'
       aiResponseElement.style.cssText = `
-        border-left: 4px solid #60a5fa;
-        padding: 16px;
-        margin: 16px 0;
-        background-color: rgba(96, 165, 250, 0.15);
-        border-radius: 8px;
+        padding: 12px 0;
+        margin: 12px 0;
         font-family: inherit;
+        line-height: 1.6;
       `
       
-      // AI 헤더 추가
+      // AI 헤더 추가 (더 자연스럽게)
       const aiHeader = document.createElement('div')
-      aiHeader.innerHTML = '🤖 <strong>AI 도우미 응답:</strong>'
+      aiHeader.innerHTML = '🤖 <em>AI 도우미:</em>'
       aiHeader.style.cssText = `
-        color: #60a5fa;
-        font-weight: bold;
+        color: #93c5fd;
+        font-style: italic;
         margin-bottom: 8px;
         font-size: 0.9em;
+        opacity: 0.8;
       `
       
       // 마크다운 스타일의 텍스트를 HTML로 간단 변환

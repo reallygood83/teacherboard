@@ -123,12 +123,15 @@ export default function ClassHomepage() {
   // 오늘의 중요 일정에 대한 실시간 카운트다운 업데이트
   useEffect(() => {
     const updateCountdown = () => {
-      if (!selectedImportantEvent && importantEvents.length > 0) {
-        // 가장 가까운 중요 일정 찾기
+      if (importantEvents.length > 0) {
+        // 항상 최신 상태로 가장 가까운 중요 일정 찾기
         const today = new Date();
+        today.setHours(0, 0, 0, 0); // 시간을 00:00:00으로 설정하여 날짜만 비교
+        
         const todayEvents = importantEvents.filter(event => {
           const eventDate = new Date(event.startDate);
-          return eventDate.toDateString() === today.toDateString();
+          eventDate.setHours(0, 0, 0, 0);
+          return eventDate.getTime() === today.getTime();
         });
         
         if (todayEvents.length > 0) {
@@ -136,27 +139,73 @@ export default function ClassHomepage() {
           setCountdownText("D-DAY");
         } else {
           // 가장 가까운 미래 일정
-          const upcomingEvent = importantEvents.find(event => 
-            new Date(event.startDate) > today
-          );
+          const upcomingEvent = importantEvents.find(event => {
+            const eventDate = new Date(event.startDate);
+            eventDate.setHours(0, 0, 0, 0);
+            return eventDate.getTime() > today.getTime();
+          });
+          
           if (upcomingEvent) {
-            const daysUntil = Math.ceil(
-              (new Date(upcomingEvent.startDate).getTime() - today.getTime()) / (1000 * 3600 * 24)
-            );
+            const eventDate = new Date(upcomingEvent.startDate);
+            eventDate.setHours(0, 0, 0, 0);
+            const daysUntil = Math.ceil((eventDate.getTime() - today.getTime()) / (1000 * 3600 * 24));
             setSelectedImportantEvent(upcomingEvent);
             setCountdownText(`D-${daysUntil}`);
+          } else {
+            // 과거 일정만 있는 경우 초기화
+            setSelectedImportantEvent(null);
+            setCountdownText("");
           }
         }
+      } else {
+        // 일정이 없는 경우 초기화
+        setSelectedImportantEvent(null);
+        setCountdownText("");
       }
     };
 
     if (importantEvents.length > 0) {
       updateCountdown();
-      // 1분마다 업데이트
-      const interval = setInterval(updateCountdown, 60000);
+      // 10초마다 업데이트 (더 자주 체크)
+      const interval = setInterval(updateCountdown, 10000);
       return () => clearInterval(interval);
+    } else {
+      // 일정이 없을 때도 상태 초기화
+      setSelectedImportantEvent(null);
+      setCountdownText("");
     }
-  }, [importantEvents, selectedImportantEvent]);
+  }, [importantEvents]); // selectedImportantEvent 의존성 제거하여 항상 최신 계산
+
+  // 자정이 되면 날짜와 D-Day 카운팅 새로고침
+  useEffect(() => {
+    const updateAtMidnight = () => {
+      const now = new Date();
+      const tomorrow = new Date(now);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      tomorrow.setHours(0, 0, 0, 0);
+      
+      const msUntilMidnight = tomorrow.getTime() - now.getTime();
+      
+      const timeoutId = setTimeout(() => {
+        // 날짜 업데이트
+        const today = new Date();
+        const options: Intl.DateTimeFormatOptions = {
+          year: "numeric",
+          month: "long", 
+          day: "numeric",
+          weekday: "long",
+        };
+        setCurrentDate(today.toLocaleDateString("ko-KR", options));
+        
+        // D-Day 카운팅도 즉시 업데이트 (다음 useEffect가 처리할 것임)
+        // importantEvents가 있으면 자동으로 D-Day가 재계산됨
+      }, msUntilMidnight);
+      
+      return () => clearTimeout(timeoutId);
+    };
+
+    return updateAtMidnight();
+  }, [currentDate]); // currentDate가 변경될 때마다 다음 자정 계산
 
   // 브라우저 알림 허용 요청 및 타이머 알림
   useEffect(() => {
