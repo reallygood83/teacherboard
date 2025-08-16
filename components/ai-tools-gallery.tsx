@@ -4,7 +4,7 @@ import { useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { FileText, Brain, Clock, Users, ExternalLink, ChevronDown, ChevronUp, Star, HelpCircle, BarChart3, Mail, MessageCircle } from "lucide-react"
+import { FileText, Brain, Clock, Users, ExternalLink, ChevronDown, ChevronUp, Star, HelpCircle, BarChart3, Mail, MessageCircle, QrCode } from "lucide-react"
 import { DocumentGenerator } from "@/components/document-generator"
 
 interface AITool {
@@ -41,6 +41,16 @@ export function AIToolsGallery({ geminiApiKey, geminiModel, accentColor = "text-
       status: "available",
       component: DocumentGenerator,
       props: { geminiApiKey, geminiModel }
+    },
+    {
+      id: "qr-generator",
+      title: "QR코드 생성기",
+      description: "텍스트, URL, 연락처 정보 등을 QR코드로 간편하게 생성하여 교육 자료에 활용하세요",
+      icon: QrCode,
+      thumbnail: "/thumbnails/qr-generator-thumbnail.svg",
+      category: "document",
+      status: "external-link",
+      externalUrl: "https://claude.ai/public/artifacts/e5c0e8a0-7acf-426a-a5e7-9d9139928ddf"
     },
     {
       id: "quiz-generator",
@@ -88,6 +98,18 @@ export function AIToolsGallery({ geminiApiKey, geminiModel, accentColor = "text-
     const tool = aiTools.find(t => t.id === toolId)
     
     if (tool?.status === "external-link" && tool.externalUrl) {
+      // QR코드 생성기의 경우 팝업 창으로 열기
+      if (tool.id === "qr-generator") {
+        const popup = window.open(
+          tool.externalUrl, 
+          "qrGenerator",
+          "width=1000,height=700,scrollbars=yes,resizable=yes,toolbar=no,menubar=no,location=no,status=no"
+        )
+        if (popup) {
+          popup.focus()
+        }
+        return
+      }
       // 인사실무 챗봇의 경우 팝업 창으로 열기
       if (tool.id === "hr-chatbot-2025") {
         const popup = window.open(

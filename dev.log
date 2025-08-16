@@ -1328,3 +1328,15 @@ Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
 Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
  GET /class 200 in 132ms
  GET /class 200 in 139ms
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/Users/moon/Desktop/teacher-board/teacherboard/teacherboard/.next/cache/webpack/client-development/0.pack.gz_' -> '/Users/moon/Desktop/teacher-board/teacherboard/teacherboard/.next/cache/webpack/client-development/0.pack.gz'
+ ✓ Compiled in 3.9s (3237 modules)
+ ✓ Compiled in 2s (3239 modules)
+ ✓ Compiled in 3.5s (3239 modules)
+ ✓ Compiled in 3.3s (3239 modules)
+ ✓ Compiled in 955ms (3239 modules)
+ ✓ Compiled in 4.9s (3239 modules)
+ ✓ Compiled in 1348ms (3239 modules)
+ ✓ Compiled in 1754ms (3239 modules)
+ ✓ Compiled in 4.7s (3239 modules)
+ ✓ Compiled in 964ms (3241 modules)
+ ✓ Compiled in 922ms (3241 modules)
