@@ -76,8 +76,14 @@ const initializeFirebase = () => {
     // Auth 초기화
     auth = getAuth(app);
     googleProvider = new GoogleAuthProvider();
-    googleProvider.addScope('https://www.googleapis.com/auth/calendar');
-    console.log('✅ Firebase Auth 초기화 완료 (Calendar 스코프 포함)');
+    
+    // 기본 스코프만 사용 (이메일, 프로필)
+    googleProvider.addScope('email');
+    googleProvider.addScope('profile');
+    
+    // Google OAuth 검증 경고 해결을 위해 Calendar 스코프 제거
+    console.log('✅ Firebase Auth 초기화 완료 (기본 스코프)');
+    
     
     // Firestore 초기화 with 연결 설정
     db = getFirestore(app);
