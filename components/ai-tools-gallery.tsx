@@ -4,7 +4,7 @@ import { useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { FileText, Brain, Clock, Users, ExternalLink, ChevronDown, ChevronUp, Star, HelpCircle, BarChart3, Mail } from "lucide-react"
+import { FileText, Brain, Clock, Users, ExternalLink, ChevronDown, ChevronUp, Star, HelpCircle, BarChart3, Mail, MessageCircle } from "lucide-react"
 import { DocumentGenerator } from "@/components/document-generator"
 
 interface AITool {
@@ -71,6 +71,16 @@ export function AIToolsGallery({ geminiApiKey, geminiModel, accentColor = "text-
       category: "document",
       status: "external-link",
       externalUrl: "https://script.google.com/macros/s/AKfycbzaAqlDZZycMuRp6YGhqSpurL-sseqj6VtksSyR5SMv8_WazTXpTN949RVAeprvkuqt-A/exec"
+    },
+    {
+      id: "hr-chatbot-2025",
+      title: "2025 인사실무 챗봇",
+      description: "2025년 인사실무와 관련된 질문에 대해 전문적인 답변을 제공하는 AI 챗봇입니다",
+      icon: MessageCircle,
+      thumbnail: "/thumbnails/hr-chatbot-thumbnail.svg",
+      category: "analysis",
+      status: "external-link",
+      externalUrl: "https://notebooklm.google.com/notebook/d2ad077d-3d55-4b33-92ce-2f768d417a78"
     }
   ]
 
@@ -78,7 +88,19 @@ export function AIToolsGallery({ geminiApiKey, geminiModel, accentColor = "text-
     const tool = aiTools.find(t => t.id === toolId)
     
     if (tool?.status === "external-link" && tool.externalUrl) {
-      // 외부 링크 도구인 경우 새 탭에서 열기
+      // 인사실무 챗봇의 경우 팝업 창으로 열기
+      if (tool.id === "hr-chatbot-2025") {
+        const popup = window.open(
+          tool.externalUrl, 
+          "hrChatbot2025",
+          "width=1200,height=800,scrollbars=yes,resizable=yes,toolbar=no,menubar=no,location=no,status=no"
+        )
+        if (popup) {
+          popup.focus()
+        }
+        return
+      }
+      // 기타 외부 링크 도구인 경우 새 탭에서 열기
       window.open(tool.externalUrl, "_blank")
       return
     }
