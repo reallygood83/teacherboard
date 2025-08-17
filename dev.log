@@ -1350,3 +1350,11 @@ Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
  ✓ Compiled in 4.5s (3241 modules)
  ✓ Compiled in 1297ms (3241 modules)
  ✓ Compiled in 864ms (3241 modules)
+ ⚠ Found a change in next.config.mjs. Restarting the server to apply the changes...
+   ▲ Next.js 15.2.4
+   - Local:        http://localhost:3003
+   - Network:      http://192.168.123.112:3003
+   - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Ready in 2.8s

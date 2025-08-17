@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300">
+  <defs>
+    <!-- 메인 그라데이션 -->
+    <linearGradient id="mainGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2563eb;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1d4ed8;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- PDF 그라데이션 -->
+    <linearGradient id="pdfGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#dc2626;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#b91c1c;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- 채팅 버블 그라데이션 -->
+    <linearGradient id="chatGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#10b981;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#059669;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- AI 그라데이션 -->
+    <linearGradient id="aiGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8b5cf6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#7c3aed;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- 배경 -->
+  <rect width="400" height="300" fill="url(#mainGradient)"/>
+  
+  <!-- 장식 요소들 -->
+  <circle cx="50" cy="50" r="30" fill="white" opacity="0.1"/>
+  <circle cx="350" cy="250" r="40" fill="white" opacity="0.08"/>
+  <circle cx="320" cy="60" r="25" fill="white" opacity="0.12"/>
+  
+  <!-- PDF 문서 아이콘 (왼쪽) -->
+  <g transform="translate(80, 100)">
+    <!-- PDF 배경 -->
+    <rect x="0" y="0" width="50" height="65" rx="4" fill="url(#pdfGradient)" />
+    <!-- PDF 텍스트 -->
+    <text x="25" y="45" font-family="Arial, sans-serif" font-size="8" font-weight="bold" fill="white" text-anchor="middle">PDF</text>
+    <!-- 문서 선들 -->
+    <line x1="8" y1="15" x2="42" y2="15" stroke="white" stroke-width="1.5" opacity="0.8"/>
+    <line x1="8" y1="22" x2="35" y2="22" stroke="white" stroke-width="1" opacity="0.6"/>
+    <line x1="8" y1="28" x2="38" y2="28" stroke="white" stroke-width="1" opacity="0.6"/>
+    <line x1="8" y1="34" x2="32" y2="34" stroke="white" stroke-width="1" opacity="0.6"/>
+    
+    <!-- 업로드 화살표 -->
+    <g transform="translate(55, 20)">
+      <path d="M0,15 L8,7 L16,15 M8,7 L8,25" stroke="#f59e0b" stroke-width="2" fill="none" opacity="0.9"/>
+    </g>
+  </g>
+  
+  <!-- 중앙 연결선 -->
+  <path d="M150,130 Q200,120 250,130" stroke="white" stroke-width="2" fill="none" opacity="0.6" stroke-dasharray="5,5"/>
+  
+  <!-- AI 채팅 인터페이스 (오른쪽) -->
+  <g transform="translate(260, 90)">
+    <!-- 채팅 창 배경 -->
+    <rect x="0" y="0" width="100" height="80" rx="8" fill="white" opacity="0.95"/>
+    
+    <!-- 사용자 메시지 (파란색) -->
+    <rect x="8" y="8" width="60" height="12" rx="6" fill="url(#mainGradient)" opacity="0.8"/>
+    <text x="38" y="16" font-family="Arial, sans-serif" font-size="6" fill="white" text-anchor="middle">교육 자료 분석</text>
+    
+    <!-- AI 응답 (초록색) -->
+    <rect x="20" y="25" width="72" height="20" rx="6" fill="url(#chatGradient)" opacity="0.9"/>
+    <text x="56" y="32" font-family="Arial, sans-serif" font-size="5" fill="white" text-anchor="middle">AI 분석 결과:</text>
+    <text x="56" y="38" font-family="Arial, sans-serif" font-size="5" fill="white" text-anchor="middle">핵심 개념 3가지와</text>
+    <text x="56" y="42" font-family="Arial, sans-serif" font-size="5" fill="white" text-anchor="middle">수업 활용법을...</text>
+    
+    <!-- 입력창 -->
+    <rect x="8" y="50" width="84" height="12" rx="6" fill="#f3f4f6" stroke="#d1d5db" stroke-width="1"/>
+    <text x="12" y="58" font-family="Arial, sans-serif" font-size="6" fill="#9ca3af">질문을 입력하세요...</text>
+    
+    <!-- 전송 버튼 -->
+    <circle cx="86" cy="68" r="8" fill="url(#aiGradient)"/>
+    <path d="M82,68 L90,68 M86,64 L90,68 L86,72" stroke="white" stroke-width="1.5" fill="none"/>
+  </g>
+  
+  <!-- AI 브레인 아이콘 (상단 중앙) -->
+  <g transform="translate(185, 40)">
+    <circle cx="15" cy="15" r="12" fill="url(#aiGradient)" opacity="0.9"/>
+    <!-- 뇌 모양 -->
+    <path d="M8,12 Q8,8 12,8 Q16,6 20,8 Q22,8 22,12 Q22,16 20,18 Q16,20 12,18 Q8,16 8,12 Z" fill="white" opacity="0.9"/>
+    <!-- 뇌 선들 -->
+    <path d="M10,12 Q15,10 20,12 M10,15 Q15,13 20,15" stroke="url(#aiGradient)" stroke-width="0.8" fill="none"/>
+  </g>
+  
+  <!-- 제목 영역 -->
+  <g transform="translate(200, 200)">
+    <text x="0" y="0" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="white" text-anchor="middle">티보드 Chat</text>
+    <text x="0" y="20" font-family="Arial, sans-serif" font-size="11" fill="white" text-anchor="middle" opacity="0.9">PDF 교육자료 AI 분석</text>
+    <text x="0" y="35" font-family="Arial, sans-serif" font-size="9" fill="white" text-anchor="middle" opacity="0.8">GPT-4o·Gemini로 빠른 문서 분석</text>
+  </g>
+  
+  <!-- 보안 아이콘 (우측 하단) -->
+  <g transform="translate(340, 220)">
+    <circle cx="15" cy="15" r="12" fill="white" opacity="0.2"/>
+    <path d="M15,8 L20,12 L15,22 L10,12 Z" fill="#10b981" opacity="0.8"/>
+    <text x="15" y="35" font-family="Arial, sans-serif" font-size="6" fill="white" text-anchor="middle" opacity="0.7">보안</text>
+  </g>
+  
+  <!-- 속도 아이콘 (좌측 하단) -->
+  <g transform="translate(50, 220)">
+    <circle cx="15" cy="15" r="12" fill="white" opacity="0.2"/>
+    <path d="M8,15 L15,8 L22,15 L15,12 Z" fill="#f59e0b" opacity="0.8"/>
+    <text x="15" y="35" font-family="Arial, sans-serif" font-size="6" fill="white" text-anchor="middle" opacity="0.7">고속</text>
+  </g>
+  
+  <!-- 장식 라인들 -->
+  <path d="M50,180 Q100,170 150,180" stroke="white" stroke-width="1" fill="none" opacity="0.3"/>
+  <path d="M250,180 Q300,170 350,180" stroke="white" stroke-width="1" fill="none" opacity="0.3"/>
+</svg>

@@ -9,6 +9,15 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  async redirects() {
+    return [
+      {
+        source: '/chat',
+        destination: 'https://teaboard-chat.vercel.app/',
+        permanent: false,
+      },
+    ];
+  },
   async headers() {
     return [
       {

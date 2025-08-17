@@ -4,7 +4,7 @@ import { useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { FileText, Brain, Clock, Users, ExternalLink, ChevronDown, ChevronUp, Star, HelpCircle, BarChart3, Mail, MessageCircle, QrCode } from "lucide-react"
+import { FileText, Brain, Clock, Users, ExternalLink, ChevronDown, ChevronUp, Star, HelpCircle, BarChart3, Mail, MessageCircle, QrCode, MessageSquare } from "lucide-react"
 import { DocumentGenerator } from "@/components/document-generator"
 
 interface AITool {
@@ -91,6 +91,16 @@ export function AIToolsGallery({ geminiApiKey, geminiModel, accentColor = "text-
       category: "analysis",
       status: "external-link",
       externalUrl: "https://notebooklm.google.com/notebook/d2ad077d-3d55-4b33-92ce-2f768d417a78"
+    },
+    {
+      id: "teaboard-chat",
+      title: "티보드 Chat",
+      description: "PDF 교육자료를 업로드하여 GPT-4o와 Gemini로 빠른 분석과 질문답변을 받을 수 있는 AI 어시스턴트입니다. 로컬 처리로 보안이 강화되었습니다.",
+      icon: MessageSquare,
+      thumbnail: "/thumbnails/teaboard-chat.svg",
+      category: "analysis",
+      status: "external-link",
+      externalUrl: "/chat"
     }
   ]
 
