@@ -21,7 +21,7 @@ const openSans = Open_Sans({
 })
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://teacherboard.vercel.app'),
+  metadataBase: new URL('https://teaboard.link'),
   title: "Teacher Board - 우리 학급 홈페이지",
   description: "🎯 AI 도구, 수업 칠판, 학생 관리까지! 선생님을 위한 올인원 디지털 교실 플랫폼. 함께 배우고 성장하는 공간입니다.",
   generator: "Teacher Board",
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "ko_KR",
-    url: "https://teacherboard.vercel.app/class",
+    url: "https://teaboard.link/class",
     siteName: "Teacher Board",
     title: "Teacher Board - 우리 학급 홈페이지",
     description: "🎯 AI 도구, 수업 칠판, 학생 관리까지! 함께 배우고 성장하는 교육 공간을 만들어보세요.",
@@ -113,7 +113,7 @@ export default function RootLayout({
             "@type": "WebApplication",
             "name": "Teacher Board",
             "description": "AI 도구, 수업 칠판, 학생 관리까지! 선생님을 위한 올인원 디지털 교실 플랫폼",
-            "url": "https://teacherboard.vercel.app/class",
+            "url": "https://teaboard.link/class",
             "applicationCategory": "EducationalApplication",
             "operatingSystem": "All",
             "offers": {
