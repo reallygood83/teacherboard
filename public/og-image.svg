@@ -1,0 +1,146 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <!-- 메인 그라데이션 (교육적 느낌) -->
+    <linearGradient id="mainGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#16a34a;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#22c55e;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#15803d;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- 칠판 그라데이션 -->
+    <linearGradient id="chalkboardGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#166534;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#14532d;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- 장식용 그라데이션 -->
+    <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#fbbf24;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f59e0b;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- 미묘한 패턴 -->
+    <pattern id="subtlePattern" patternUnits="userSpaceOnUse" width="40" height="40">
+      <circle cx="20" cy="20" r="1.5" fill="white" opacity="0.1"/>
+    </pattern>
+  </defs>
+  
+  <!-- 배경 -->
+  <rect width="1200" height="630" fill="url(#mainGradient)"/>
+  <rect width="1200" height="630" fill="url(#subtlePattern)"/>
+  
+  <!-- 장식적 원형들 -->
+  <circle cx="100" cy="100" r="60" fill="white" opacity="0.1"/>
+  <circle cx="1100" cy="530" r="80" fill="white" opacity="0.08"/>
+  <circle cx="200" cy="500" r="40" fill="url(#accentGradient)" opacity="0.15"/>
+  <circle cx="1000" cy="120" r="50" fill="white" opacity="0.12"/>
+  
+  <!-- 메인 칠판 -->
+  <g transform="translate(100, 150)">
+    <!-- 칠판 배경 -->
+    <rect x="0" y="0" width="500" height="300" rx="15" fill="url(#chalkboardGradient)" stroke="#92400e" stroke-width="8"/>
+    
+    <!-- 칠판 내용 (수업 관련) -->
+    <!-- 제목 줄 -->
+    <line x1="40" y1="60" x2="300" y2="60" stroke="white" stroke-width="3" opacity="0.9"/>
+    <line x1="40" y1="90" x2="420" y2="90" stroke="white" stroke-width="2" opacity="0.8"/>
+    <line x1="40" y1="120" x2="350" y2="120" stroke="white" stroke-width="2" opacity="0.8"/>
+    
+    <!-- 간단한 도표 -->
+    <rect x="320" y="160" width="20" height="60" fill="white" opacity="0.7"/>
+    <rect x="350" y="140" width="20" height="80" fill="white" opacity="0.7"/>
+    <rect x="380" y="180" width="20" height="40" fill="white" opacity="0.7"/>
+    <rect x="410" y="150" width="20" height="70" fill="white" opacity="0.7"/>
+    
+    <!-- 수식/기호들 -->
+    <circle cx="80" cy="180" r="15" fill="none" stroke="white" stroke-width="2" opacity="0.6"/>
+    <line x1="120" y1="165" x2="120" y2="195" stroke="white" stroke-width="2" opacity="0.6"/>
+    <line x1="105" y1="180" x2="135" y2="180" stroke="white" stroke-width="2" opacity="0.6"/>
+    
+    <!-- 별표 -->
+    <g transform="translate(180, 200)" opacity="0.7">
+      <path d="M0,-10 L3,-3 L10,-3 L5,1 L7,8 L0,4 L-7,8 L-5,1 L-10,-3 L-3,-3 Z" fill="yellow" opacity="0.8"/>
+    </g>
+  </g>
+  
+  <!-- 오른쪽 텍스트 영역 -->
+  <g transform="translate(650, 200)">
+    <!-- 메인 타이틀 -->
+    <text x="0" y="0" font-family="Arial, sans-serif" font-size="72" font-weight="bold" fill="white" opacity="0.95">
+      Teacher Board
+    </text>
+    
+    <!-- 한글 부제목 -->
+    <text x="0" y="60" font-family="Arial, sans-serif" font-size="42" font-weight="500" fill="white" opacity="0.9">
+      우리 학급 홈페이지
+    </text>
+    
+    <!-- 설명 텍스트 -->
+    <text x="0" y="120" font-family="Arial, sans-serif" font-size="28" fill="white" opacity="0.8">
+      함께 배우고 성장하는 공간
+    </text>
+    
+    <!-- 기능 아이콘들 -->
+    <g transform="translate(0, 180)">
+      <!-- AI 아이콘 -->
+      <circle cx="30" cy="30" r="25" fill="white" opacity="0.2"/>
+      <text x="30" y="38" font-family="Arial, sans-serif" font-size="24" text-anchor="middle" fill="white">AI</text>
+      
+      <!-- 칠판 아이콘 -->
+      <rect x="80" y="10" width="40" height="25" rx="3" fill="white" opacity="0.2"/>
+      <line x1="85" y1="15" x2="110" y2="15" stroke="white" stroke-width="1" opacity="0.6"/>
+      <line x1="85" y1="20" x2="115" y2="20" stroke="white" stroke-width="1" opacity="0.6"/>
+      
+      <!-- 학생 관리 아이콘 -->
+      <circle cx="160" cy="20" r="8" fill="white" opacity="0.3"/>
+      <circle cx="175" cy="20" r="8" fill="white" opacity="0.3"/>
+      <circle cx="190" cy="20" r="8" fill="white" opacity="0.3"/>
+      <circle cx="160" cy="35" r="8" fill="white" opacity="0.3"/>
+      <circle cx="175" cy="35" r="8" fill="white" opacity="0.3"/>
+      <circle cx="190" cy="35" r="8" fill="white" opacity="0.3"/>
+      
+      <!-- 시계 아이콘 -->
+      <circle cx="240" cy="25" r="20" fill="none" stroke="white" stroke-width="2" opacity="0.4"/>
+      <line x1="240" y1="25" x2="240" y2="15" stroke="white" stroke-width="2" opacity="0.6"/>
+      <line x1="240" y1="25" x2="250" y2="25" stroke="white" stroke-width="2" opacity="0.6"/>
+    </g>
+  </g>
+  
+  <!-- 선생님 캐릭터 (오른쪽 하단) -->
+  <g transform="translate(950, 450)">
+    <!-- 몸 -->
+    <rect x="20" y="40" width="40" height="60" rx="10" fill="url(#accentGradient)" opacity="0.8"/>
+    <!-- 머리 -->
+    <circle cx="40" cy="25" r="20" fill="#fbbf24" opacity="0.8"/>
+    <!-- 모자 -->
+    <ellipse cx="40" cy="15" rx="25" ry="10" fill="#374151" opacity="0.8"/>
+    <rect x="20" y="12" width="40" height="8" fill="#374151" opacity="0.8"/>
+    <!-- 팔 (포인터 들고 있는 모습) -->
+    <rect x="65" y="45" width="30" height="6" rx="3" fill="#fbbf24" opacity="0.7" transform="rotate(-30 65 45)"/>
+    <!-- 포인터 -->
+    <rect x="90" y="35" width="40" height="2" rx="1" fill="#8b4513" opacity="0.8" transform="rotate(-30 90 35)"/>
+  </g>
+  
+  <!-- 하단 로고/브랜딩 -->
+  <g transform="translate(100, 550)">
+    <text x="0" y="0" font-family="Arial, sans-serif" font-size="24" fill="white" opacity="0.7">
+      교육을 위한 따뜻한 기술 • 2025
+    </text>
+  </g>
+  
+  <!-- 장식적 학용품들 -->
+  <!-- 분필 -->
+  <rect x="800" y="100" width="60" height="8" rx="4" fill="white" opacity="0.6"/>
+  <rect x="800" y="100" width="8" height="8" fill="#fbbf24" opacity="0.8"/>
+  
+  <!-- 지우개 -->
+  <rect x="900" y="95" width="40" height="18" rx="3" fill="#ff6b6b" opacity="0.6"/>
+  
+  <!-- 자 -->
+  <rect x="750" y="85" width="80" height="4" rx="2" fill="#94a3b8" opacity="0.6"/>
+  <!-- 자 눈금 -->
+  <line x1="760" y1="85" x2="760" y2="89" stroke="white" stroke-width="1" opacity="0.4"/>
+  <line x1="770" y1="85" x2="770" y2="89" stroke="white" stroke-width="1" opacity="0.4"/>
+  <line x1="780" y1="85" x2="780" y2="89" stroke="white" stroke-width="1" opacity="0.4"/>
+  <line x1="790" y1="85" x2="790" y2="89" stroke="white" stroke-width="1" opacity="0.4"/>
+</svg>

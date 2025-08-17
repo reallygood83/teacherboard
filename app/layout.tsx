@@ -21,38 +21,31 @@ const openSans = Open_Sans({
 })
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://teaboard.link'),
-  title: "Teaboard - AI 기반 스마트 학급 관리",
-  description: "🎯 출석체크부터 학급도구까지! 선생님을 위한 올인원 디지털 교실 플랫폼. 모바일 최적화로 언제 어디서나 편리하게!",
-  generator: "Teaboard",
+  metadataBase: new URL('https://teacherboard.vercel.app'),
+  title: "Teacher Board - 우리 학급 홈페이지",
+  description: "🎯 AI 도구, 수업 칠판, 학생 관리까지! 선생님을 위한 올인원 디지털 교실 플랫폼. 함께 배우고 성장하는 공간입니다.",
+  generator: "Teacher Board",
   manifest: "/manifest.json",
-  keywords: ["학급관리", "교육도구", "AI교육", "출석체크", "디지털교실", "스마트교육", "모바일교육"],
-  authors: [{ name: "Teaboard Team" }],
-  creator: "Teaboard",
-  publisher: "Teaboard",
+  keywords: ["학급관리", "교육도구", "AI교육", "수업칠판", "학생관리", "디지털교실", "스마트교육", "모바일교육", "교사도구"],
+  authors: [{ name: "Teacher Board Team" }],
+  creator: "Teacher Board",
+  publisher: "Teacher Board",
   category: "Education",
   
   // Open Graph 메타데이터
   openGraph: {
     type: "website",
     locale: "ko_KR",
-    url: "https://teaboard.link/class",
-    siteName: "Teaboard",
-    title: "Teaboard - 선생님을 위한 스마트 학급 관리",
-    description: "🎯 출석체크부터 학급도구까지! AI 기반 올인원 교실 플랫폼으로 수업을 더 스마트하게 관리하세요.",
+    url: "https://teacherboard.vercel.app/class",
+    siteName: "Teacher Board",
+    title: "Teacher Board - 우리 학급 홈페이지",
+    description: "🎯 AI 도구, 수업 칠판, 학생 관리까지! 함께 배우고 성장하는 교육 공간을 만들어보세요.",
     images: [
       {
-        url: "/teaboard-og-image.svg",
+        url: "/og-image.svg",
         width: 1200,
         height: 630,
-        alt: "Teaboard - AI 기반 스마트 학급 관리 플랫폼",
-        type: "image/svg+xml"
-      },
-      {
-        url: "/teaboard-logo.svg",
-        width: 400,
-        height: 120,
-        alt: "Teaboard 로고",
+        alt: "Teacher Board - 우리 학급 홈페이지 플랫폼",
         type: "image/svg+xml"
       }
     ],
@@ -61,20 +54,20 @@ export const metadata: Metadata = {
   // Twitter 카드 메타데이터
   twitter: {
     card: "summary_large_image",
-    site: "@teaboard",
-    creator: "@teaboard",
-    title: "Teaboard - 선생님을 위한 스마트 학급 관리",
-    description: "🎯 출석체크부터 학급도구까지! AI 기반 올인원 교실 플랫폼",
-    images: ["/teaboard-og-image.svg"],
+    site: "@teacherboard",
+    creator: "@teacherboard",
+    title: "Teacher Board - 우리 학급 홈페이지",
+    description: "🎯 AI 도구, 수업 칠판, 학생 관리까지! 함께 배우고 성장하는 교육 공간",
+    images: ["/og-image.svg"],
   },
   
   // 기존 설정들
-  themeColor: "#3B82F6",
+  themeColor: "#16a34a",
   viewport: "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "Teaboard",
+    title: "Teacher Board",
   },
   formatDetection: {
     telephone: false,
@@ -90,26 +83,27 @@ export default function RootLayout({
     <html lang="ko" className={`${montserrat.variable} ${openSans.variable} antialiased`}>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
-        <meta name="theme-color" content="#3B82F6" />
+        <meta name="theme-color" content="#16a34a" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <meta name="apple-mobile-web-app-title" content="Teaboard" />
+        <meta name="apple-mobile-web-app-title" content="Teacher Board" />
         <meta name="format-detection" content="telephone=no" />
         
         {/* 파비콘 */}
-        <link rel="icon" href="/teaboard-logo.svg" type="image/svg+xml" />
-        <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        <link rel="apple-touch-icon" href="/favicon.svg" />
+        <link rel="shortcut icon" href="/favicon.svg" />
         
         {/* PWA 매니페스트 */}
         <link rel="manifest" href="/manifest.json" />
         
         {/* 추가 SEO 메타태그 */}
         <meta name="robots" content="index, follow" />
-        <meta name="author" content="Teaboard Team" />
+        <meta name="author" content="Teacher Board Team" />
         <meta name="language" content="Korean" />
         
         {/* Open Graph 추가 메타태그 */}
-        <meta property="og:site_name" content="Teaboard" />
+        <meta property="og:site_name" content="Teacher Board" />
         <meta property="og:locale" content="ko_KR" />
         
         {/* 구조화된 데이터 */}
@@ -117,9 +111,9 @@ export default function RootLayout({
           {JSON.stringify({
             "@context": "https://schema.org",
             "@type": "WebApplication",
-            "name": "Teaboard",
-            "description": "AI 기반 스마트 학급 관리 플랫폼",
-            "url": "https://teaboard.link/class",
+            "name": "Teacher Board",
+            "description": "AI 도구, 수업 칠판, 학생 관리까지! 선생님을 위한 올인원 디지털 교실 플랫폼",
+            "url": "https://teacherboard.vercel.app/class",
             "applicationCategory": "EducationalApplication",
             "operatingSystem": "All",
             "offers": {
@@ -129,7 +123,7 @@ export default function RootLayout({
             },
             "author": {
               "@type": "Organization",
-              "name": "Teaboard Team"
+              "name": "Teacher Board Team"
             }
           })}
         </script>
