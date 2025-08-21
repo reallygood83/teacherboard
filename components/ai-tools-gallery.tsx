@@ -4,7 +4,7 @@ import { useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { FileText, Brain, Clock, Users, ExternalLink, ChevronDown, ChevronUp, Star, HelpCircle, BarChart3, Mail, MessageCircle, QrCode, MessageSquare, FileSpreadsheet } from "lucide-react"
+import { FileText, Brain, Clock, Users, ExternalLink, ChevronDown, ChevronUp, Star, HelpCircle, BarChart3, Mail, MessageCircle, QrCode, MessageSquare } from "lucide-react"
 import { DocumentGenerator } from "@/components/document-generator"
 
 interface AITool {
@@ -101,16 +101,6 @@ export function AIToolsGallery({ geminiApiKey, geminiModel, accentColor = "text-
       category: "analysis",
       status: "external-link",
       externalUrl: "/chat"
-    },
-    {
-      id: "report-generator",
-      title: "AI 보고서 생성기",
-      description: "마크다운 문서를 조합하여 새로운 보고서를 만드는 기능을 지원합니다",
-      icon: FileSpreadsheet,
-      thumbnail: "/thumbnails/report-generator-thumbnail.svg",
-      category: "document",
-      status: "external-link",
-      externalUrl: "https://easyreport-steel.vercel.app/"
     }
   ]
 
