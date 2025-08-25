@@ -120,20 +120,25 @@ export default function StudentPage() {
         throw new Error("Firebase가 초기화되지 않았습니다.");
       }
 
-      // Load session data
-      const sessionQuery = query(
-        collection(db, "sessions"),
-        where("sessionCode", "==", sessionCode)
-      );
+      // Load session data by document ID (sessionCode)
+      console.log("🔍 세션 코드로 문서 검색 중:", sessionCode);
+      
+      const sessionDocRef = doc(db, "sessions", sessionCode);
+      const sessionSnapshot = await getDoc(sessionDocRef);
 
-      const sessionSnapshot = await getDocs(sessionQuery);
-
-      if (sessionSnapshot.empty) {
+      if (!sessionSnapshot.exists()) {
+        console.error("❌ 세션 문서를 찾을 수 없음:", sessionCode);
         throw new Error("세션 코드가 올바르지 않습니다.");
       }
 
-      const sessionDoc = sessionSnapshot.docs[0];
-      const session = { id: sessionDoc.id, ...sessionDoc.data() } as SessionData;
+      const sessionData = sessionSnapshot.data();
+      console.log("✅ 세션 데이터 로드 성공:", sessionData);
+      
+      const session = { 
+        id: sessionSnapshot.id, 
+        sessionCode: sessionCode,
+        ...sessionData 
+      } as SessionData;
 
       if (!session.isActive) {
         throw new Error("비활성화된 세션입니다.");
