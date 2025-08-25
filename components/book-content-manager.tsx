@@ -53,6 +53,7 @@ export default function BookContentManager({ accentColor = "blue" }: BookContent
   const [bookContents, setBookContents] = useState<BookContent[]>([])
   const [loading, setLoading] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
+  const [saveSuccess, setSaveSuccess] = useState(false)
 
   // Form state
   const [title, setTitle] = useState("")
@@ -89,6 +90,7 @@ export default function BookContentManager({ accentColor = "blue" }: BookContent
     setCategory("reading")
     setSubject("")
     setEditingId(null)
+    setSaveSuccess(false)
   }
 
   const addBookContent = async () => {
@@ -110,6 +112,7 @@ export default function BookContentManager({ accentColor = "blue" }: BookContent
     }
 
     setLoading(true)
+    setSaveSuccess(false)
     try {
       if (currentUser && db) {
         if (editingId) {
@@ -122,7 +125,10 @@ export default function BookContentManager({ accentColor = "blue" }: BookContent
           // Add new book content
           await addDoc(collection(db, `users/${currentUser.uid}/bookContents`), bookContentData)
         }
-        resetForm()
+        setSaveSuccess(true)
+        setTimeout(() => {
+          resetForm()
+        }, 2000) // 2초 후 폼 리셋
       }
     } catch (error) {
       console.error('Error saving book content:', error)
@@ -284,6 +290,16 @@ export default function BookContentManager({ accentColor = "blue" }: BookContent
               {content.length}/2000자
             </div>
           </div>
+          {saveSuccess && (
+            <div className="p-3 bg-green-50 border border-green-200 rounded-lg mb-4">
+              <div className="flex items-center gap-2 text-green-800">
+                <Star className="w-4 h-4" />
+                <span className="text-sm font-medium">
+                  {editingId ? "도서 내용이 성공적으로 수정되었습니다!" : "도서 내용이 성공적으로 추가되었습니다!"}
+                </span>
+              </div>
+            </div>
+          )}
           <div className="flex gap-2">
             <Button 
               onClick={addBookContent} 

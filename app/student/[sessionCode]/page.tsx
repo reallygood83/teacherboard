@@ -36,8 +36,9 @@ interface SessionData {
 interface ChalkboardNote {
   id: string;
   title: string;
-  content: string;
-  category: string;
+  contentHtml: string;
+  contentText: string;
+  type: string;
   createdAt: any;
   updatedAt: any;
 }
@@ -99,6 +100,9 @@ export default function StudentPage() {
     chalkboard: false,
     books: false,
   });
+
+  // Individual note expansion state
+  const [expandedNotes, setExpandedNotes] = useState<Set<string>>(new Set());
 
   // Pull to refresh state
   const [isPulling, setIsPulling] = useState(false);
@@ -189,13 +193,22 @@ export default function StudentPage() {
 
   const loadChalkboardNotes = async (teacherId: string) => {
     try {
-      const notesRef = collection(db, `users/${teacherId}/chalkboardNotes`);
-      const notesQuery = query(notesRef, orderBy("createdAt", "desc"), limit(20));
-      const notesSnapshot = await getDocs(notesQuery);
-      const notesData = notesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as ChalkboardNote[];
-      setChalkboardNotes(notesData);
+      // 교사가 명시적으로 공유한 수업 내용만 가져오기
+      const sharedRef = collection(db, `users/${teacherId}/sharedClassContent`);
+      const sharedQuery = query(
+        sharedRef, 
+        orderBy("createdAt", "desc"), 
+        limit(20)
+      );
+      const sharedSnapshot = await getDocs(sharedQuery);
+      const sharedData = sharedSnapshot.docs.map(doc => ({ 
+        id: doc.id, 
+        ...doc.data() 
+      })) as ChalkboardNote[];
+      setChalkboardNotes(sharedData);
+      console.log("✅ 공유된 수업 내용 로드:", sharedData.length + "개");
     } catch (error) {
-      console.error("Failed to load chalkboard notes:", error);
+      console.error("Failed to load shared class content:", error);
     }
   };
 
@@ -217,6 +230,18 @@ export default function StudentPage() {
       ...prev,
       [section]: !prev[section]
     }));
+  };
+
+  const toggleNoteExpansion = (noteId: string) => {
+    setExpandedNotes(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(noteId)) {
+        newSet.delete(noteId);
+      } else {
+        newSet.add(noteId);
+      }
+      return newSet;
+    });
   };
 
   const getPriorityColor = (priority: string) => {
@@ -529,25 +554,60 @@ export default function StudentPage() {
               <CardContent className="px-6 pb-6">
                 {chalkboardNotes.length > 0 ? (
                   <div className="space-y-4">
-                    {chalkboardNotes.map((note) => (
-                      <div
-                        key={note.id}
-                        className="bg-gradient-to-r from-green-50 to-teal-50 border border-green-200 rounded-xl p-5 hover:shadow-md transition-shadow"
-                      >
-                        <div className="flex items-start justify-between mb-3">
-                          <Badge className="bg-green-100 text-green-700 border-green-200">
-                            {note.category || "일반"}
-                          </Badge>
-                          <span className="text-xs text-gray-500">
-                            {note.createdAt?.toDate?.()?.toLocaleDateString() || "날짜 없음"}
-                          </span>
+                    {chalkboardNotes.map((note) => {
+                      const isExpanded = expandedNotes.has(note.id);
+                      const contentPreview = note.contentText ? 
+                        (note.contentText.length > 150 ? 
+                          note.contentText.substring(0, 150) + "..." : 
+                          note.contentText
+                        ) : "내용 없음";
+                      
+                      return (
+                        <div
+                          key={note.id}
+                          className="bg-gradient-to-r from-green-50 to-teal-50 border border-green-200 rounded-xl overflow-hidden hover:shadow-md transition-all cursor-pointer"
+                          onClick={() => toggleNoteExpansion(note.id)}
+                        >
+                          <div className="p-5">
+                            <div className="flex items-start justify-between mb-3">
+                              <Badge className="bg-green-100 text-green-700 border-green-200">
+                                {note.type || "칠판"}
+                              </Badge>
+                              <div className="flex items-center gap-2">
+                                <span className="text-xs text-gray-500">
+                                  {note.createdAt?.toDate?.()?.toLocaleDateString() || "날짜 없음"}
+                                </span>
+                                {isExpanded ? (
+                                  <ChevronUp className="w-4 h-4 text-gray-400" />
+                                ) : (
+                                  <ChevronDown className="w-4 h-4 text-gray-400" />
+                                )}
+                              </div>
+                            </div>
+                            
+                            <h3 className="font-bold text-gray-900 mb-3 text-left">{note.title}</h3>
+                            
+                            {!isExpanded ? (
+                              <p className="text-gray-600 leading-relaxed text-sm text-left">
+                                {contentPreview}
+                              </p>
+                            ) : (
+                              <div className="text-gray-700 leading-relaxed text-left" 
+                                   dangerouslySetInnerHTML={{ 
+                                     __html: note.contentHtml || note.contentText || "내용 없음" 
+                                   }}
+                              />
+                            )}
+                            
+                            {!isExpanded && note.contentText && note.contentText.length > 150 && (
+                              <p className="text-blue-600 text-sm mt-2 font-medium text-left">
+                                클릭해서 전체 내용 보기
+                              </p>
+                            )}
+                          </div>
                         </div>
-                        <h3 className="font-bold text-gray-900 mb-3">{note.title}</h3>
-                        <div className="text-gray-700 leading-relaxed whitespace-pre-wrap">
-                          {note.content}
-                        </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 ) : (
                   <div className="text-center py-12 text-gray-500">

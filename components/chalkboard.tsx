@@ -2,8 +2,9 @@
 
 import { useState, useRef, useEffect } from "react"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Bold, Italic, Underline, Eraser, Copy, Bot, AlertCircle, Save, History, Loader2, Cloud } from "lucide-react"
+import { Bold, Italic, Underline, Eraser, Copy, Bot, AlertCircle, Save, History, Loader2, Cloud, Share2, Users } from "lucide-react"
 import { AIDialog } from "@/components/ai-dialog"
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
@@ -30,6 +31,11 @@ export function Chalkboard({ geminiApiKey = "", geminiModel = "gemini-1.5-flash"
   const [showHistory, setShowHistory] = useState(false)
   const [historyLoading, setHistoryLoading] = useState(false)
   const [notes, setNotes] = useState<any[]>([])
+  // 추가: 학생 공유 관련 상태
+  const [sharing, setSharing] = useState(false)
+  const [lastSharedAt, setLastSharedAt] = useState<Date | null>(null)
+  // 추가: 제목 입력 상태
+  const [customTitle, setCustomTitle] = useState("")
   // 추가: 인증/토스트 훅
   const { currentUser } = useAuth()
   const { toast } = useToast()
@@ -157,10 +163,113 @@ export function Chalkboard({ geminiApiKey = "", geminiModel = "gemini-1.5-flash"
 
   // 저장 관련 유틸
   const extractTitleFromText = (text: string) => {
+    // 사용자가 입력한 제목이 있으면 우선 사용
+    if (customTitle.trim()) {
+      return customTitle.trim()
+    }
+    
+    // 자동 제목 생성
     const firstLine = text.split('\n').map((t) => t.trim()).find(Boolean)
     if (!firstLine) return "무제 노트"
     // 너무 길면 자르기
     return firstLine.length > 40 ? firstLine.slice(0, 40) + "…" : firstLine
+  }
+
+  // 학생들과 공유하는 함수
+  const handleShareWithStudents = async (retryCount = 0) => {
+    if (!currentUser) {
+      toast({ title: "로그인이 필요합니다", description: "공유하려면 로그인해주세요.", variant: "destructive" })
+      return
+    }
+    
+    // Firebase 연결 상태 확인 및 재시도
+    if (!isFirebaseReady()) {
+      if (retryCount === 0) {
+        console.log("🔄 Firebase 연결 재시도 중...")
+        logFirebaseStatus()
+        const retrySuccess = retryFirebaseInit()
+        
+        if (retrySuccess) {
+          // 연결 재시도 후 잠시 대기
+          setTimeout(() => handleShareWithStudents(1), 1000)
+        } else {
+          toast({ 
+            title: "재시도 제한 초과", 
+            description: "Firebase 보안 규칙을 확인하고 페이지를 새로고침해주세요.", 
+            variant: "destructive" 
+          })
+        }
+        return
+      } else {
+        toast({ 
+          title: "Firebase 연결 실패", 
+          description: "환경 변수를 확인하고 페이지를 새로고침해주세요. (Vercel 대시보드)", 
+          variant: "destructive" 
+        })
+        return
+      }
+    }
+    
+    const html = editorRef.current?.innerHTML?.trim() || ""
+    const text = editorRef.current?.innerText?.trim() || ""
+    if (!html && !text) {
+      toast({ title: "공유할 내용이 없습니다", description: "내용을 입력한 후 공유해주세요." })
+      return
+    }
+    
+    setSharing(true)
+    
+    try {
+      const title = extractTitleFromText(text)
+      // 학생용 컬렉션에 저장 (교사의 개인 노트와 별도)
+      const sharedRef = collection(db!, "users", currentUser.uid, "sharedClassContent")
+      
+      console.log("📤 학생 공유 저장 시도:", {
+        userId: currentUser.uid,
+        title,
+        contentLength: text.length,
+        timestamp: new Date().toISOString()
+      })
+      
+      await addDoc(sharedRef, {
+        title,
+        contentHtml: html,
+        contentText: text,
+        type: "chalkboard", // 공유 컨텐츠 타입
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      })
+      
+      const now = new Date()
+      setLastSharedAt(now)
+      
+      console.log("✅ 학생 공유 저장 성공")
+      toast({ 
+        title: "학생들과 공유 완료", 
+        description: `"${title}"이(가) 학생들에게 공유되었습니다!`,
+        className: "bg-blue-50 border-blue-200"
+      })
+      
+    } catch (e: any) {
+      console.error("❌ 학생 공유 실패:", e)
+      
+      // 네트워크 오류 시 재시도 옵션 제공
+      if (e?.code === 'unavailable' || e?.message?.includes('network') || retryCount < 2) {
+        toast({ 
+          title: "일시적 공유 실패", 
+          description: "네트워크 문제입니다. 잠시 후 다시 시도해주세요.", 
+          variant: "destructive"
+        })
+      } else {
+        toast({ 
+          title: "공유 실패", 
+          description: `오류: ${e?.message || "알 수 없는 문제가 발생했습니다."}`, 
+          variant: "destructive" 
+        })
+      }
+    } finally {
+      setSharing(false)
+    }
   }
 
   const handleSave = async (retryCount = 0) => {
@@ -390,6 +499,16 @@ export function Chalkboard({ geminiApiKey = "", geminiModel = "gemini-1.5-flash"
 
   return (
     <div className="space-y-4">
+      {/* 제목 입력 영역 */}
+      <div className="mb-4">
+        <Input
+          value={customTitle}
+          onChange={(e) => setCustomTitle(e.target.value)}
+          placeholder="수업 제목을 입력하세요 (비어있으면 자동 생성)"
+          className="w-full text-lg font-medium bg-white/90 border-2 border-green-200 focus:border-green-400 rounded-lg p-3"
+        />
+      </div>
+
       {/* 툴바 */}
       <div className="flex items-center gap-2">
         <Select onValueChange={handleFontSizeChange}>
@@ -489,6 +608,15 @@ export function Chalkboard({ geminiApiKey = "", geminiModel = "gemini-1.5-flash"
             ) : (
               <span className="opacity-70">저장되지 않음</span>
             )}
+            {lastSharedAt && (
+              <>
+                <span className="mx-2">|</span>
+                <span className="flex items-center gap-1 text-blue-300">
+                  <Users className="w-3 h-3" />
+                  {lastSharedAt.toLocaleTimeString()} 공유됨
+                </span>
+              </>
+            )}
           </div>
           <Button 
             size="sm" 
@@ -499,6 +627,16 @@ export function Chalkboard({ geminiApiKey = "", geminiModel = "gemini-1.5-flash"
           >
             {saving ? <Loader2 className="w-4 h-4 mr-1 animate-spin" /> : <Save className="w-4 h-4 mr-1" />}
             저장
+          </Button>
+          <Button 
+            size="sm" 
+            variant="default" 
+            onClick={() => handleShareWithStudents()} 
+            disabled={sharing || connectionStatus !== 'connected'} 
+            className="bg-blue-600 hover:bg-blue-700 text-white disabled:bg-gray-500"
+          >
+            {sharing ? <Loader2 className="w-4 h-4 mr-1 animate-spin" /> : <Share2 className="w-4 h-4 mr-1" />}
+            학생 공유
           </Button>
           <Button size="sm" variant="outline" onClick={openHistory} disabled={connectionStatus !== 'connected'}>
             <History className="w-4 h-4 mr-1" />
