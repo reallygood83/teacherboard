@@ -195,11 +195,11 @@ export function PromptManager({ onSelectPrompt, className = "" }: PromptManagerP
           로딩 중...
         </div>
       ) : sortedPrompts.length > 0 ? (
-        <div className="space-y-2 max-h-48 overflow-y-auto">
+        <div className="space-y-2 max-h-64 overflow-y-auto">
           {sortedPrompts.slice(0, 10).map((prompt) => (
             <div
               key={prompt.id}
-              className="group flex items-center justify-between p-2 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
+              className="group flex items-start justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
               onClick={() => handleSelectPrompt(prompt)}
             >
               <div className="flex-1 min-w-0">
@@ -214,7 +214,13 @@ export function PromptManager({ onSelectPrompt, className = "" }: PromptManagerP
                     </div>
                   )}
                 </div>
-                <p className="text-xs text-gray-600 truncate">
+                <p className="text-xs text-gray-600 leading-relaxed" 
+                   style={{
+                     display: '-webkit-box',
+                     WebkitLineClamp: 2,
+                     WebkitBoxOrient: 'vertical',
+                     overflow: 'hidden'
+                   }}>
                   {prompt.content}
                 </p>
                 <Badge variant="outline" className="text-xs mt-1">
