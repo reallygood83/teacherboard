@@ -13,6 +13,7 @@ import {
   DialogTrigger 
 } from "@/components/ui/dialog"
 import { Bot, Send, Loader2 } from "lucide-react"
+import { PromptManager } from "@/components/prompt-manager"
 
 interface AIChatModalProps {
   onResultSubmit: (result: string) => void
@@ -79,12 +80,11 @@ export function AIChatModal({ onResultSubmit, apiKey, model }: AIChatModalProps)
     }
   }
 
-  const suggestionPrompts = [
-    "오늘 수업 내용을 요약해서 알려줘",
-    "초등학생을 위한 재미있는 수학 문제 만들어줘",
-    "과학 실험 아이디어를 제안해줘",
-    "학급 운영을 위한 조언을 해줘",
-  ]
+  // 프롬프트 매니저에서 프롬프트를 선택했을 때
+  const handlePromptSelect = (promptContent: string) => {
+    setPrompt(promptContent)
+    setError("")
+  }
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -109,22 +109,11 @@ export function AIChatModal({ onResultSubmit, apiKey, model }: AIChatModalProps)
         </DialogHeader>
 
         <div className="space-y-4">
-          {/* 빠른 질문 버튼들 */}
-          <div className="grid grid-cols-1 gap-2">
-            <p className="text-sm font-medium text-gray-700 mb-2">💡 빠른 질문:</p>
-            {suggestionPrompts.map((suggestion, index) => (
-              <Button
-                key={index}
-                variant="outline"
-                size="sm"
-                className="text-left justify-start h-auto py-2 px-3"
-                onClick={() => setPrompt(suggestion)}
-                disabled={isLoading}
-              >
-                {suggestion}
-              </Button>
-            ))}
-          </div>
+          {/* 저장된 프롬프트 */}
+          <PromptManager 
+            onSelectPrompt={handlePromptSelect}
+            className="border rounded-lg p-3 bg-gray-50"
+          />
 
           {/* 사용자 입력 */}
           <div className="space-y-2">

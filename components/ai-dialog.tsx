@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import { Send, Bot, Loader2, AlertCircle } from "lucide-react"
+import { PromptManager } from "@/components/prompt-manager"
 
 interface AIDialogProps {
   isOpen: boolean
@@ -76,14 +77,11 @@ export function AIDialog({ isOpen, onClose, onSubmit, apiKey, model }: AIDialogP
 
   const clearError = () => setError("")
 
-  // 예시 프롬프트들
-  const examplePrompts = [
-    "오늘 배운 내용을 정리해주세요",
-    "학생들에게 숙제를 내주는 공지를 작성해주세요", 
-    "내일 수업 계획을 세워주세요",
-    "학부모 상담 내용을 정리해주세요",
-    "교실 규칙을 만들어주세요"
-  ]
+  // 프롬프트 매니저에서 프롬프트를 선택했을 때
+  const handlePromptSelect = (promptContent: string) => {
+    setPrompt(promptContent)
+    if (error) clearError()
+  }
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -112,24 +110,11 @@ export function AIDialog({ isOpen, onClose, onSubmit, apiKey, model }: AIDialogP
             </div>
           )}
 
-          {/* 예시 프롬프트 */}
-          <div>
-            <p className="text-sm font-medium mb-2 text-gray-700">빠른 요청:</p>
-            <div className="flex flex-wrap gap-2">
-              {examplePrompts.map((example, index) => (
-                <Button
-                  key={index}
-                  variant="outline"
-                  size="sm"
-                  className="text-xs h-8"
-                  onClick={() => setPrompt(example)}
-                  disabled={loading}
-                >
-                  {example}
-                </Button>
-              ))}
-            </div>
-          </div>
+          {/* 프롬프트 매니저 */}
+          <PromptManager 
+            onSelectPrompt={handlePromptSelect}
+            className="border rounded-lg p-3 bg-gray-50"
+          />
 
           {/* 프롬프트 입력 */}
           <div className="space-y-2">
