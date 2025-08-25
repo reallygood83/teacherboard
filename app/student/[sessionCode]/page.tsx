@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
-import React, { useState, useEffect } from "react"
-import { Card, CardContent, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
-import { useToast } from "@/hooks/use-toast"
+import React, { useState, useEffect } from "react";
+import { Card, CardContent, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { useToast } from "@/hooks/use-toast";
 import {
   ExternalLink,
   ChevronDown,
@@ -19,289 +19,256 @@ import {
   Globe,
   AlertCircle,
   RefreshCw
-} from "lucide-react"
-import { db, isFirebaseReady } from "@/lib/firebase"
-import { collection, query, orderBy, limit, getDocs, doc, getDoc, where } from "firebase/firestore"
+} from "lucide-react";
+import { db, isFirebaseReady } from "@/lib/firebase";
+import { collection, query, orderBy, limit, getDocs, doc, getDoc, where } from "firebase/firestore";
 
 interface SessionData {
-  id: string
-  title: string
-  description: string
-  teacherId: string
-  sessionCode: string
-  createdAt: any
-  isActive: boolean
+  id: string;
+  title: string;
+  description: string;
+  teacherId: string;
+  sessionCode: string;
+  createdAt: any;
+  isActive: boolean;
 }
 
 interface ChalkboardNote {
-  id: string
-  title: string
-  content: string
-  category: string
-  createdAt: any
-  updatedAt: any
+  id: string;
+  title: string;
+  content: string;
+  category: string;
+  createdAt: any;
+  updatedAt: any;
 }
 
 interface Notice {
-  id: string
-  title: string
-  content: string
-  category: string
-  priority: "low" | "medium" | "high"
-  createdAt: any
-  updatedAt: any
-  isActive: boolean
+  id: string;
+  title: string;
+  content: string;
+  category: string;
+  priority: "low" | "medium" | "high";
+  createdAt: any;
+  updatedAt: any;
+  isActive: boolean;
 }
 
-interface SharedLink {
-  id: string
-  title: string
-  url: string
-  description?: string
-  category: string
-  addedDate: string
-  createdAt: any
-  updatedAt: any
+interface SavedLink {
+  id: string;
+  title: string;
+  url: string;
+  description?: string;
+  category: string;
+  createdAt: any;
+  updatedAt: any;
+  isActive: boolean;
 }
 
 interface BookContent {
-  id: string
-  title: string
-  author?: string
-  category: "textbook" | "workbook" | "reference" | "activity"
-  subject?: string
-  pageRange?: string
-  content: string
-  createdAt: any
-  updatedAt: any
-  isActive: boolean
+  id: string;
+  title: string;
+  content: string;
+  category: string;
+  priority: "low" | "medium" | "high";
+  createdAt: any;
+  updatedAt: any;
+  isActive: boolean;
 }
 
 export default function StudentPage() {
-  const { toast } = useToast()
+  const { toast } = useToast();
   const [sessionCode] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return window.location.pathname.split('/').pop() || ''
+    if (typeof window !== "undefined") {
+      return window.location.pathname.split("/").pop() || "";
     }
-    return ''
-  })
-  
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [refreshing, setRefreshing] = useState(false)
-  const [sessionData, setSessionData] = useState<SessionData | null>(null)
-  const [notices, setNotices] = useState<Notice[]>([])
-  const [chalkboardNotes, setChalkboardNotes] = useState<ChalkboardNote[]>([])
-  const [sharedLinks, setSharedLinks] = useState<SharedLink[]>([])
-  const [bookContents, setBookContents] = useState<BookContent[]>([])
-  const [currentDate, setCurrentDate] = useState("")
-  
-  // 섹션 열림/닫힘 상태 (기본적으로 모두 열림)
-  const [sectionsOpen, setSectionsOpen] = useState({
-    announcements: true,
-    links: true,
-    classContent: true,
-    bookContent: true
-  })
-  
-  // 새로고침 상태
-  const [touchStart, setTouchStart] = useState<number | null>(null)
-  const [pullDistance, setPullDistance] = useState(0)
-  const [isPulling, setIsPulling] = useState(false)
+    return "";
+  });
 
-  // 현재 날짜 설정
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [sessionData, setSessionData] = useState<SessionData | null>(null);
+  const [notices, setNotices] = useState<Notice[]>([]);
+  const [savedLinks, setSavedLinks] = useState<SavedLink[]>([]);
+  const [chalkboardNotes, setChalkboardNotes] = useState<ChalkboardNote[]>([]);
+  const [bookContents, setBookContents] = useState<BookContent[]>([]);
+
+  // Collapsible state
+  const [openSections, setOpenSections] = useState({
+    notices: false,
+    links: false,
+    chalkboard: false,
+    books: false,
+  });
+
+  // Pull to refresh state
+  const [isPulling, setIsPulling] = useState(false);
+  const [pullDistance, setPullDistance] = useState(0);
+  const [touchStartY, setTouchStartY] = useState(0);
+
+  // Load session data and content
   useEffect(() => {
-    const today = new Date()
-    const options: Intl.DateTimeFormatOptions = {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      weekday: "long",
-    }
-    setCurrentDate(today.toLocaleDateString("ko-KR", options))
-  }, [])
+    if (!sessionCode) return;
+    loadSessionData();
+  }, [sessionCode]);
 
-  // 세션 유효성 확인 및 데이터 로드
   const loadSessionData = async () => {
-    if (!sessionCode || !isFirebaseReady()) {
-      setError("Firebase가 초기화되지 않았습니다.")
-      setLoading(false)
-      return
-    }
-
     try {
-      // 세션 코드로 세션 데이터 찾기
-      const sessionsRef = collection(db!, "studentSessions")
-      const sessionQuery = query(sessionsRef, where("sessionCode", "==", sessionCode), limit(1))
-      const sessionSnap = await getDocs(sessionQuery)
-      
-      if (sessionSnap.empty) {
-        setError("유효하지 않은 세션 코드입니다.")
-        setLoading(false)
-        return
+      setLoading(true);
+      setError(null);
+
+      if (!isFirebaseReady()) {
+        throw new Error("Firebase가 초기화되지 않았습니다.");
       }
 
-      const session = { id: sessionSnap.docs[0].id, ...sessionSnap.docs[0].data() } as SessionData
-      setSessionData(session)
+      // Load session data
+      const sessionQuery = query(
+        collection(db, "teachingSessions"),
+        where("sessionCode", "==", sessionCode)
+      );
 
-      // 교사 데이터 로드
-      await loadTeacherData(session.teacherId)
-      
-    } catch (err: any) {
-      console.error("세션 데이터 로드 실패:", err)
-      setError("데이터를 불러오는 중 오류가 발생했습니다.")
-    } finally {
-      setLoading(false)
-    }
-  }
+      const sessionSnapshot = await getDocs(sessionQuery);
 
-  // 교사 데이터 로드 (교사 ID를 통해)
-  const loadTeacherData = async (teacherId: string) => {
-    try {
-      // 공지사항 로드
-      const noticesRef = collection(db!, `users/${teacherId}/notices`)
-      const noticesQuery = query(
-        noticesRef, 
-        where('isActive', '==', true),
-        orderBy('createdAt', 'desc'), 
-        limit(10)
-      )
-      const noticesSnap = await getDocs(noticesQuery)
-      const noticesData = noticesSnap.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      })) as Notice[]
-      setNotices(noticesData)
-
-      // 수업 내용 로드
-      const chalkboardRef = collection(db!, `users/${teacherId}/chalkboardNotes`)
-      const chalkboardQuery = query(chalkboardRef, orderBy('createdAt', 'desc'), limit(10))
-      const chalkboardSnap = await getDocs(chalkboardQuery)
-      const chalkboardData = chalkboardSnap.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      })) as ChalkboardNote[]
-      setChalkboardNotes(chalkboardData)
-
-      // 링크 공유 로드 (savedLinks로 수정)
-      const linksRef = collection(db!, `users/${teacherId}/savedLinks`)
-      const linksQuery = query(linksRef, orderBy('createdAt', 'desc'), limit(10))
-      const linksSnap = await getDocs(linksQuery)
-      const linksData = linksSnap.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      })) as SharedLink[]
-      setSharedLinks(linksData)
-
-      // 도서 내용 로드
-      const bookRef = collection(db!, `users/${teacherId}/bookContents`)
-      const bookQuery = query(
-        bookRef, 
-        where('isActive', '==', true),
-        orderBy('createdAt', 'desc'), 
-        limit(10)
-      )
-      const bookSnap = await getDocs(bookQuery)
-      const bookData = bookSnap.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      })) as BookContent[]
-      setBookContents(bookData)
-
-    } catch (err: any) {
-      console.error("교사 데이터 로드 실패:", err)
-      toast({
-        title: "데이터 로드 오류",
-        description: "일부 내용을 불러오지 못했습니다.",
-        variant: "destructive"
-      })
-    }
-  }
-
-  // 페이지 로드 시 데이터 가져오기
-  useEffect(() => {
-    loadSessionData()
-  }, [sessionCode])
-
-  // 새로고침 기능
-  const handleRefresh = async () => {
-    setRefreshing(true)
-    try {
-      if (sessionData) {
-        await loadTeacherData(sessionData.teacherId)
+      if (sessionSnapshot.empty) {
+        throw new Error("세션 코드가 올바르지 않습니다.");
       }
-      toast({
-        title: "새로고침 완료",
-        description: "최신 내용을 불러왔습니다."
-      })
-    } catch (err) {
-      toast({
-        title: "새로고침 실패",
-        description: "다시 시도해주세요.",
-        variant: "destructive"
-      })
+
+      const sessionDoc = sessionSnapshot.docs[0];
+      const session = { id: sessionDoc.id, ...sessionDoc.data() } as SessionData;
+
+      if (!session.isActive) {
+        throw new Error("비활성화된 세션입니다.");
+      }
+
+      setSessionData(session);
+
+      // Load content for this teacher
+      await Promise.all([
+        loadNotices(session.teacherId),
+        loadSavedLinks(session.teacherId),
+        loadChalkboardNotes(session.teacherId),
+        loadBookContents(session.teacherId)
+      ]);
+    } catch (error: any) {
+      console.error("Failed to load session data:", error);
+      setError(error.message || "데이터 로딩 중 오류가 발생했습니다.");
     } finally {
-      setRefreshing(false)
+      setLoading(false);
     }
-  }
+  };
 
-  // 섹션 토글
-  const toggleSection = (section: keyof typeof sectionsOpen) => {
-    setSectionsOpen(prev => ({ ...prev, [section]: !prev[section] }))
-  }
-
-  // 날짜 포맷팅
-  const formatDate = (timestamp: any): string => {
+  const loadNotices = async (teacherId: string) => {
     try {
-      if (timestamp?.toDate) return timestamp.toDate().toLocaleString('ko-KR')
-      if (timestamp instanceof Date) return timestamp.toLocaleString('ko-KR')
-      if (typeof timestamp === 'string') return new Date(timestamp).toLocaleString('ko-KR')
-      return ""
-    } catch {
-      return ""
+      const noticesRef = collection(db, `users/${teacherId}/notices`);
+      const noticesQuery = query(noticesRef, where("isActive", "==", true), orderBy("createdAt", "desc"), limit(20));
+      const noticesSnapshot = await getDocs(noticesQuery);
+      const noticesData = noticesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Notice[];
+      setNotices(noticesData);
+    } catch (error) {
+      console.error("Failed to load notices:", error);
     }
-  }
+  };
 
-  // 링크 열기
-  const openLink = (url: string) => {
-    window.open(url, "_blank", "noopener,noreferrer")
-  }
+  const loadSavedLinks = async (teacherId: string) => {
+    try {
+      const linksRef = collection(db, `users/${teacherId}/savedLinks`);
+      const linksQuery = query(linksRef, where("isActive", "==", true), orderBy("createdAt", "desc"), limit(20));
+      const linksSnapshot = await getDocs(linksQuery);
+      const linksData = linksSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as SavedLink[];
+      setSavedLinks(linksData);
+    } catch (error) {
+      console.error("Failed to load saved links:", error);
+    }
+  };
 
-  // 모바일 터치 이벤트 핸들러 (Pull-to-refresh)
+  const loadChalkboardNotes = async (teacherId: string) => {
+    try {
+      const notesRef = collection(db, `users/${teacherId}/chalkboardNotes`);
+      const notesQuery = query(notesRef, orderBy("createdAt", "desc"), limit(20));
+      const notesSnapshot = await getDocs(notesQuery);
+      const notesData = notesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as ChalkboardNote[];
+      setChalkboardNotes(notesData);
+    } catch (error) {
+      console.error("Failed to load chalkboard notes:", error);
+    }
+  };
+
+  const loadBookContents = async (teacherId: string) => {
+    try {
+      const booksRef = collection(db, `users/${teacherId}/bookContents`);
+      const booksQuery = query(booksRef, where("isActive", "==", true), orderBy("createdAt", "desc"), limit(20));
+      const booksSnapshot = await getDocs(booksQuery);
+      const booksData = booksSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as BookContent[];
+      setBookContents(booksData);
+    } catch (error) {
+      console.error("Failed to load book contents:", error);
+    }
+  };
+
+  const toggleSection = (section: keyof typeof openSections) => {
+    setOpenSections(prev => ({
+      ...prev,
+      [section]: !prev[section]
+    }));
+  };
+
+  const getPriorityColor = (priority: string) => {
+    switch (priority) {
+      case "high":
+        return "bg-red-100 text-red-800 border-red-200";
+      case "medium":
+        return "bg-yellow-100 text-yellow-800 border-yellow-200";
+      case "low":
+        return "bg-green-100 text-green-800 border-green-200";
+      default:
+        return "bg-gray-100 text-gray-800 border-gray-200";
+    }
+  };
+
+  const getPriorityIcon = (priority: string) => {
+    switch (priority) {
+      case "high":
+        return "🔴";
+      case "medium":
+        return "🟡";
+      case "low":
+        return "🟢";
+      default:
+        return "⚪";
+    }
+  };
+
+  // Pull to refresh handlers
   const handleTouchStart = (e: React.TouchEvent) => {
     if (window.scrollY === 0) {
-      setTouchStart(e.touches[0].clientY)
+      setTouchStartY(e.touches[0].clientY);
     }
-  }
+  };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    if (touchStart === null) return
-    
-    const currentY = e.touches[0].clientY
-    const diff = currentY - touchStart
-    
-    if (diff > 0 && window.scrollY === 0) {
-      e.preventDefault()
-      setIsPulling(true)
-      setPullDistance(Math.min(diff * 0.5, 100))
+    if (window.scrollY === 0 && touchStartY > 0) {
+      const touchY = e.touches[0].clientY;
+      const diff = touchY - touchStartY;
       
-      if (diff > 120) {
-        if (navigator.vibrate) {
-          navigator.vibrate(20)
-        }
+      if (diff > 0) {
+        e.preventDefault();
+        const distance = Math.min(diff, 120);
+        setPullDistance(distance);
+        setIsPulling(distance > 50);
       }
     }
-  }
+  };
 
   const handleTouchEnd = () => {
-    if (isPulling && pullDistance > 60) {
-      handleRefresh()
+    if (isPulling && pullDistance > 50) {
+      loadSessionData();
+      toast({
+        title: "새로고침 완료",
+        description: "최신 정보를 불러왔습니다.",
+      });
     }
-    
-    setTouchStart(null)
-    setPullDistance(0)
-    setIsPulling(false)
-  }
+    setPullDistance(0);
+    setIsPulling(false);
+  };
 
   if (loading) {
     return (
@@ -311,7 +278,7 @@ export default function StudentPage() {
           <p className="text-gray-600 text-lg">학급 정보를 불러오는 중...</p>
         </div>
       </div>
-    )
+    );
   }
 
   if (error) {
@@ -321,12 +288,13 @@ export default function StudentPage() {
           <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-gray-900 mb-2">접근 오류</h2>
           <p className="text-gray-600 mb-4">{error}</p>
-          <Button onClick={() => window.location.reload()} variant="outline">
+          <Button onClick={() => window.location.reload()} className="bg-blue-600 hover:bg-blue-700">
+            <RefreshCw className="w-4 h-4 mr-2" />
             다시 시도
           </Button>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -339,354 +307,324 @@ export default function StudentPage() {
       {/* Pull-to-refresh 인디케이터 */}
       {isPulling && (
         <div 
-          className="fixed top-0 left-0 right-0 z-50 flex items-center justify-center bg-white/90 backdrop-blur-sm border-b transition-all duration-300 ease-out"
-          style={{ 
-            height: `${Math.max(pullDistance, 0)}px`,
-            transform: `translateY(-${Math.max(100 - pullDistance, 0)}px)`
-          }}
+          className="fixed top-0 left-0 right-0 bg-blue-100 text-blue-800 text-center py-2 z-50 transition-transform duration-200"
+          style={{ transform: `translateY(${Math.min(pullDistance - 50, 20)}px)` }}
         >
-          <div className="flex items-center gap-2 text-gray-600">
-            <RefreshCw 
-              className={`w-5 h-5 ${pullDistance > 60 ? 'animate-spin' : ''}`}
-              style={{ 
-                transform: `rotate(${pullDistance * 3.6}deg)`
-              }}
-            />
-            <span className="text-sm font-medium">
-              {pullDistance > 60 ? '놓으면 새로고침!' : '아래로 당겨서 새로고침'}
-            </span>
-          </div>
+          <RefreshCw className="w-4 h-4 inline mr-2" />
+          새로고침하려면 손을 놓으세요
         </div>
       )}
 
-      {/* Header - 더욱 밝고 친근한 디자인 (모바일 최적화) */}
-      <header className="bg-gradient-to-r from-pink-400 via-blue-500 to-purple-600 text-white py-6 px-4 md:py-8 shadow-xl relative overflow-hidden">
-        {/* 장식적 배경 요소 */}
-        <div className="absolute top-0 left-0 w-full h-full">
-          <div className="absolute top-4 left-4 w-12 h-12 bg-white/10 rounded-full animate-bounce" style={{ animationDelay: '0s', animationDuration: '3s' }}></div>
-          <div className="absolute top-8 right-12 w-8 h-8 bg-white/15 rounded-full animate-bounce" style={{ animationDelay: '1s', animationDuration: '2.5s' }}></div>
-          <div className="absolute top-12 left-1/3 w-6 h-6 bg-white/10 rounded-full animate-bounce" style={{ animationDelay: '2s', animationDuration: '3.5s' }}></div>
-          <div className="absolute bottom-8 right-1/4 w-10 h-10 bg-white/10 rounded-full animate-bounce" style={{ animationDelay: '1.5s', animationDuration: '2.8s' }}></div>
-        </div>
-        
-        <div className="max-w-6xl mx-auto relative z-10">
-          <div className="flex flex-col items-center justify-between gap-4 lg:flex-row">
-            <div className="text-center lg:text-left w-full lg:w-auto">
-              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 mb-3">
-                <div className="flex items-center gap-2">
-                  <Users className="w-8 h-8 text-white drop-shadow-lg" />
-                  <h1 className="text-3xl sm:text-4xl font-bold text-white drop-shadow-lg">
-                    {sessionData?.title || '우리 학급'}
-                  </h1>
-                </div>
-                <Badge className="bg-white/20 text-white border-white/30 text-sm px-3 py-1 rounded-full backdrop-blur-sm">
-                  세션코드: {sessionCode}
-                </Badge>
+      {/* Header */}
+      <header className="bg-white shadow-sm border-b sticky top-0 z-40">
+        <div className="max-w-6xl mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
+                <Users className="w-5 h-5 text-white" />
               </div>
-              <p className="text-lg text-white/90 leading-relaxed drop-shadow">
-                {sessionData?.description || '함께 배우고 성장하는 우리 학급 ✨'}
-              </p>
-            </div>
-            
-            <div className="flex flex-col items-center gap-3 text-center lg:text-right">
-              <div className="flex items-center gap-2 text-white/90">
-                <Globe className="w-5 h-5" />
-                <span className="text-base font-medium">{currentDate}</span>
+              <div>
+                <h1 className="text-lg font-bold text-gray-900">{sessionData?.title || "학급 홈페이지"}</h1>
+                <p className="text-sm text-gray-600">{sessionData?.description || "우리 학급 공간"}</p>
               </div>
-              <Button 
-                onClick={handleRefresh}
-                disabled={refreshing}
-                variant="secondary"
-                size="sm"
-                className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm transition-all duration-200"
-              >
-                <RefreshCw className={`w-4 h-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
-                새로고침
-              </Button>
             </div>
+            <Badge variant="secondary" className="bg-green-100 text-green-700 border-green-200">
+              <Globe className="w-3 h-3 mr-1" />
+              연결됨
+            </Badge>
           </div>
         </div>
       </header>
 
-      {/* Main Content - 4개의 접이식 섹션 */}
-      <main className="max-w-6xl mx-auto px-4 py-6 sm:py-8 space-y-6">
-        <div className="grid gap-6">
-
-          {/* 1. 공지사항 섹션 */}
-          <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg hover:shadow-xl transition-all duration-300">
-            <Collapsible 
-              open={sectionsOpen.announcements} 
-              onOpenChange={() => toggleSection('announcements')}
-            >
-              <CollapsibleTrigger className="w-full">
-                <CardTitle className="flex items-center justify-between p-6 text-left group cursor-pointer hover:bg-orange-50/50 rounded-lg transition-colors">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-gradient-to-br from-orange-400 to-red-500 rounded-full shadow-md">
-                      <MessageSquare className="w-6 h-6 text-white" />
-                    </div>
-                    <div>
-                      <span className="text-xl font-bold text-gray-900 group-hover:text-orange-600 transition-colors">
-                        공지사항 📢
-                      </span>
-                      <p className="text-sm text-gray-500 mt-1">선생님의 중요한 소식들</p>
-                    </div>
+      <main className="max-w-6xl mx-auto px-4 py-6 space-y-6">
+        {/* 공지사항 섹션 */}
+        <Card className="overflow-hidden shadow-lg border-0">
+          <Collapsible open={openSections.notices} onOpenChange={() => toggleSection("notices")}>
+            <CollapsibleTrigger className="w-full">
+              <CardTitle className="flex items-center justify-between p-6 text-left group cursor-pointer hover:bg-orange-50/50 rounded-lg transition-colors">
+                <div className="flex items-center space-x-3">
+                  <div className="w-12 h-12 bg-gradient-to-r from-orange-400 to-red-400 rounded-xl flex items-center justify-center shadow-lg">
+                    <MessageSquare className="w-6 h-6 text-white" />
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Badge variant="secondary" className="bg-orange-100 text-orange-700">
-                      {notices.length}개
+                  <div>
+                    <h2 className="text-xl font-bold text-gray-900 group-hover:text-orange-600 transition-colors">
+                      🔔 공지사항
+                    </h2>
+                    <p className="text-sm text-gray-600 mt-1">
+                      선생님의 중요한 알림 {notices.length}개
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-2">
+                  {notices.length > 0 && (
+                    <Badge className="bg-orange-100 text-orange-700 border-orange-200">
+                      {notices.length}
                     </Badge>
-                    <div className="p-2 rounded-full group-hover:bg-orange-100 transition-colors">
-                      {sectionsOpen.announcements ? 
-                        <ChevronUp className="w-6 h-6 text-orange-600 group-hover:animate-bounce" /> : 
-                        <ChevronDown className="w-6 h-6 text-orange-600 group-hover:animate-bounce" />
-                      }
-                    </div>
-                  </CardTitle>
-              </CollapsibleTrigger>
-              <CollapsibleContent>
-                <CardContent className="pt-0 pb-6 px-6">
-                  {notices.length > 0 ? (
-                    <div className="space-y-4">
-                      {notices.map((notice) => (
-                        <div key={notice.id} className="p-4 bg-gradient-to-r from-orange-50 to-amber-50 rounded-lg border border-orange-200 hover:shadow-md transition-shadow">
-                          <div className="flex items-start justify-between gap-3 mb-2">
-                            <h4 className="font-semibold text-orange-900 text-lg leading-tight flex-1">{notice.title}</h4>
-                            <div className="flex gap-2 flex-shrink-0">
-                              <Badge 
-                                variant="outline"
-                                className={`text-xs ${
-                                  notice.priority === "high" ? "border-red-300 text-red-700 bg-red-50" :
-                                  notice.priority === "medium" ? "border-yellow-300 text-yellow-700 bg-yellow-50" :
-                                  "border-green-300 text-green-700 bg-green-50"
-                                }`}
-                              >
-                                {notice.priority === "high" ? "중요" : notice.priority === "medium" ? "보통" : "일반"}
-                              </Badge>
-                              <Badge variant="outline" className="text-xs border-orange-300 text-orange-700">
-                                {notice.category}
-                              </Badge>
-                            </div>
-                          </div>
-                          <p className="text-gray-700 text-sm leading-relaxed mb-3">{notice.content}</p>
-                          <p className="text-xs text-gray-500">{formatDate(notice.createdAt)}</p>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="text-center py-8 text-gray-500">
-                      <MessageSquare className="w-12 h-12 mx-auto mb-3 text-gray-300" />
-                      <p>아직 등록된 공지사항이 없습니다.</p>
-                    </div>
                   )}
-                </CardContent>
-              </CollapsibleContent>
-            </Collapsible>
-          </Card>
-
-          {/* 2. 링크 공유 섹션 */}
-          <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg hover:shadow-xl transition-all duration-300">
-            <Collapsible 
-              open={sectionsOpen.links} 
-              onOpenChange={() => toggleSection('links')}
-            >
-              <CollapsibleTrigger className="w-full">
-                <CardTitle className="flex items-center justify-between p-6 text-left group cursor-pointer hover:bg-green-50/50 rounded-lg transition-colors">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full shadow-md">
-                      <Link className="w-6 h-6 text-white" />
-                    </div>
-                    <div>
-                      <span className="text-xl font-bold text-gray-900 group-hover:text-green-600 transition-colors">
-                        링크 공유 🔗
-                      </span>
-                      <p className="text-sm text-gray-500 mt-1">유용한 웹사이트와 자료들</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Badge variant="secondary" className="bg-green-100 text-green-700">
-                      {sharedLinks.length}개
-                    </Badge>
-                    <div className="p-2 rounded-full group-hover:bg-green-100 transition-colors">
-                      {sectionsOpen.links ? 
-                        <ChevronUp className="w-6 h-6 text-green-600 group-hover:animate-bounce" /> : 
-                        <ChevronDown className="w-6 h-6 text-green-600 group-hover:animate-bounce" />
-                      }
-                    </div>
-                  </CardTitle>
-              </CollapsibleTrigger>
-              <CollapsibleContent>
-                <CardContent className="pt-0 pb-6 px-6">
-                  {sharedLinks.length > 0 ? (
-                    <div className="grid gap-4 sm:grid-cols-2">
-                      {sharedLinks.map((link) => (
-                        <div 
-                          key={link.id} 
-                          onClick={() => openLink(link.url)}
-                          className="p-4 bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg border border-green-200 hover:shadow-md cursor-pointer transition-all group"
-                        >
-                          <div className="flex items-start gap-3">
-                            <ExternalLink className="w-5 h-5 text-green-600 flex-shrink-0 mt-1 group-hover:scale-110 transition-transform" />
-                            <div className="flex-1">
-                              <h4 className="font-semibold text-green-900 text-base leading-tight group-hover:text-green-700">{link.title}</h4>
-                              {link.description && (
-                                <p className="text-sm text-gray-600 mt-1 leading-relaxed">{link.description}</p>
-                              )}
-                              <div className="flex items-center gap-2 mt-2">
-                                <Badge variant="outline" className="text-xs border-green-300 text-green-700">
-                                  {link.category}
-                                </Badge>
-                                <span className="text-xs text-gray-500">{link.addedDate}</span>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
+                  {openSections.notices ? (
+                    <ChevronUp className="w-5 h-5 text-gray-400 group-hover:text-orange-500" />
                   ) : (
-                    <div className="text-center py-8 text-gray-500">
-                      <Link className="w-12 h-12 mx-auto mb-3 text-gray-300" />
-                      <p>아직 공유된 링크가 없습니다.</p>
-                    </div>
+                    <ChevronDown className="w-5 h-5 text-gray-400 group-hover:text-orange-500" />
                   )}
-                </CardContent>
-              </CollapsibleContent>
-            </Collapsible>
-          </Card>
-
-          {/* 3. 수업 내용 섹션 */}
-          <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg hover:shadow-xl transition-all duration-300">
-            <Collapsible 
-              open={sectionsOpen.classContent} 
-              onOpenChange={() => toggleSection('classContent')}
-            >
-              <CollapsibleTrigger className="w-full">
-                <CardTitle className="flex items-center justify-between p-6 text-left group cursor-pointer hover:bg-blue-50/50 rounded-lg transition-colors">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-full shadow-md">
-                      <BookOpen className="w-6 h-6 text-white" />
-                    </div>
-                    <div>
-                      <span className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
-                        수업 내용 📝
-                      </span>
-                      <p className="text-sm text-gray-500 mt-1">오늘 배운 내용과 수업 자료</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Badge variant="secondary" className="bg-blue-100 text-blue-700">
-                      {chalkboardNotes.length}개
-                    </Badge>
-                    <div className="p-2 rounded-full group-hover:bg-blue-100 transition-colors">
-                      {sectionsOpen.classContent ? 
-                        <ChevronUp className="w-6 h-6 text-blue-600 group-hover:animate-bounce" /> : 
-                        <ChevronDown className="w-6 h-6 text-blue-600 group-hover:animate-bounce" />
-                      }
-                    </div>
-                  </CardTitle>
-              </CollapsibleTrigger>
-              <CollapsibleContent>
-                <CardContent className="pt-0 pb-6 px-6">
-                  {chalkboardNotes.length > 0 ? (
-                    <div className="space-y-4">
-                      {chalkboardNotes.map((note) => (
-                        <div key={note.id} className="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200 hover:shadow-md transition-shadow">
-                          <div className="flex items-start justify-between gap-3 mb-2">
-                            <h4 className="font-semibold text-blue-900 text-lg leading-tight flex-1">{note.title}</h4>
-                            <Badge variant="outline" className="text-xs border-blue-300 text-blue-700 flex-shrink-0">
-                              {note.category}
+                </div>
+              </CardTitle>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <CardContent className="px-6 pb-6">
+                {notices.length > 0 ? (
+                  <div className="space-y-4">
+                    {notices.map((notice) => (
+                      <div
+                        key={notice.id}
+                        className="bg-gradient-to-r from-orange-50 to-red-50 border border-orange-200 rounded-xl p-5 hover:shadow-md transition-shadow"
+                      >
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="flex items-center space-x-2">
+                            <span className="text-lg">{getPriorityIcon(notice.priority)}</span>
+                            <Badge className={getPriorityColor(notice.priority)}>
+                              {notice.priority === "high" && "긴급"}
+                              {notice.priority === "medium" && "보통"}
+                              {notice.priority === "low" && "일반"}
                             </Badge>
                           </div>
-                          <p className="text-gray-700 text-sm leading-relaxed mb-3 whitespace-pre-wrap">{note.content}</p>
-                          <p className="text-xs text-gray-500">{formatDate(note.createdAt)}</p>
+                          <span className="text-xs text-gray-500">
+                            {notice.createdAt?.toDate?.()?.toLocaleDateString() || "날짜 없음"}
+                          </span>
                         </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="text-center py-8 text-gray-500">
-                      <BookOpen className="w-12 h-12 mx-auto mb-3 text-gray-300" />
-                      <p>아직 수업 내용이 없습니다.</p>
-                    </div>
-                  )}
-                </CardContent>
-              </CollapsibleContent>
-            </Collapsible>
-          </Card>
-
-          {/* 4. 도서 내용 섹션 */}
-          <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg hover:shadow-xl transition-all duration-300">
-            <Collapsible 
-              open={sectionsOpen.bookContent} 
-              onOpenChange={() => toggleSection('bookContent')}
-            >
-              <CollapsibleTrigger className="w-full">
-                <CardTitle className="flex items-center justify-between p-6 text-left group cursor-pointer hover:bg-purple-50/50 rounded-lg transition-colors">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-gradient-to-br from-purple-400 to-violet-500 rounded-full shadow-md">
-                      <Library className="w-6 h-6 text-white" />
-                    </div>
-                    <div>
-                      <span className="text-xl font-bold text-gray-900 group-hover:text-purple-600 transition-colors">
-                        도서 내용 📚
-                      </span>
-                      <p className="text-sm text-gray-500 mt-1">교과서와 참고서 주요 내용</p>
-                    </div>
+                        <h3 className="font-bold text-gray-900 mb-2">{notice.title}</h3>
+                        <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
+                          {notice.content}
+                        </p>
+                      </div>
+                    ))}
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Badge variant="secondary" className="bg-purple-100 text-purple-700">
-                      {bookContents.length}개
-                    </Badge>
-                    <div className="p-2 rounded-full group-hover:bg-purple-100 transition-colors">
-                      {sectionsOpen.bookContent ? 
-                        <ChevronUp className="w-6 h-6 text-purple-600 group-hover:animate-bounce" /> : 
-                        <ChevronDown className="w-6 h-6 text-purple-600 group-hover:animate-bounce" />
-                      }
-                    </div>
-                  </CardTitle>
-              </CollapsibleTrigger>
-              <CollapsibleContent>
-                <CardContent className="pt-0 pb-6 px-6">
-                  {bookContents.length > 0 ? (
-                    <div className="space-y-4">
-                      {bookContents.map((book) => (
-                        <div key={book.id} className="p-4 bg-gradient-to-r from-purple-50 to-violet-50 rounded-lg border border-purple-200 hover:shadow-md transition-shadow">
-                          <div className="flex items-start justify-between gap-3 mb-2">
-                            <h4 className="font-semibold text-purple-900 text-lg leading-tight flex-1">{book.title}</h4>
-                            <div className="flex gap-2 flex-wrap flex-shrink-0">
-                              <Badge variant="outline" className="text-xs border-purple-300 text-purple-700">
-                                {book.category === "textbook" ? "교과서" :
-                                 book.category === "workbook" ? "문제집" :
-                                 book.category === "reference" ? "참고서" : "활동지"}
-                              </Badge>
-                              {book.subject && (
-                                <Badge variant="outline" className="text-xs border-purple-300 text-purple-700">
-                                  {book.subject}
-                                </Badge>
-                              )}
-                            </div>
-                          </div>
-                          {book.author && (
-                            <p className="text-sm text-purple-700 mb-1">저자: {book.author}</p>
-                          )}
-                          {book.pageRange && (
-                            <p className="text-sm text-purple-700 mb-2">페이지: {book.pageRange}</p>
-                          )}
-                          <p className="text-gray-700 text-sm leading-relaxed mb-3 whitespace-pre-wrap">{book.content}</p>
-                          <p className="text-xs text-gray-500">{formatDate(book.createdAt)}</p>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="text-center py-8 text-gray-500">
-                      <Library className="w-12 h-12 mx-auto mb-3 text-gray-300" />
-                      <p>아직 도서 내용이 없습니다.</p>
-                    </div>
-                  )}
-                </CardContent>
-              </CollapsibleContent>
-            </Collapsible>
-          </Card>
+                ) : (
+                  <div className="text-center py-12 text-gray-500">
+                    <MessageSquare className="w-12 h-12 mx-auto mb-4 opacity-30" />
+                    <p className="text-lg font-medium">새로운 공지사항이 없습니다</p>
+                    <p className="text-sm">선생님이 공지를 등록하면 여기에 표시됩니다</p>
+                  </div>
+                )}
+              </CardContent>
+            </CollapsibleContent>
+          </Collapsible>
+        </Card>
 
-        </div>
+        {/* 링크 공유 섹션 */}
+        <Card className="overflow-hidden shadow-lg border-0">
+          <Collapsible open={openSections.links} onOpenChange={() => toggleSection("links")}>
+            <CollapsibleTrigger className="w-full">
+              <CardTitle className="flex items-center justify-between p-6 text-left group cursor-pointer hover:bg-blue-50/50 rounded-lg transition-colors">
+                <div className="flex items-center space-x-3">
+                  <div className="w-12 h-12 bg-gradient-to-r from-blue-400 to-indigo-400 rounded-xl flex items-center justify-center shadow-lg">
+                    <Link className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
+                      🔗 링크 공유
+                    </h2>
+                    <p className="text-sm text-gray-600 mt-1">
+                      유용한 학습 자료와 사이트 {savedLinks.length}개
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-2">
+                  {savedLinks.length > 0 && (
+                    <Badge className="bg-blue-100 text-blue-700 border-blue-200">
+                      {savedLinks.length}
+                    </Badge>
+                  )}
+                  {openSections.links ? (
+                    <ChevronUp className="w-5 h-5 text-gray-400 group-hover:text-blue-500" />
+                  ) : (
+                    <ChevronDown className="w-5 h-5 text-gray-400 group-hover:text-blue-500" />
+                  )}
+                </div>
+              </CardTitle>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <CardContent className="px-6 pb-6">
+                {savedLinks.length > 0 ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {savedLinks.map((link) => (
+                      <a
+                        key={link.id}
+                        href={link.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-5 hover:shadow-lg hover:scale-[1.02] transition-all duration-200 group"
+                      >
+                        <div className="flex items-start space-x-3">
+                          <ExternalLink className="w-5 h-5 text-blue-500 mt-1 group-hover:text-blue-600" />
+                          <div className="flex-1 min-w-0">
+                            <h3 className="font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors">
+                              {link.title}
+                            </h3>
+                            {link.description && (
+                              <p className="text-sm text-gray-600 mb-2 line-clamp-3">
+                                {link.description}
+                              </p>
+                            )}
+                            <p className="text-xs text-blue-600 truncate">
+                              {link.url}
+                            </p>
+                          </div>
+                        </div>
+                      </a>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-12 text-gray-500">
+                    <Link className="w-12 h-12 mx-auto mb-4 opacity-30" />
+                    <p className="text-lg font-medium">공유된 링크가 없습니다</p>
+                    <p className="text-sm">선생님이 유용한 링크를 공유하면 여기에 표시됩니다</p>
+                  </div>
+                )}
+              </CardContent>
+            </CollapsibleContent>
+          </Collapsible>
+        </Card>
+
+        {/* 수업 내용 섹션 */}
+        <Card className="overflow-hidden shadow-lg border-0">
+          <Collapsible open={openSections.chalkboard} onOpenChange={() => toggleSection("chalkboard")}>
+            <CollapsibleTrigger className="w-full">
+              <CardTitle className="flex items-center justify-between p-6 text-left group cursor-pointer hover:bg-green-50/50 rounded-lg transition-colors">
+                <div className="flex items-center space-x-3">
+                  <div className="w-12 h-12 bg-gradient-to-r from-green-400 to-teal-400 rounded-xl flex items-center justify-center shadow-lg">
+                    <BookOpen className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-bold text-gray-900 group-hover:text-green-600 transition-colors">
+                      📚 수업 내용
+                    </h2>
+                    <p className="text-sm text-gray-600 mt-1">
+                      오늘 배운 내용과 학습 자료 {chalkboardNotes.length}개
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-2">
+                  {chalkboardNotes.length > 0 && (
+                    <Badge className="bg-green-100 text-green-700 border-green-200">
+                      {chalkboardNotes.length}
+                    </Badge>
+                  )}
+                  {openSections.chalkboard ? (
+                    <ChevronUp className="w-5 h-5 text-gray-400 group-hover:text-green-500" />
+                  ) : (
+                    <ChevronDown className="w-5 h-5 text-gray-400 group-hover:text-green-500" />
+                  )}
+                </div>
+              </CardTitle>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <CardContent className="px-6 pb-6">
+                {chalkboardNotes.length > 0 ? (
+                  <div className="space-y-4">
+                    {chalkboardNotes.map((note) => (
+                      <div
+                        key={note.id}
+                        className="bg-gradient-to-r from-green-50 to-teal-50 border border-green-200 rounded-xl p-5 hover:shadow-md transition-shadow"
+                      >
+                        <div className="flex items-start justify-between mb-3">
+                          <Badge className="bg-green-100 text-green-700 border-green-200">
+                            {note.category || "일반"}
+                          </Badge>
+                          <span className="text-xs text-gray-500">
+                            {note.createdAt?.toDate?.()?.toLocaleDateString() || "날짜 없음"}
+                          </span>
+                        </div>
+                        <h3 className="font-bold text-gray-900 mb-3">{note.title}</h3>
+                        <div className="text-gray-700 leading-relaxed whitespace-pre-wrap">
+                          {note.content}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-12 text-gray-500">
+                    <BookOpen className="w-12 h-12 mx-auto mb-4 opacity-30" />
+                    <p className="text-lg font-medium">수업 내용이 없습니다</p>
+                    <p className="text-sm">선생님이 수업 내용을 작성하면 여기에 표시됩니다</p>
+                  </div>
+                )}
+              </CardContent>
+            </CollapsibleContent>
+          </Collapsible>
+        </Card>
+
+        {/* 도서 내용 섹션 */}
+        <Card className="overflow-hidden shadow-lg border-0">
+          <Collapsible open={openSections.books} onOpenChange={() => toggleSection("books")}>
+            <CollapsibleTrigger className="w-full">
+              <CardTitle className="flex items-center justify-between p-6 text-left group cursor-pointer hover:bg-purple-50/50 rounded-lg transition-colors">
+                <div className="flex items-center space-x-3">
+                  <div className="w-12 h-12 bg-gradient-to-r from-purple-400 to-pink-400 rounded-xl flex items-center justify-center shadow-lg">
+                    <Library className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-bold text-gray-900 group-hover:text-purple-600 transition-colors">
+                      📖 도서 내용
+                    </h2>
+                    <p className="text-sm text-gray-600 mt-1">
+                      함께 읽는 책과 독서 자료 {bookContents.length}개
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-2">
+                  {bookContents.length > 0 && (
+                    <Badge className="bg-purple-100 text-purple-700 border-purple-200">
+                      {bookContents.length}
+                    </Badge>
+                  )}
+                  {openSections.books ? (
+                    <ChevronUp className="w-5 h-5 text-gray-400 group-hover:text-purple-500" />
+                  ) : (
+                    <ChevronDown className="w-5 h-5 text-gray-400 group-hover:text-purple-500" />
+                  )}
+                </div>
+              </CardTitle>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <CardContent className="px-6 pb-6">
+                {bookContents.length > 0 ? (
+                  <div className="space-y-4">
+                    {bookContents.map((book) => (
+                      <div
+                        key={book.id}
+                        className="bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 rounded-xl p-5 hover:shadow-md transition-shadow"
+                      >
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="flex items-center space-x-2">
+                            <span className="text-lg">{getPriorityIcon(book.priority)}</span>
+                            <Badge className={getPriorityColor(book.priority).replace("red", "purple").replace("yellow", "purple").replace("green", "purple")}>
+                              {book.priority === "high" && "필독"}
+                              {book.priority === "medium" && "권장"}
+                              {book.priority === "low" && "참고"}
+                            </Badge>
+                          </div>
+                          <span className="text-xs text-gray-500">
+                            {book.createdAt?.toDate?.()?.toLocaleDateString() || "날짜 없음"}
+                          </span>
+                        </div>
+                        <h3 className="font-bold text-gray-900 mb-3">{book.title}</h3>
+                        <div className="text-gray-700 leading-relaxed whitespace-pre-wrap">
+                          {book.content}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-12 text-gray-500">
+                    <Library className="w-12 h-12 mx-auto mb-4 opacity-30" />
+                    <p className="text-lg font-medium">도서 내용이 없습니다</p>
+                    <p className="text-sm">선생님이 독서 자료를 올리면 여기에 표시됩니다</p>
+                  </div>
+                )}
+              </CardContent>
+            </CollapsibleContent>
+          </Collapsible>
+        </Card>
       </main>
 
       {/* Footer - 학생 친화적 (모바일 최적화) */}
@@ -706,5 +644,5 @@ export default function StudentPage() {
         </div>
       </footer>
     </div>
-  )
+  );
 }
