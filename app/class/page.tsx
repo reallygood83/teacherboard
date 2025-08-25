@@ -32,6 +32,9 @@ import { DigitalClock } from "@/components/digital-clock"
 import { Chalkboard } from "@/components/chalkboard"
 import { StudentPicker } from "@/components/student-picker"
 import { GroupMaker } from "@/components/group-maker"
+import StudentSharing from "@/components/student-sharing"
+import NoticeManager from "@/components/notice-manager"
+import BookContentManager from "@/components/book-content-manager"
 import { LinkEmbedder } from "@/components/link-embedder"
 import { Timetable } from "@/components/timetable"
 import { YoutubeSearch } from "@/components/youtube-search"
@@ -687,6 +690,16 @@ export default function ClassHomepage() {
 
           {/* 학생 관리 탭 */}
           <TabsContent value="students" className="space-y-6">
+            {/* 학생 페이지 공유 (전체 너비) */}
+            <StudentSharing accentColor={getAccentColor()} />
+            
+            {/* 공지사항 관리 (전체 너비) */}
+            <NoticeManager accentColor={getAccentColor()} />
+            
+            {/* 도서 내용 관리 (전체 너비) */}
+            <BookContentManager accentColor={getAccentColor()} />
+            
+            {/* 학생 활동 도구들 (2열 그리드) */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
               <Card className="card-hover">
                 <CardHeader>

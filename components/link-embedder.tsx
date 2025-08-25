@@ -7,6 +7,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { ExternalLink, Plus, Trash2, BookOpen, Globe, Video, Calculator, Star, StarOff } from "lucide-react"
+import { useAuth } from "@/contexts/AuthContext"
+import { db } from "@/lib/firebase"
+import { collection, addDoc, deleteDoc, doc, updateDoc, onSnapshot, query, orderBy, serverTimestamp } from "firebase/firestore"
 
 interface SavedLink {
   id: string
@@ -16,6 +19,7 @@ interface SavedLink {
   category: string
   addedDate: string
   isQuickLink?: boolean
+  createdAt?: any
 }
 
 const educationalSites = [
@@ -39,28 +43,74 @@ interface LinkEmbedderProps {
 }
 
 export function LinkEmbedder({ onLinksUpdate }: LinkEmbedderProps = {}) {
+  const { currentUser } = useAuth()
   const [linkTitle, setLinkTitle] = useState("")
   const [linkUrl, setLinkUrl] = useState("")
   const [linkDescription, setLinkDescription] = useState("")
   const [linkCategory, setLinkCategory] = useState("기타")
   const [savedLinks, setSavedLinks] = useState<SavedLink[]>([])
   const [filterCategory, setFilterCategory] = useState("전체")
+  const [loading, setLoading] = useState(false)
 
+  // Load links from Firebase or localStorage
   useEffect(() => {
-    const savedLinksData = localStorage.getItem("classHomepageLinks")
-    if (savedLinksData) {
-      setSavedLinks(JSON.parse(savedLinksData))
+    if (currentUser && db) {
+      const linksRef = collection(db, `users/${currentUser.uid}/savedLinks`)
+      const q = query(linksRef, orderBy('createdAt', 'desc'))
+      
+      const unsubscribe = onSnapshot(q, (snapshot) => {
+        const linksData = snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+        })) as SavedLink[]
+        
+        if (linksData.length === 0) {
+          // Initialize with default educational sites
+          initializeDefaultLinks()
+        } else {
+          setSavedLinks(linksData)
+          localStorage.setItem("classHomepageLinks", JSON.stringify(linksData))
+        }
+      })
+      
+      return () => unsubscribe()
     } else {
-      // 기본 교육 사이트들을 초기 데이터로 설정
-      const defaultLinks = educationalSites.map((site, index) => ({
-        id: `default-${index}`,
-        ...site,
-        addedDate: new Date().toLocaleDateString("ko-KR"),
-      }))
-      setSavedLinks(defaultLinks)
-      localStorage.setItem("classHomepageLinks", JSON.stringify(defaultLinks))
+      // Fallback to localStorage when Firebase is not available
+      const savedLinksData = localStorage.getItem("classHomepageLinks")
+      if (savedLinksData) {
+        setSavedLinks(JSON.parse(savedLinksData))
+      } else {
+        initializeDefaultLinks()
+      }
     }
-  }, [])
+  }, [currentUser])
+
+  const initializeDefaultLinks = async () => {
+    const defaultLinks = educationalSites.map((site, index) => ({
+      id: `default-${index}`,
+      ...site,
+      addedDate: new Date().toLocaleDateString("ko-KR"),
+      createdAt: new Date()
+    }))
+    
+    setSavedLinks(defaultLinks)
+    localStorage.setItem("classHomepageLinks", JSON.stringify(defaultLinks))
+    
+    // Save default links to Firebase if user is logged in
+    if (currentUser && db) {
+      try {
+        for (const link of defaultLinks) {
+          const { id, ...linkData } = link
+          await addDoc(collection(db, `users/${currentUser.uid}/savedLinks`), {
+            ...linkData,
+            createdAt: serverTimestamp()
+          })
+        }
+      } catch (error) {
+        console.error('Error saving default links to Firebase:', error)
+      }
+    }
+  }
 
   const saveLinksToStorage = (links: SavedLink[]) => {
     localStorage.setItem("classHomepageLinks", JSON.stringify(links))
@@ -70,68 +120,137 @@ export function LinkEmbedder({ onLinksUpdate }: LinkEmbedderProps = {}) {
     }
   }
 
-  const addLink = () => {
+  const addLink = async () => {
     if (!linkTitle || !linkUrl) {
       alert("제목과 URL을 모두 입력해주세요.")
       return
     }
 
-    const newLink: SavedLink = {
-      id: Date.now().toString(),
+    const newLinkData = {
       title: linkTitle,
       url: linkUrl.startsWith("http") ? linkUrl : `https://${linkUrl}`,
       description: linkDescription,
       category: linkCategory,
       addedDate: new Date().toLocaleDateString("ko-KR"),
+      createdAt: serverTimestamp()
     }
 
-    const updatedLinks = [...savedLinks, newLink]
-    setSavedLinks(updatedLinks)
-    saveLinksToStorage(updatedLinks)
+    setLoading(true)
+    try {
+      if (currentUser && db) {
+        await addDoc(collection(db, `users/${currentUser.uid}/savedLinks`), newLinkData)
+      } else {
+        // Fallback to localStorage
+        const newLink: SavedLink = {
+          id: Date.now().toString(),
+          ...newLinkData,
+          createdAt: new Date()
+        }
+        const updatedLinks = [...savedLinks, newLink]
+        setSavedLinks(updatedLinks)
+        saveLinksToStorage(updatedLinks)
+      }
 
-    setLinkTitle("")
-    setLinkUrl("")
-    setLinkDescription("")
-    setLinkCategory("기타")
+      setLinkTitle("")
+      setLinkUrl("")
+      setLinkDescription("")
+      setLinkCategory("기타")
+    } catch (error) {
+      console.error('Error adding link:', error)
+      alert("링크 추가 중 오류가 발생했습니다.")
+    } finally {
+      setLoading(false)
+    }
   }
 
-  const removeLink = (id: string) => {
-    const updatedLinks = savedLinks.filter((link) => link.id !== id)
-    setSavedLinks(updatedLinks)
-    saveLinksToStorage(updatedLinks)
+  const removeLink = async (id: string) => {
+    setLoading(true)
+    try {
+      if (currentUser && db) {
+        await deleteDoc(doc(db, `users/${currentUser.uid}/savedLinks`, id))
+      } else {
+        // Fallback to localStorage
+        const updatedLinks = savedLinks.filter((link) => link.id !== id)
+        setSavedLinks(updatedLinks)
+        saveLinksToStorage(updatedLinks)
+      }
+    } catch (error) {
+      console.error('Error removing link:', error)
+      alert("링크 삭제 중 오류가 발생했습니다.")
+    } finally {
+      setLoading(false)
+    }
   }
 
-  const addQuickLink = (site: (typeof educationalSites)[0]) => {
+  const addQuickLink = async (site: (typeof educationalSites)[0]) => {
     const existingLink = savedLinks.find((link) => link.url === site.url)
     if (existingLink) {
       alert("이미 추가된 링크입니다.")
       return
     }
 
-    const newLink: SavedLink = {
-      id: Date.now().toString(),
+    const newLinkData = {
       ...site,
       addedDate: new Date().toLocaleDateString("ko-KR"),
+      createdAt: serverTimestamp()
     }
 
-    const updatedLinks = [...savedLinks, newLink]
-    setSavedLinks(updatedLinks)
-    saveLinksToStorage(updatedLinks)
+    setLoading(true)
+    try {
+      if (currentUser && db) {
+        await addDoc(collection(db, `users/${currentUser.uid}/savedLinks`), newLinkData)
+      } else {
+        // Fallback to localStorage
+        const newLink: SavedLink = {
+          id: Date.now().toString(),
+          ...newLinkData,
+          createdAt: new Date()
+        }
+        const updatedLinks = [...savedLinks, newLink]
+        setSavedLinks(updatedLinks)
+        saveLinksToStorage(updatedLinks)
+      }
+    } catch (error) {
+      console.error('Error adding quick link:', error)
+      alert("빠른 링크 추가 중 오류가 발생했습니다.")
+    } finally {
+      setLoading(false)
+    }
   }
 
   const openLink = (url: string) => {
     window.open(url, "_blank")
   }
 
-  const toggleQuickLink = (id: string) => {
-    const updatedLinks = savedLinks.map((link) => {
-      if (link.id === id) {
-        return { ...link, isQuickLink: !link.isQuickLink }
+  const toggleQuickLink = async (id: string) => {
+    const link = savedLinks.find(l => l.id === id)
+    if (!link) return
+
+    const updatedIsQuickLink = !link.isQuickLink
+
+    setLoading(true)
+    try {
+      if (currentUser && db) {
+        await updateDoc(doc(db, `users/${currentUser.uid}/savedLinks`, id), {
+          isQuickLink: updatedIsQuickLink
+        })
+      } else {
+        // Fallback to localStorage
+        const updatedLinks = savedLinks.map((link) => {
+          if (link.id === id) {
+            return { ...link, isQuickLink: updatedIsQuickLink }
+          }
+          return link
+        })
+        setSavedLinks(updatedLinks)
+        saveLinksToStorage(updatedLinks)
       }
-      return link
-    })
-    setSavedLinks(updatedLinks)
-    saveLinksToStorage(updatedLinks)
+    } catch (error) {
+      console.error('Error toggling quick link:', error)
+      alert("빠른 링크 설정 중 오류가 발생했습니다.")
+    } finally {
+      setLoading(false)
+    }
   }
 
   const getCategoryIcon = (category: string) => {
@@ -226,9 +345,9 @@ export function LinkEmbedder({ onLinksUpdate }: LinkEmbedderProps = {}) {
               placeholder="링크에 대한 간단한 설명"
             />
           </div>
-          <Button onClick={addLink} className="w-full bg-green-600 hover:bg-green-700">
+          <Button onClick={addLink} disabled={loading} className="w-full bg-green-600 hover:bg-green-700">
             <Plus className="w-4 h-4 mr-2" />
-            링크 추가
+            {loading ? "추가 중..." : "링크 추가"}
           </Button>
         </CardContent>
       </Card>
