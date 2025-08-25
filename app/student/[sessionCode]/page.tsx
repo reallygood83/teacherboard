@@ -164,9 +164,11 @@ export default function StudentPage() {
   const loadNotices = async (teacherId: string) => {
     try {
       const noticesRef = collection(db, `users/${teacherId}/notices`);
-      const noticesQuery = query(noticesRef, where("isActive", "==", true), orderBy("createdAt", "desc"), limit(20));
+      const noticesQuery = query(noticesRef, orderBy("createdAt", "desc"), limit(20));
       const noticesSnapshot = await getDocs(noticesQuery);
-      const noticesData = noticesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Notice[];
+      const noticesData = noticesSnapshot.docs
+        .map(doc => ({ id: doc.id, ...doc.data() })) as Notice[]
+        .filter(notice => notice.isActive !== false); // isActive가 false가 아닌 것만 표시
       setNotices(noticesData);
     } catch (error) {
       console.error("Failed to load notices:", error);
@@ -176,9 +178,11 @@ export default function StudentPage() {
   const loadSavedLinks = async (teacherId: string) => {
     try {
       const linksRef = collection(db, `users/${teacherId}/savedLinks`);
-      const linksQuery = query(linksRef, where("isActive", "==", true), orderBy("createdAt", "desc"), limit(20));
+      const linksQuery = query(linksRef, orderBy("createdAt", "desc"), limit(20));
       const linksSnapshot = await getDocs(linksQuery);
-      const linksData = linksSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as SavedLink[];
+      const linksData = linksSnapshot.docs
+        .map(doc => ({ id: doc.id, ...doc.data() })) as SavedLink[]
+        .filter(link => link.isActive !== false); // isActive가 false가 아닌 것만 표시
       setSavedLinks(linksData);
     } catch (error) {
       console.error("Failed to load saved links:", error);
@@ -200,9 +204,11 @@ export default function StudentPage() {
   const loadBookContents = async (teacherId: string) => {
     try {
       const booksRef = collection(db, `users/${teacherId}/bookContents`);
-      const booksQuery = query(booksRef, where("isActive", "==", true), orderBy("createdAt", "desc"), limit(20));
+      const booksQuery = query(booksRef, orderBy("createdAt", "desc"), limit(20));
       const booksSnapshot = await getDocs(booksQuery);
-      const booksData = booksSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as BookContent[];
+      const booksData = booksSnapshot.docs
+        .map(doc => ({ id: doc.id, ...doc.data() })) as BookContent[]
+        .filter(book => book.isActive !== false); // isActive가 false가 아닌 것만 표시
       setBookContents(booksData);
     } catch (error) {
       console.error("Failed to load book contents:", error);
