@@ -166,9 +166,8 @@ export default function StudentPage() {
       const noticesRef = collection(db, `users/${teacherId}/notices`);
       const noticesQuery = query(noticesRef, orderBy("createdAt", "desc"), limit(20));
       const noticesSnapshot = await getDocs(noticesQuery);
-      const noticesData = noticesSnapshot.docs
-        .map(doc => ({ id: doc.id, ...doc.data() })) as Notice[]
-        .filter(notice => notice.isActive !== false); // Show only active notices
+      const allNotices = noticesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Notice[];
+      const noticesData = allNotices.filter(notice => notice.isActive !== false);
       setNotices(noticesData);
     } catch (error) {
       console.error("Failed to load notices:", error);
@@ -180,9 +179,8 @@ export default function StudentPage() {
       const linksRef = collection(db, `users/${teacherId}/savedLinks`);
       const linksQuery = query(linksRef, orderBy("createdAt", "desc"), limit(20));
       const linksSnapshot = await getDocs(linksQuery);
-      const linksData = linksSnapshot.docs
-        .map(doc => ({ id: doc.id, ...doc.data() })) as SavedLink[]
-        .filter(link => link.isActive !== false); // Show only active links
+      const allLinks = linksSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as SavedLink[];
+      const linksData = allLinks.filter(link => link.isActive !== false);
       setSavedLinks(linksData);
     } catch (error) {
       console.error("Failed to load saved links:", error);
@@ -206,9 +204,8 @@ export default function StudentPage() {
       const booksRef = collection(db, `users/${teacherId}/bookContents`);
       const booksQuery = query(booksRef, orderBy("createdAt", "desc"), limit(20));
       const booksSnapshot = await getDocs(booksQuery);
-      const booksData = booksSnapshot.docs
-        .map(doc => ({ id: doc.id, ...doc.data() })) as BookContent[]
-        .filter(book => book.isActive !== false); // Show only active books
+      const allBooks = booksSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as BookContent[];
+      const booksData = allBooks.filter(book => book.isActive !== false);
       setBookContents(booksData);
     } catch (error) {
       console.error("Failed to load book contents:", error);
