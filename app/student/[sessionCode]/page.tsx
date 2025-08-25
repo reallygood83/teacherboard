@@ -122,7 +122,7 @@ export default function StudentPage() {
 
       // Load session data
       const sessionQuery = query(
-        collection(db, "teachingSessions"),
+        collection(db, "sessions"),
         where("sessionCode", "==", sessionCode)
       );
 
