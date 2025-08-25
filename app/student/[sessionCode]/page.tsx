@@ -168,7 +168,7 @@ export default function StudentPage() {
       const noticesSnapshot = await getDocs(noticesQuery);
       const noticesData = noticesSnapshot.docs
         .map(doc => ({ id: doc.id, ...doc.data() })) as Notice[]
-        .filter(notice => notice.isActive !== false); // isActive가 false가 아닌 것만 표시
+        .filter(notice => notice.isActive !== false); // Show only active notices
       setNotices(noticesData);
     } catch (error) {
       console.error("Failed to load notices:", error);
@@ -182,7 +182,7 @@ export default function StudentPage() {
       const linksSnapshot = await getDocs(linksQuery);
       const linksData = linksSnapshot.docs
         .map(doc => ({ id: doc.id, ...doc.data() })) as SavedLink[]
-        .filter(link => link.isActive !== false); // isActive가 false가 아닌 것만 표시
+        .filter(link => link.isActive !== false); // Show only active links
       setSavedLinks(linksData);
     } catch (error) {
       console.error("Failed to load saved links:", error);
@@ -208,7 +208,7 @@ export default function StudentPage() {
       const booksSnapshot = await getDocs(booksQuery);
       const booksData = booksSnapshot.docs
         .map(doc => ({ id: doc.id, ...doc.data() })) as BookContent[]
-        .filter(book => book.isActive !== false); // isActive가 false가 아닌 것만 표시
+        .filter(book => book.isActive !== false); // Show only active books
       setBookContents(booksData);
     } catch (error) {
       console.error("Failed to load book contents:", error);
