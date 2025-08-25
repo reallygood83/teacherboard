@@ -296,7 +296,7 @@ export default function StudentPage() {
           <p className="text-gray-600 text-lg">학급 정보를 불러오는 중...</p>
         </div>
       </div>
-    )
+    );
   }
 
   if (error) {
@@ -311,7 +311,7 @@ export default function StudentPage() {
           </Button>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -722,5 +722,5 @@ export default function StudentPage() {
         </div>
       </footer>
     </div>
-  )
+  );
 }
