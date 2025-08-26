@@ -588,11 +588,12 @@ export default function StudentPage() {
                             <h3 className="font-bold text-gray-900 mb-3 text-left">{note.title}</h3>
                             
                             {!isExpanded ? (
-                              <p className="text-gray-600 leading-relaxed text-sm text-left">
+                              <p className="text-gray-800 leading-relaxed text-sm text-left font-medium">
                                 {contentPreview}
                               </p>
                             ) : (
-                              <div className="text-gray-700 leading-relaxed text-left" 
+                              <div className="text-gray-900 leading-relaxed text-left font-medium" 
+                                   style={{ color: '#1f2937' }}
                                    dangerouslySetInnerHTML={{ 
                                      __html: note.contentHtml || note.contentText || "내용 없음" 
                                    }}
