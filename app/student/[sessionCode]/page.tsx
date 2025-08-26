@@ -592,7 +592,7 @@ export default function StudentPage() {
                                 {contentPreview}
                               </p>
                             ) : (
-                              <div className="text-gray-900 leading-relaxed text-left font-medium" 
+                              <div className="text-gray-900 leading-relaxed text-left font-medium chalkboard-content" 
                                    style={{ color: '#1f2937' }}
                                    dangerouslySetInnerHTML={{ 
                                      __html: note.contentHtml || note.contentText || "내용 없음" 
@@ -712,6 +712,27 @@ export default function StudentPage() {
           </div>
         </div>
       </footer>
+
+      {/* 칠판 내용 텍스트 색상 강제 적용 스타일 */}
+      <style jsx>{`
+        .chalkboard-content * {
+          color: #1f2937 !important;
+        }
+        .chalkboard-content p,
+        .chalkboard-content div,
+        .chalkboard-content span,
+        .chalkboard-content h1,
+        .chalkboard-content h2,
+        .chalkboard-content h3,
+        .chalkboard-content h4,
+        .chalkboard-content h5,
+        .chalkboard-content h6,
+        .chalkboard-content li,
+        .chalkboard-content td,
+        .chalkboard-content th {
+          color: #1f2937 !important;
+        }
+      `}</style>
     </div>
   );
 }
