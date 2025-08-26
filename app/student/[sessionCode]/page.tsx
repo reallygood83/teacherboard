@@ -78,12 +78,7 @@ interface BookContent {
 
 export default function StudentPage() {
   const { toast } = useToast();
-  const [sessionCode] = useState(() => {
-    if (typeof window !== "undefined") {
-      return window.location.pathname.split("/").pop() || "";
-    }
-    return "";
-  });
+  const [sessionCode, setSessionCode] = useState("");
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -109,6 +104,14 @@ export default function StudentPage() {
   const [pullDistance, setPullDistance] = useState(0);
   const [touchStartY, setTouchStartY] = useState(0);
 
+  // Initialize session code from URL (Android Chrome compatible)
+  useEffect(() => {
+    const pathSegments = window.location.pathname.split("/");
+    const code = pathSegments[pathSegments.length - 1] || "";
+    console.log("SessionCode initialized:", code); // Android Chrome debug log
+    setSessionCode(code);
+  }, []);
+
   // Load session data and content
   useEffect(() => {
     if (!sessionCode) return;
@@ -120,8 +123,15 @@ export default function StudentPage() {
       setLoading(true);
       setError(null);
 
+      // Android Chrome specific debugging
+      const userAgent = navigator.userAgent;
+      const isAndroidChrome = /Android.*Chrome/.test(userAgent);
+      console.log("🔍 Browser info:", { userAgent, isAndroidChrome });
+
       if (!isFirebaseReady()) {
-        throw new Error("Firebase가 초기화되지 않았습니다.");
+        const errorMsg = "Firebase가 초기화되지 않았습니다.";
+        console.error("❌ Firebase Error (Android Chrome):", { isAndroidChrome, errorMsg });
+        throw new Error(errorMsg);
       }
 
       // Load session data by document ID (sessionCode)
@@ -158,7 +168,13 @@ export default function StudentPage() {
         loadBookContents(session.teacherId)
       ]);
     } catch (error: any) {
-      console.error("Failed to load session data:", error);
+      const isAndroidChrome = /Android.*Chrome/.test(navigator.userAgent);
+      console.error("❌ Failed to load session data (Android Chrome):", { 
+        error: error.message, 
+        isAndroidChrome, 
+        sessionCode,
+        stack: error.stack 
+      });
       setError(error.message || "데이터 로딩 중 오류가 발생했습니다.");
     } finally {
       setLoading(false);
@@ -270,14 +286,27 @@ export default function StudentPage() {
     }
   };
 
-  // Pull to refresh handlers
+  // Pull to refresh handlers (Android Chrome compatibility)
   const handleTouchStart = (e: React.TouchEvent) => {
+    const isAndroidChrome = /Android.*Chrome/.test(navigator.userAgent);
+    
+    // Disable pull-to-refresh on Android Chrome to prevent conflicts
+    if (isAndroidChrome) {
+      console.log("🚫 Pull-to-refresh disabled for Android Chrome");
+      return;
+    }
+    
     if (window.scrollY === 0) {
       setTouchStartY(e.touches[0].clientY);
     }
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
+    const isAndroidChrome = /Android.*Chrome/.test(navigator.userAgent);
+    
+    // Skip pull-to-refresh handling on Android Chrome
+    if (isAndroidChrome) return;
+    
     if (window.scrollY === 0 && touchStartY > 0) {
       const touchY = e.touches[0].clientY;
       const diff = touchY - touchStartY;
@@ -292,6 +321,11 @@ export default function StudentPage() {
   };
 
   const handleTouchEnd = () => {
+    const isAndroidChrome = /Android.*Chrome/.test(navigator.userAgent);
+    
+    // Skip pull-to-refresh handling on Android Chrome
+    if (isAndroidChrome) return;
+    
     if (isPulling && pullDistance > 50) {
       loadSessionData();
       toast({
