@@ -520,8 +520,8 @@ export default function ClassHomepage() {
           {/* 수업 도구 탭 */}
           <TabsContent value="tools" className="space-y-6">
             <div className="flex flex-col md:flex-row gap-4">
-              {/* 수업 칠판 - 75% */}
-              <div className={`transition-all duration-300 ${isQuickLinksCollapsed ? 'flex-1' : 'flex-[3]'}`}>
+              {/* 수업 칠판 - 정확한 75% 너비 */}
+              <div className={`transition-all duration-300 ${isQuickLinksCollapsed ? 'w-full' : 'md:w-[75%] w-full'}`}>
                 <Card className="card-hover h-full">
                   <CardHeader>
                     <CardTitle className={`flex items-center gap-2 font-serif`}>
@@ -539,9 +539,9 @@ export default function ClassHomepage() {
                 </Card>
               </div>
 
-              {/* 빠른 링크 - 25% 또는 접혀있을 때 숨김 */}
-              {!isQuickLinksCollapsed && (
-                <div className="flex-1">
+              {/* 빠른 링크 - 정확한 25% 너비 */}
+              <div className={`transition-all duration-300 ${isQuickLinksCollapsed ? 'md:w-auto w-full' : 'md:w-[25%] w-full'}`}>
+                {!isQuickLinksCollapsed && (
                   <Card className="card-hover h-full">
                     <CardHeader>
                       <CardTitle className={`flex items-center justify-between gap-2 font-serif`}>
@@ -553,7 +553,7 @@ export default function ClassHomepage() {
                           variant="ghost" 
                           size="sm"
                           onClick={() => setIsQuickLinksCollapsed(true)}
-                          className="h-6 w-6 p-0"
+                          className="h-6 w-6 p-0 hover:bg-gray-100"
                         >
                           <ChevronRight className="w-4 h-4" />
                         </Button>
@@ -619,23 +619,25 @@ export default function ClassHomepage() {
                       )}
                     </CardContent>
                   </Card>
-                </div>
-              )}
+                )}
 
-              {/* 접힌 상태에서 펼치기 버튼 */}
-              {isQuickLinksCollapsed && (
-                <div className="flex items-start justify-end pt-2 pr-4 pb-2 min-h-[3rem]">
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    onClick={() => setIsQuickLinksCollapsed(false)}
-                    className="h-8 w-8 p-0 bg-white shadow-sm hover:shadow-md transition-shadow"
-                    title="빠른 링크 펼치기"
-                  >
-                    <ChevronLeft className="w-4 h-4" />
-                  </Button>
-                </div>
-              )}
+                {/* 접힌 상태에서 펼치기 버튼 - 별도 컨테이너에서 완전한 영역 확보 */}
+                {isQuickLinksCollapsed && (
+                  <div className="w-full flex justify-end">
+                    <div className="bg-white rounded-lg shadow-sm border p-3 hover:shadow-md transition-shadow">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => setIsQuickLinksCollapsed(false)}
+                        className="h-10 w-10 p-0 bg-white hover:bg-gray-50"
+                        title="빠른 링크 펼치기"
+                      >
+                        <ChevronLeft className="w-5 h-5" />
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </TabsContent>
 
