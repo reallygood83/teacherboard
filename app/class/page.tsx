@@ -624,12 +624,12 @@ export default function ClassHomepage() {
 
               {/* 접힌 상태에서 펼치기 버튼 */}
               {isQuickLinksCollapsed && (
-                <div className="flex items-start pt-2">
+                <div className="flex items-start justify-end pt-2 pr-4 pb-2 min-h-[3rem]">
                   <Button 
                     variant="outline" 
                     size="sm"
                     onClick={() => setIsQuickLinksCollapsed(false)}
-                    className="h-8 w-8 p-0"
+                    className="h-8 w-8 p-0 bg-white shadow-sm hover:shadow-md transition-shadow"
                     title="빠른 링크 펼치기"
                   >
                     <ChevronLeft className="w-4 h-4" />
