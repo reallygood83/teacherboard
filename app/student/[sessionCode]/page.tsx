@@ -626,8 +626,8 @@ export default function StudentPage() {
                                 {contentPreview}
                               </p>
                             ) : (
-                              <div className="text-gray-900 leading-relaxed text-left font-medium chalkboard-content" 
-                                   style={{ color: '#1f2937' }}
+                              <div className="text-gray-900 leading-relaxed text-left font-medium chalkboard-content chalkboard-expanded" 
+                                   style={{ color: '#1f2937 !important' }}
                                    dangerouslySetInnerHTML={{ 
                                      __html: note.contentHtml || note.contentText || "내용 없음" 
                                    }}
@@ -749,9 +749,19 @@ export default function StudentPage() {
 
       {/* 칠판 내용 텍스트 색상 강제 적용 스타일 */}
       <style jsx>{`
+        /* 기본 칠판 컨텐츠 스타일 */
         .chalkboard-content * {
           color: #1f2937 !important;
+          background-color: transparent !important;
         }
+        
+        /* 확장된 뷰 특별 처리 */
+        .chalkboard-expanded * {
+          color: #1f2937 !important;
+          background-color: transparent !important;
+        }
+        
+        /* 모든 가능한 HTML 요소에 색상 적용 */
         .chalkboard-content p,
         .chalkboard-content div,
         .chalkboard-content span,
@@ -762,8 +772,70 @@ export default function StudentPage() {
         .chalkboard-content h5,
         .chalkboard-content h6,
         .chalkboard-content li,
+        .chalkboard-content ul,
+        .chalkboard-content ol,
         .chalkboard-content td,
-        .chalkboard-content th {
+        .chalkboard-content th,
+        .chalkboard-content table,
+        .chalkboard-content strong,
+        .chalkboard-content b,
+        .chalkboard-content em,
+        .chalkboard-content i,
+        .chalkboard-content a,
+        .chalkboard-content pre,
+        .chalkboard-content code,
+        .chalkboard-content blockquote {
+          color: #1f2937 !important;
+          background-color: transparent !important;
+        }
+        
+        /* 확장된 뷰용 더 강력한 CSS 규칙 */
+        .chalkboard-expanded p,
+        .chalkboard-expanded div,
+        .chalkboard-expanded span,
+        .chalkboard-expanded h1,
+        .chalkboard-expanded h2,
+        .chalkboard-expanded h3,
+        .chalkboard-expanded h4,
+        .chalkboard-expanded h5,
+        .chalkboard-expanded h6,
+        .chalkboard-expanded li,
+        .chalkboard-expanded ul,
+        .chalkboard-expanded ol,
+        .chalkboard-expanded td,
+        .chalkboard-expanded th,
+        .chalkboard-expanded table,
+        .chalkboard-expanded strong,
+        .chalkboard-expanded b,
+        .chalkboard-expanded em,
+        .chalkboard-expanded i,
+        .chalkboard-expanded a,
+        .chalkboard-expanded pre,
+        .chalkboard-expanded code,
+        .chalkboard-expanded blockquote {
+          color: #1f2937 !important;
+          background-color: transparent !important;
+        }
+        
+        /* 인라인 스타일 Override */
+        .chalkboard-content [style*="color"],
+        .chalkboard-expanded [style*="color"] {
+          color: #1f2937 !important;
+        }
+        
+        /* 화이트 텍스트 특별 처리 */
+        .chalkboard-content [style*="color: white"],
+        .chalkboard-content [style*="color: #ffffff"],
+        .chalkboard-content [style*="color: #fff"],
+        .chalkboard-content [style*="color:white"],
+        .chalkboard-content [style*="color:#ffffff"],
+        .chalkboard-content [style*="color:#fff"],
+        .chalkboard-expanded [style*="color: white"],
+        .chalkboard-expanded [style*="color: #ffffff"],
+        .chalkboard-expanded [style*="color: #fff"],
+        .chalkboard-expanded [style*="color:white"],
+        .chalkboard-expanded [style*="color:#ffffff"],
+        .chalkboard-expanded [style*="color:#fff"] {
           color: #1f2937 !important;
         }
       `}</style>
