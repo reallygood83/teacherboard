@@ -4,8 +4,9 @@ import { useState, useRef, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Bold, Italic, Underline, Eraser, Copy, Bot, AlertCircle, Save, History, Loader2, Cloud, Share2, Users } from "lucide-react"
+import { Bold, Italic, Underline, Eraser, Copy, Bot, AlertCircle, Save, History, Loader2, Cloud, Share2, Users, Image } from "lucide-react"
 import { AIDialog } from "@/components/ai-dialog"
+import { ImageAIDialog } from "@/components/image-ai-dialog"
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import rehypeRaw from 'rehype-raw'
@@ -20,11 +21,12 @@ interface ChalkboardProps {
   geminiModel?: string
 }
 
-export function Chalkboard({ geminiApiKey = "", geminiModel = "gemini-1.5-flash" }: ChalkboardProps) {
+export function Chalkboard({ geminiApiKey = "", geminiModel = "gemini-2.0-flash-exp" }: ChalkboardProps) {
   const editorRef = useRef<HTMLDivElement>(null)
   const [fontSize, setFontSize] = useState("18px")
   const [textColor, setTextColor] = useState("white")
   const [showAIDialog, setShowAIDialog] = useState(false)
+  const [showImageDialog, setShowImageDialog] = useState(false)
   // 추가: 저장 관련 상태와 히스토리 상태
   const [saving, setSaving] = useState(false)
   const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null)
@@ -371,6 +373,47 @@ export function Chalkboard({ geminiApiKey = "", geminiModel = "gemini-1.5-flash"
     if (!dirty) setDirty(true)
   }
 
+  const handleImageSubmit = (imageUrl: string, prompt: string, enhancedPrompt: string) => {
+    if (!contentEditableRef.current) return
+
+    // 이미지를 칠판에 삽입
+    const imgElement = document.createElement('img')
+    imgElement.src = imageUrl
+    imgElement.alt = prompt
+    imgElement.style.maxWidth = '100%'
+    imgElement.style.height = 'auto'
+    imgElement.style.margin = '10px 0'
+    imgElement.style.borderRadius = '8px'
+    imgElement.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)'
+    
+    // 커서 위치에 이미지 삽입
+    const selection = window.getSelection()
+    if (selection && selection.rangeCount > 0) {
+      const range = selection.getRangeAt(0)
+      range.deleteContents()
+      range.insertNode(imgElement)
+      
+      // 이미지 뒤에 줄바꿈 추가
+      const br = document.createElement('br')
+      range.insertNode(br)
+      
+      // 커서를 이미지 뒤로 이동
+      range.setStartAfter(imgElement)
+      range.setEndAfter(imgElement)
+      selection.removeAllRanges()
+      selection.addRange(range)
+    } else {
+      // 선택된 범위가 없으면 끝에 추가
+      contentEditableRef.current.appendChild(imgElement)
+      contentEditableRef.current.appendChild(document.createElement('br'))
+    }
+
+    // 변경사항 자동 저장
+    handleContentChange()
+    
+    console.log('이미지가 칠판에 추가되었습니다:', { prompt, enhancedPrompt })
+  }
+
   const openHistory = async () => {
     setShowHistory(true)
     if (!currentUser) return
@@ -568,6 +611,35 @@ export function Chalkboard({ geminiApiKey = "", geminiModel = "gemini-1.5-flash"
           )}
         </div>
 
+        {/* 이미지 생성 버튼 */}
+        <div className="relative group">
+          <Button 
+            size="sm" 
+            variant="outline" 
+            onClick={() => {
+              if (!geminiApiKey) {
+                alert('설정 탭에서 Gemini API Key를 먼저 등록해주세요!')
+                return
+              }
+              setShowImageDialog(true)
+            }}
+            className="bg-purple-50 border-purple-200 text-purple-700 hover:bg-purple-100"
+          >
+            <Image className="w-4 h-4 mr-1" />
+            이미지
+            {!geminiApiKey && (
+              <AlertCircle className="w-3 h-3 ml-1 text-amber-500" />
+            )}
+          </Button>
+          
+          {/* API 키 없을 때 툴팁 */}
+          {!geminiApiKey && (
+            <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-1 text-xs text-white bg-gray-800 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
+              설정에서 API Key 등록 필요
+            </div>
+          )}
+        </div>
+
         <div className="w-px h-8 bg-gray-300 mx-2" />
 
         <Button size="sm" variant="outline" onClick={clearBoard}>
@@ -700,6 +772,15 @@ export function Chalkboard({ geminiApiKey = "", geminiModel = "gemini-1.5-flash"
           )}
         </DialogContent>
       </Dialog>
+
+      {/* 이미지 생성 다이얼로그 */}
+      <ImageAIDialog
+        isOpen={showImageDialog}
+        onClose={() => setShowImageDialog(false)}
+        onSubmit={handleImageSubmit}
+        apiKey={geminiApiKey}
+        model={geminiModel}
+      />
     </div>
   )
 }

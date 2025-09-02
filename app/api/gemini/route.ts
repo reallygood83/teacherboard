@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(request: NextRequest) {
   try {
-    const { prompt, apiKey, model = 'gemini-1.5-flash' } = await request.json()
+    const { prompt, apiKey, model = 'gemini-2.0-flash-exp' } = await request.json()
 
     if (!prompt) {
       return NextResponse.json({ error: 'Prompt는 필수입니다.' }, { status: 400 })
