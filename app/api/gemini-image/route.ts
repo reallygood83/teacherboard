@@ -19,45 +19,43 @@ export async function POST(request: NextRequest) {
     const genAI = new GoogleGenerativeAI(apiKey)
     const geminiModel = genAI.getGenerativeModel({ model })
 
-    const enhancePrompt = `
-다음 이미지 생성 요청을 교육적으로 적합하고 구체적인 영어 프롬프트로 개선해주세요:
-"${prompt}"
+    // 교육적 적절성 간단 체크 (부적절한 키워드 필터링)
+    const inappropriateKeywords = ['폭력', '성인', '정치', '종교 갈등', '차별', '혐오']
+    const isAppropriate = !inappropriateKeywords.some(keyword => 
+      prompt.toLowerCase().includes(keyword)
+    )
 
-요구사항:
-1. 교육적으로 적절한 내용인지 확인
-2. 구체적이고 명확한 영어 프롬프트로 변환
-3. 수업용으로 적합한 스타일 제안
-4. 50단어 이내로 작성
-
-응답 형식:
-{
-  "appropriate": true/false,
-  "enhanced_prompt": "개선된 영어 프롬프트",
-  "style": "교육용 스타일 설명"
-}
-`
-
-    const result = await geminiModel.generateContent(enhancePrompt)
-    const response = await result.response
-    const enhancedData = JSON.parse(response.text())
-
-    if (!enhancedData.appropriate) {
+    if (!isAppropriate) {
       return NextResponse.json({ 
         error: '교육용으로 적합하지 않은 내용입니다. 다른 주제를 시도해보세요.',
         suggestion: '예: 과학 실험, 역사적 인물, 지리적 특징 등'
       }, { status: 400 })
     }
 
+    // Gemini로 프롬프트 개선 (JSON 파싱 오류 방지를 위해 단순화)
+    const enhancePrompt = `다음 한국어 교육용 이미지 설명을 구체적인 영어 프롬프트로 변환해주세요. 교육용으로 적합하고 명확하게 작성해주세요: "${prompt}"`
+
+    let enhancedPromptText = prompt // 기본값으로 원본 프롬프트 사용
+    
+    try {
+      const result = await geminiModel.generateContent(enhancePrompt)
+      const response = await result.response
+      enhancedPromptText = response.text().trim()
+    } catch (geminiError) {
+      console.log('Gemini 프롬프트 개선 실패, 원본 사용:', geminiError)
+      // Gemini 실패 시에도 계속 진행
+    }
+
     // 실제 이미지 생성은 여기서는 플레이스홀더 이미지로 대체
     // 실제 구현에서는 DALL-E, Midjourney, Stable Diffusion 등의 API 연동
-    const imageUrl = generateEducationalPlaceholder(enhancedData.enhanced_prompt)
+    const imageUrl = generateEducationalPlaceholder(enhancedPromptText)
 
     return NextResponse.json({ 
       success: true, 
       imageUrl,
       originalPrompt: prompt,
-      enhancedPrompt: enhancedData.enhanced_prompt,
-      style: enhancedData.style,
+      enhancedPrompt: enhancedPromptText,
+      style: '교육용 스타일',
       model: model 
     })
 
@@ -65,9 +63,12 @@ export async function POST(request: NextRequest) {
     console.error('Gemini 이미지 생성 오류:', error)
     
     // API 키 오류 처리
-    if (error.message?.includes('API_KEY_INVALID') || error.status === 400) {
+    if (error.message?.includes('API_KEY_INVALID') || 
+        error.message?.includes('API key') ||
+        error.status === 400) {
       return NextResponse.json({ 
-        error: 'API Key가 유효하지 않습니다. 설정에서 올바른 API Key를 입력해주세요.' 
+        error: 'API Key가 유효하지 않습니다. 설정에서 올바른 API Key를 입력해주세요.',
+        details: error.message
       }, { status: 401 })
     }
 
@@ -78,8 +79,18 @@ export async function POST(request: NextRequest) {
       }, { status: 429 })
     }
 
+    // 네트워크 오류
+    if (error.message?.includes('fetch')) {
+      return NextResponse.json({ 
+        error: '네트워크 연결 오류입니다. 인터넷 연결을 확인해주세요.' 
+      }, { status: 503 })
+    }
+
+    // 기본 오류 - 더 자세한 정보 제공
     return NextResponse.json({ 
-      error: '이미지 생성 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.' 
+      error: '이미지 생성 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.',
+      details: error.message || '알 수 없는 오류',
+      type: error.constructor.name
     }, { status: 500 })
   }
 }
@@ -88,11 +99,24 @@ export async function POST(request: NextRequest) {
 function generateEducationalPlaceholder(prompt: string): string {
   // 실제로는 이미지 생성 API를 호출하지만,
   // 여기서는 교육적 플레이스홀더 이미지 URL을 반환
-  const encodedPrompt = encodeURIComponent(prompt.substring(0, 100))
   
-  // Picsum Photos를 활용한 교육적 플레이스홀더
-  // 실제 구현에서는 DALL-E 3, Midjourney API 등을 연동
-  return `https://picsum.photos/400/300?random=${Date.now()}&blur=1`
+  // 다양한 교육적 주제에 따른 플레이스홀더 이미지 ID 선택
+  const educationalImageIds = [
+    200, 201, 202, 203, 204, 205, 206, 207, 208, 209, // 자연/과학
+    300, 301, 302, 303, 304, 305, 306, 307, 308, 309, // 기술/도구  
+    400, 401, 402, 403, 404, 405, 406, 407, 408, 409, // 건축/구조
+    500, 501, 502, 503, 504, 505, 506, 507, 508, 509  // 추상/아트
+  ]
+  
+  // 프롬프트 기반으로 적절한 이미지 선택
+  const promptHash = prompt.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)
+  const imageId = educationalImageIds[promptHash % educationalImageIds.length]
+  
+  // 현재 시간을 사용한 캐시 버스팅
+  const timestamp = Date.now()
+  
+  // Picsum Photos를 활용한 안정적인 플레이스홀더
+  return `https://picsum.photos/id/${imageId}/500/400?t=${timestamp}`
   
   // 실제 DALL-E 3 연동 예시 (OpenAI API Key 필요):
   // const openaiResponse = await fetch('https://api.openai.com/v1/images/generations', {
