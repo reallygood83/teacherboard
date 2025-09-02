@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { db, isFirebaseReady } from "@/lib/firebase";
 import { collection, query, orderBy, limit, getDocs, doc, getDoc, where } from "firebase/firestore";
+import { DeveloperContact } from "@/components/developer-contact";
 
 interface SessionData {
   id: string;
@@ -731,17 +732,25 @@ export default function StudentPage() {
 
       {/* Footer - 학생 친화적 (모바일 최적화) */}
       <footer className="bg-white border-t border-gray-200 py-6 sm:py-8 px-4 mt-12 sm:mt-16">
-        <div className="max-w-6xl mx-auto text-center">
-          <p className="text-base sm:text-lg text-gray-600 mb-2 leading-relaxed">
-            <Heart className="w-4 h-4 inline text-pink-500 mr-1" />
-            즐겁고 안전한 학습 환경 ✨
-          </p>
-          <p className="text-sm sm:text-base text-gray-500">
-            궁금한 점이 있으면 선생님께 언제든지 물어보세요! 📝
-          </p>
-          <div className="mt-4 text-xs text-gray-400">
-            {/* 모바일에서 아래로 스와이프하면 새로고침 안내 */}
-            <span className="inline-block sm:hidden">📱 화면을 아래로 당기면 새로고침할 수 있어요</span>
+        <div className="max-w-6xl mx-auto">
+          {/* 메인 푸터 컨텐츠 */}
+          <div className="text-center">
+            <p className="text-base sm:text-lg text-gray-600 mb-2 leading-relaxed">
+              <Heart className="w-4 h-4 inline text-pink-500 mr-1" />
+              즐겁고 안전한 학습 환경 ✨
+            </p>
+            <p className="text-sm sm:text-base text-gray-500">
+              궁금한 점이 있으면 선생님께 언제든지 물어보세요! 📝
+            </p>
+            <div className="mt-4 text-xs text-gray-400">
+              {/* 모바일에서 아래로 스와이프하면 새로고침 안내 */}
+              <span className="inline-block sm:hidden">📱 화면을 아래로 당기면 새로고침할 수 있어요</span>
+            </div>
+          </div>
+          
+          {/* 개발자 연락 버튼 - 우측 하단 */}
+          <div className="flex justify-end mt-4">
+            <DeveloperContact />
           </div>
         </div>
       </footer>

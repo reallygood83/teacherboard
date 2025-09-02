@@ -8,6 +8,7 @@ import MobileNavigation from "@/components/mobile-navigation"
 import { MobileCard, MobileGrid, MobileButtonGroup } from "@/components/mobile-card"
 import TouchGesture, { useTabSwipeGesture } from "@/components/touch-gestures"
 import { tabConfig, getTabIds, type TabInfo } from "@/lib/tab-config"
+import { DeveloperContact } from "@/components/developer-contact"
 import {
   Clock,
   Timer,
@@ -789,12 +790,20 @@ export default function ClassHomepage() {
 
       {/* Footer */}
       <footer className="bg-white border-t border-green-200 py-8 px-4 mt-16">
-        <div className="max-w-7xl mx-auto text-center">
-          <p className="text-gray-600 mb-2">
-            <Heart className="w-4 h-4 inline text-red-500 mr-1" />
-            {settings.footerText}
-          </p>
-          <p className="text-sm text-gray-500">{settings.footerSubtext}</p>
+        <div className="max-w-7xl mx-auto">
+          {/* 푸터 컨텐츠 */}
+          <div className="text-center">
+            <p className="text-gray-600 mb-2">
+              <Heart className="w-4 h-4 inline text-red-500 mr-1" />
+              {settings.footerText}
+            </p>
+            <p className="text-sm text-gray-500">{settings.footerSubtext}</p>
+          </div>
+          
+          {/* 개발자 연락 버튼 - 우측 하단 */}
+          <div className="flex justify-end mt-4">
+            <DeveloperContact />
+          </div>
         </div>
       </footer>
     </div>
