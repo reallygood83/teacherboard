@@ -11,7 +11,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
-import { Send, Image, Loader2, AlertCircle, Sparkles } from "lucide-react"
+import { Send, Image, Loader2, AlertCircle, Sparkles, Download } from "lucide-react"
 
 interface ImageAIDialogProps {
   isOpen: boolean
@@ -87,6 +87,38 @@ export function ImageAIDialog({ isOpen, onClose, onSubmit, apiKey, model }: Imag
   }
 
   const clearError = () => setError("")
+
+  const downloadImage = async () => {
+    if (!previewImage || !prompt) return
+    
+    try {
+      // 이미지를 Blob으로 가져오기
+      const response = await fetch(previewImage)
+      const blob = await response.blob()
+      
+      // 다운로드 링크 생성
+      const url = window.URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      
+      // 파일명 생성 (한글 프롬프트를 파일명으로 사용)
+      const fileName = `교육용_이미지_${prompt.substring(0, 20).replace(/[^\w가-힣]/g, '_')}_${Date.now()}.jpg`
+      link.download = fileName
+      
+      // 다운로드 실행
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      
+      // URL 해제
+      window.URL.revokeObjectURL(url)
+      
+      console.log('이미지 다운로드 완료:', fileName)
+    } catch (error) {
+      console.error('이미지 다운로드 실패:', error)
+      setError('이미지 다운로드 중 오류가 발생했습니다.')
+    }
+  }
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -209,13 +241,23 @@ export function ImageAIDialog({ isOpen, onClose, onSubmit, apiKey, model }: Imag
               </Button>
               
               {previewImage && (
-                <Button
-                  onClick={handleAddToChalkboard}
-                  className="bg-green-600 hover:bg-green-700"
-                >
-                  <Send className="w-4 h-4 mr-2" />
-                  칠판에 추가
-                </Button>
+                <>
+                  <Button
+                    onClick={downloadImage}
+                    variant="outline"
+                    className="border-blue-200 text-blue-700 hover:bg-blue-50"
+                  >
+                    <Download className="w-4 h-4 mr-2" />
+                    이미지 저장
+                  </Button>
+                  <Button
+                    onClick={handleAddToChalkboard}
+                    className="bg-green-600 hover:bg-green-700"
+                  >
+                    <Send className="w-4 h-4 mr-2" />
+                    칠판에 추가
+                  </Button>
+                </>
               )}
             </div>
           </div>

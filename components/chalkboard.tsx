@@ -408,8 +408,8 @@ export function Chalkboard({ geminiApiKey = "", geminiModel = "gemini-2.0-flash-
       editorRef.current.appendChild(document.createElement('br'))
     }
 
-    // 변경사항 자동 저장
-    handleContentChange()
+    // 변경사항 감지
+    onEditorInput()
     
     console.log('이미지가 칠판에 추가되었습니다')
   }
