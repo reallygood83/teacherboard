@@ -374,44 +374,63 @@ export function Chalkboard({ geminiApiKey = "", geminiModel = "gemini-2.0-flash-
   }
 
   const handleImageSubmit = (imageUrl: string, prompt: string, enhancedPrompt: string) => {
-    if (!editorRef.current) return
+    if (!editorRef.current) {
+      console.error('editorRef가 없습니다')
+      return
+    }
+
+    console.log('이미지 삽입 시작:', { imageUrl, editorRef: !!editorRef.current })
 
     // 이미지를 칠판에 삽입 (프롬프트 노출 없이)
     const imgElement = document.createElement('img')
     imgElement.src = imageUrl
-    imgElement.alt = "생성된 이미지" // 프롬프트 대신 일반적인 alt 텍스트
-    imgElement.style.maxWidth = '100%'
+    imgElement.alt = "생성된 이미지"
+    imgElement.style.maxWidth = '400px' // 너무 크지 않게 제한
     imgElement.style.height = 'auto'
     imgElement.style.margin = '10px 0'
     imgElement.style.borderRadius = '8px'
     imgElement.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)'
+    imgElement.style.display = 'block' // 블록 요소로 표시
     
-    // 커서 위치에 이미지 삽입
-    const selection = window.getSelection()
-    if (selection && selection.rangeCount > 0) {
-      const range = selection.getRangeAt(0)
-      range.deleteContents()
-      range.insertNode(imgElement)
+    // 이미지 로드 완료 후 삽입
+    imgElement.onload = () => {
+      console.log('이미지 로드 완료, DOM에 삽입')
       
-      // 이미지 뒤에 줄바꿈 추가
-      const br = document.createElement('br')
-      range.insertNode(br)
+      // 간단하고 안전한 방법: 에디터 끝에 추가
+      const editor = editorRef.current!
       
-      // 커서를 이미지 뒤로 이동
-      range.setStartAfter(imgElement)
-      range.setEndAfter(imgElement)
-      selection.removeAllRanges()
-      selection.addRange(range)
-    } else {
-      // 선택된 범위가 없으면 끝에 추가
-      editorRef.current.appendChild(imgElement)
-      editorRef.current.appendChild(document.createElement('br'))
+      // 기존 내용이 있으면 줄바꿈 먼저 추가
+      if (editor.innerHTML.trim()) {
+        editor.appendChild(document.createElement('br'))
+      }
+      
+      // 이미지 추가
+      editor.appendChild(imgElement)
+      
+      // 이미지 뒤에 줄바꿈 추가 (다음 입력을 위해)
+      editor.appendChild(document.createElement('br'))
+      editor.appendChild(document.createElement('br'))
+      
+      // 커서를 맨 끝으로 이동
+      const range = document.createRange()
+      const selection = window.getSelection()
+      range.selectNodeContents(editor)
+      range.collapse(false) // 끝으로 이동
+      selection?.removeAllRanges()
+      selection?.addRange(range)
+      
+      // 변경사항 감지
+      onEditorInput()
+      
+      // 에디터에 포커스
+      editor.focus()
+      
+      console.log('이미지가 칠판에 성공적으로 추가되었습니다')
     }
-
-    // 변경사항 감지
-    onEditorInput()
     
-    console.log('이미지가 칠판에 추가되었습니다')
+    imgElement.onerror = () => {
+      console.error('이미지 로드 실패:', imageUrl)
+    }
   }
 
   const openHistory = async () => {
