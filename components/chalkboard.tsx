@@ -374,12 +374,12 @@ export function Chalkboard({ geminiApiKey = "", geminiModel = "gemini-2.0-flash-
   }
 
   const handleImageSubmit = (imageUrl: string, prompt: string, enhancedPrompt: string) => {
-    if (!contentEditableRef.current) return
+    if (!editorRef.current) return
 
-    // 이미지를 칠판에 삽입
+    // 이미지를 칠판에 삽입 (프롬프트 노출 없이)
     const imgElement = document.createElement('img')
     imgElement.src = imageUrl
-    imgElement.alt = prompt
+    imgElement.alt = "생성된 이미지" // 프롬프트 대신 일반적인 alt 텍스트
     imgElement.style.maxWidth = '100%'
     imgElement.style.height = 'auto'
     imgElement.style.margin = '10px 0'
@@ -404,14 +404,14 @@ export function Chalkboard({ geminiApiKey = "", geminiModel = "gemini-2.0-flash-
       selection.addRange(range)
     } else {
       // 선택된 범위가 없으면 끝에 추가
-      contentEditableRef.current.appendChild(imgElement)
-      contentEditableRef.current.appendChild(document.createElement('br'))
+      editorRef.current.appendChild(imgElement)
+      editorRef.current.appendChild(document.createElement('br'))
     }
 
     // 변경사항 자동 저장
     handleContentChange()
     
-    console.log('이미지가 칠판에 추가되었습니다:', { prompt, enhancedPrompt })
+    console.log('이미지가 칠판에 추가되었습니다')
   }
 
   const openHistory = async () => {
