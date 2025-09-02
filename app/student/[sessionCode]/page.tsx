@@ -622,12 +622,11 @@ export default function StudentPage() {
                             <h3 className="font-bold text-gray-900 mb-3 text-left">{note.title}</h3>
                             
                             {!isExpanded ? (
-                              <p className="text-gray-900 leading-relaxed text-sm text-left font-semibold bg-slate-50/95 backdrop-blur-sm rounded-lg p-4 border border-slate-200/50 shadow-sm">
+                              <p className="leading-relaxed text-sm text-left font-semibold bg-slate-700/95 backdrop-blur-sm rounded-lg p-4 border border-slate-600/50 shadow-sm text-white">
                                 {contentPreview}
                               </p>
                             ) : (
-                              <div className="text-gray-900 leading-relaxed text-left font-semibold chalkboard-content chalkboard-expanded bg-slate-50/95 backdrop-blur-sm rounded-lg p-5 border border-slate-200/50 shadow-md" 
-                                   style={{ color: '#1f2937 !important', backgroundColor: 'rgba(248, 250, 252, 0.95) !important' }}
+                              <div className="leading-relaxed text-left font-semibold chalkboard-content chalkboard-expanded bg-slate-700/95 backdrop-blur-sm rounded-lg p-5 border border-slate-600/50 shadow-md" 
                                    dangerouslySetInnerHTML={{ 
                                      __html: note.contentHtml || note.contentText || "내용 없음" 
                                    }}
@@ -747,34 +746,37 @@ export default function StudentPage() {
         </div>
       </footer>
 
-      {/* 칠판 내용 텍스트 색상 강제 적용 스타일 - 개선된 가독성 */}
+      {/* 칠판 내용 텍스트 색상 최적화 - 흰색/검은색 텍스트 모두 완벽 가독성 보장 */}
       <style jsx>{`
-        /* 기본 칠판 컨텐츠 스타일 - WCAG AA+ 준수 교육용 최적화 */
+        /* 기본 칠판 컨텐츠 스타일 - 어두운 배경으로 흰색 텍스트 가독성 최적화 */
         .chalkboard-content {
-          background-color: rgba(248, 250, 252, 0.95) !important;
+          background-color: rgba(51, 65, 85, 0.95) !important; /* slate-700/95 */
           border-radius: 10px !important;
           padding: 20px !important;
-          box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12) !important;
-          border: 1px solid rgba(226, 232, 240, 0.6) !important;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25) !important;
+          border: 1px solid rgba(71, 85, 105, 0.6) !important; /* slate-600 */
         }
         
-        .chalkboard-content * {
-          color: #1f2937 !important;
+        /* 모든 텍스트를 흰색으로 강제 설정 - 어두운 배경에 최적 */
+        .chalkboard-content *,
+        .chalkboard-expanded * {
+          color: #ffffff !important;
           background-color: transparent !important;
         }
         
-        /* 확장된 뷰 특별 처리 - 최고 가독성 보장 */
+        /* 확장된 뷰 특별 처리 - 흰색 텍스트 최고 가독성 */
         .chalkboard-expanded {
-          background-color: rgba(248, 250, 252, 0.97) !important;
+          background-color: rgba(51, 65, 85, 0.97) !important; /* slate-700/97 */
           border-radius: 12px !important;
           padding: 24px !important;
-          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15) !important;
-          border: 1px solid rgba(226, 232, 240, 0.8) !important;
+          box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3) !important;
+          border: 1px solid rgba(71, 85, 105, 0.8) !important; /* slate-600 */
         }
         
-        .chalkboard-expanded * {
-          color: #1f2937 !important;
-          background-color: transparent !important;
+        /* 칠판 원본 색상 유지 - 흰색이든 검은색이든 그대로 표시 */
+        .chalkboard-content.preserve-colors *,
+        .chalkboard-expanded.preserve-colors * {
+          color: inherit !important;
         }
         
         /* 모든 가능한 HTML 요소에 색상 적용 */
