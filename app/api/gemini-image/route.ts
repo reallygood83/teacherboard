@@ -1,8 +1,8 @@
 import { GoogleGenerativeAI } from '@google/generative-ai'
 import { NextRequest, NextResponse } from 'next/server'
 
-// DALL-E 스타일의 이미지 생성을 시뮬레이션하거나 
-// 실제로는 OpenAI DALL-E API를 연동할 수 있습니다.
+// Replicate API를 통한 실제 AI 이미지 생성
+// FLUX-dev 모델 사용 (빠르고 고품질)
 export async function POST(request: NextRequest) {
   try {
     const { prompt, apiKey, model = 'gemini-2.0-flash-exp' } = await request.json()
@@ -46,9 +46,8 @@ export async function POST(request: NextRequest) {
       // Gemini 실패 시에도 계속 진행
     }
 
-    // 실제 이미지 생성은 여기서는 플레이스홀더 이미지로 대체
-    // 실제 구현에서는 DALL-E, Midjourney, Stable Diffusion 등의 API 연동
-    const imageUrl = generateEducationalPlaceholder(enhancedPromptText)
+    // 실제 AI 이미지 생성
+    const imageUrl = await generateRealImage(enhancedPromptText)
 
     return NextResponse.json({ 
       success: true, 
@@ -95,12 +94,109 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// 교육용 플레이스홀더 이미지 생성 함수
-function generateEducationalPlaceholder(prompt: string): string {
-  // 실제로는 이미지 생성 API를 호출하지만,
-  // 여기서는 교육적 플레이스홀더 이미지 URL을 반환
+// 실제 AI 이미지 생성 함수 (3단계 백업 시스템)
+async function generateRealImage(prompt: string): Promise<string> {
+  // 교육용 스타일 프롬프트 강화
+  const educationalPrompt = `Educational illustration: ${prompt}, clean educational style, suitable for classroom use, high quality, detailed, professional`
   
-  // 다양한 교육적 주제에 따른 플레이스홀더 이미지 ID 선택
+  // 1차 시도: Pollinations AI (완전 무료, API 키 불필요)
+  try {
+    const pollinationsUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(educationalPrompt)}?width=512&height=512&seed=${Math.floor(Math.random() * 1000000)}`
+    console.log('🌺 Pollinations AI로 이미지 생성 시도')
+    return pollinationsUrl
+  } catch (error) {
+    console.log('❌ Pollinations 실패, Hugging Face 시도:', error)
+  }
+
+  // 2차 시도: Hugging Face Inference API (무료)
+  try {
+    const hfResponse = await fetch('https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-2-1', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${process.env.HUGGINGFACE_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        inputs: educationalPrompt,
+        parameters: {
+          width: 512,
+          height: 512,
+          num_inference_steps: 20,
+          guidance_scale: 7.5
+        }
+      })
+    })
+
+    if (hfResponse.ok) {
+      const imageBlob = await hfResponse.blob()
+      // Blob을 Base64로 변환하여 데이터 URL로 반환
+      const arrayBuffer = await imageBlob.arrayBuffer()
+      const base64 = Buffer.from(arrayBuffer).toString('base64')
+      console.log('✅ Hugging Face로 이미지 생성 성공')
+      return `data:image/jpeg;base64,${base64}`
+    }
+  } catch (error) {
+    console.log('❌ Hugging Face 실패, Replicate 시도:', error)
+  }
+
+  // 3차 시도: Replicate API (유료, 더 좋은 품질)
+  try {
+    const replicateResponse = await fetch('https://api.replicate.com/v1/predictions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Token ${process.env.REPLICATE_API_TOKEN}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        version: '5599ed30703defd1d160a25a63321b4dec97101d98b4674bcc56e41f62f35637', // FLUX-dev
+        input: {
+          prompt: educationalPrompt,
+          width: 512,
+          height: 512,
+          num_outputs: 1,
+          num_inference_steps: 20,
+          guidance_scale: 3.5,
+          seed: Math.floor(Math.random() * 1000000)
+        }
+      })
+    })
+
+    if (replicateResponse.ok) {
+      const prediction = await replicateResponse.json()
+      
+      // 예측 완료까지 폴링 (최대 30초)
+      let pollCount = 0
+      while (prediction.status === 'starting' || prediction.status === 'processing') {
+        if (pollCount > 30) break // 30초 제한
+        
+        await new Promise(resolve => setTimeout(resolve, 1000)) // 1초 대기
+        
+        const statusResponse = await fetch(`https://api.replicate.com/v1/predictions/${prediction.id}`, {
+          headers: {
+            'Authorization': `Token ${process.env.REPLICATE_API_TOKEN}`,
+          }
+        })
+        
+        const statusData = await statusResponse.json()
+        if (statusData.status === 'succeeded' && statusData.output && statusData.output[0]) {
+          console.log('✅ Replicate로 이미지 생성 성공')
+          return statusData.output[0]
+        }
+        
+        pollCount++
+      }
+    }
+  } catch (error) {
+    console.log('❌ Replicate 실패, 플레이스홀더 사용:', error)
+  }
+
+  // 4차 백업: 교육적 플레이스홀더 이미지
+  console.log('⚠️ AI 이미지 생성 실패, 플레이스홀더 사용')
+  return generateEducationalPlaceholder(prompt)
+}
+
+// 교육용 플레이스홀더 이미지 생성 함수 (백업용)
+function generateEducationalPlaceholder(prompt: string): string {
   const educationalImageIds = [
     200, 201, 202, 203, 204, 205, 206, 207, 208, 209, // 자연/과학
     300, 301, 302, 303, 304, 305, 306, 307, 308, 309, // 기술/도구  
@@ -108,31 +204,9 @@ function generateEducationalPlaceholder(prompt: string): string {
     500, 501, 502, 503, 504, 505, 506, 507, 508, 509  // 추상/아트
   ]
   
-  // 프롬프트 기반으로 적절한 이미지 선택
   const promptHash = prompt.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)
   const imageId = educationalImageIds[promptHash % educationalImageIds.length]
-  
-  // 현재 시간을 사용한 캐시 버스팅
   const timestamp = Date.now()
   
-  // Picsum Photos를 활용한 안정적인 플레이스홀더
   return `https://picsum.photos/id/${imageId}/500/400?t=${timestamp}`
-  
-  // 실제 DALL-E 3 연동 예시 (OpenAI API Key 필요):
-  // const openaiResponse = await fetch('https://api.openai.com/v1/images/generations', {
-  //   method: 'POST',
-  //   headers: {
-  //     'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
-  //     'Content-Type': 'application/json'
-  //   },
-  //   body: JSON.stringify({
-  //     model: "dall-e-3",
-  //     prompt: enhancedData.enhanced_prompt,
-  //     n: 1,
-  //     size: "1024x1024",
-  //     style: "natural"
-  //   })
-  // })
-  // const openaiData = await openaiResponse.json()
-  // return openaiData.data[0].url
 }

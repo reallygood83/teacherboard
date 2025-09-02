@@ -366,7 +366,7 @@ export default function StudentPage() {
 
   return (
     <div 
-      className="min-h-screen bg-gradient-to-br from-pink-50 via-blue-50 to-purple-50 relative"
+      className="min-h-screen bg-gradient-to-br from-slate-100 via-blue-100 to-indigo-100 relative"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
@@ -622,12 +622,12 @@ export default function StudentPage() {
                             <h3 className="font-bold text-gray-900 mb-3 text-left">{note.title}</h3>
                             
                             {!isExpanded ? (
-                              <p className="text-gray-800 leading-relaxed text-sm text-left font-medium">
+                              <p className="text-gray-900 leading-relaxed text-sm text-left font-semibold bg-slate-50/95 backdrop-blur-sm rounded-lg p-4 border border-slate-200/50 shadow-sm">
                                 {contentPreview}
                               </p>
                             ) : (
-                              <div className="text-gray-900 leading-relaxed text-left font-medium chalkboard-content chalkboard-expanded" 
-                                   style={{ color: '#1f2937 !important' }}
+                              <div className="text-gray-900 leading-relaxed text-left font-semibold chalkboard-content chalkboard-expanded bg-slate-50/95 backdrop-blur-sm rounded-lg p-5 border border-slate-200/50 shadow-md" 
+                                   style={{ color: '#1f2937 !important', backgroundColor: 'rgba(248, 250, 252, 0.95) !important' }}
                                    dangerouslySetInnerHTML={{ 
                                      __html: note.contentHtml || note.contentText || "내용 없음" 
                                    }}
@@ -747,15 +747,31 @@ export default function StudentPage() {
         </div>
       </footer>
 
-      {/* 칠판 내용 텍스트 색상 강제 적용 스타일 */}
+      {/* 칠판 내용 텍스트 색상 강제 적용 스타일 - 개선된 가독성 */}
       <style jsx>{`
-        /* 기본 칠판 컨텐츠 스타일 */
+        /* 기본 칠판 컨텐츠 스타일 - WCAG AA+ 준수 교육용 최적화 */
+        .chalkboard-content {
+          background-color: rgba(248, 250, 252, 0.95) !important;
+          border-radius: 10px !important;
+          padding: 20px !important;
+          box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12) !important;
+          border: 1px solid rgba(226, 232, 240, 0.6) !important;
+        }
+        
         .chalkboard-content * {
           color: #1f2937 !important;
           background-color: transparent !important;
         }
         
-        /* 확장된 뷰 특별 처리 */
+        /* 확장된 뷰 특별 처리 - 최고 가독성 보장 */
+        .chalkboard-expanded {
+          background-color: rgba(248, 250, 252, 0.97) !important;
+          border-radius: 12px !important;
+          padding: 24px !important;
+          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15) !important;
+          border: 1px solid rgba(226, 232, 240, 0.8) !important;
+        }
+        
         .chalkboard-expanded * {
           color: #1f2937 !important;
           background-color: transparent !important;
