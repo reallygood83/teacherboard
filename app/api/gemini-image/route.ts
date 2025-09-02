@@ -94,53 +94,35 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// 실제 AI 이미지 생성 함수 (개선된 4단계 백업 시스템 + Timeout)
+// 실제 AI 이미지 생성 함수 (진짜 AI 생성 우선)
 async function generateRealImage(prompt: string): Promise<string> {
   // 교육용 스타일 프롬프트 강화
   const educationalPrompt = `Educational illustration: ${prompt}, clean educational style, suitable for classroom use, high quality, detailed, professional`
   
-  // 1차 시도: 빠른 Direct URL 생성 (즉시 응답, 가장 안정적)
+  // 1차 시도: Pollinations AI (진짜 AI 이미지 생성)
   try {
-    console.log('⚡ 빠른 이미지 URL 생성 중...')
-    const quickImageUrl = `https://api.dicebear.com/7.x/shapes/svg?seed=${encodeURIComponent(prompt)}&backgroundColor=f0f9ff,dbeafe,e0e7ff`
-    
-    // 간단한 교육용 일러스트레이션 생성 (SVG 기반)
-    const fallbackUrl = `https://via.placeholder.com/512x400/3b82f6/ffffff?text=${encodeURIComponent(prompt.substring(0, 20))}`
-    
-    // 더 나은 교육용 이미지 서비스 사용
-    const educationUrl = `https://source.unsplash.com/512x400/?education,${encodeURIComponent(prompt.replace(/[^a-zA-Z0-9]/g, ','))}`
-    
-    console.log('✅ 빠른 교육용 이미지 URL 생성 완료')
-    return educationUrl
-  } catch (error) {
-    console.log('❌ 빠른 URL 생성 실패, Pollinations 시도:', error)
-  }
-  
-  // 2차 시도: Pollinations AI (타임아웃 추가)
-  try {
-    console.log('🌺 Pollinations AI로 이미지 생성 시도 (30초 타임아웃)')
+    console.log('🌺 Pollinations AI로 이미지 생성 시도 (20초 타임아웃)')
     
     const pollinationsUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(educationalPrompt)}?width=512&height=512&seed=${Math.floor(Math.random() * 1000000)}`
     
     // 타임아웃 적용된 검증 요청
     const controller = new AbortController()
-    const timeoutId = setTimeout(() => controller.abort(), 30000) // 30초 타임아웃
+    const timeoutId = setTimeout(() => controller.abort(), 20000) // 20초로 단축
     
     const response = await fetch(pollinationsUrl, {
-      method: 'HEAD', // 이미지 존재 확인만
+      method: 'GET', // 실제 이미지를 받아옴
       signal: controller.signal
     })
     
     clearTimeout(timeoutId)
     
-    if (response.ok) {
+    if (response.ok && response.headers.get('content-type')?.startsWith('image/')) {
       console.log('✅ Pollinations AI 이미지 생성 성공')
       return pollinationsUrl
     }
   } catch (error) {
-    console.log('❌ Pollinations 타임아웃 또는 실패, Hugging Face 시도:', error)
+    console.log('❌ Pollinations 실패, Hugging Face 시도:', error)
   }
-
   // 2차 시도: Hugging Face Inference API (무료)
   try {
     const hfResponse = await fetch('https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-2-1', {
@@ -223,8 +205,17 @@ async function generateRealImage(prompt: string): Promise<string> {
     console.log('❌ Replicate 실패, 플레이스홀더 사용:', error)
   }
 
-  // 4차 백업: 교육적 플레이스홀더 이미지
-  console.log('⚠️ AI 이미지 생성 실패, 플레이스홀더 사용')
+  // 4차 백업: 빠른 교육용 이미지 (Unsplash)
+  try {
+    console.log('⚡ 빠른 교육용 이미지로 대체')
+    const educationUrl = `https://source.unsplash.com/512x400/?education,school,learning,${encodeURIComponent(prompt.replace(/[^a-zA-Z0-9]/g, ','))}`
+    return educationUrl
+  } catch (error) {
+    console.log('❌ Unsplash도 실패, 플레이스홀더 사용')
+  }
+
+  // 최종 백업: 교육적 플레이스홀더 이미지
+  console.log('⚠️ 모든 이미지 생성 실패, 플레이스홀더 사용')
   return generateEducationalPlaceholder(prompt)
 }
 
