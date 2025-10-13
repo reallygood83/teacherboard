@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 200" width="300" height="200">
+  <defs>
+    <!-- 그라데이션 정의 -->
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F8FAFC;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#EFF6FF;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#DBEAFE;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="chatGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3B82F6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1D4ED8;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="aiGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F59E0B;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#EF4444;stop-opacity:1" />
+    </linearGradient>
+
+    <linearGradient id="hrGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8B5CF6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#6366F1;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- 미묘한 패턴 -->
+    <pattern id="subtlePattern" patternUnits="userSpaceOnUse" width="20" height="20">
+      <circle cx="10" cy="10" r="0.8" fill="#94A3B8" opacity="0.1"/>
+    </pattern>
+  </defs>
+  
+  <!-- 배경 -->
+  <rect width="300" height="200" fill="url(#bgGradient)" rx="8"/>
+  <rect width="300" height="200" fill="url(#subtlePattern)" rx="8"/>
+  
+  <!-- 장식적 원형들 -->
+  <circle cx="50" cy="50" r="25" fill="url(#chatGradient)" opacity="0.1"/>
+  <circle cx="250" cy="150" r="35" fill="url(#hrGradient)" opacity="0.08"/>
+  <circle cx="220" cy="40" r="15" fill="url(#aiGradient)" opacity="0.15"/>
+  
+  <!-- 메인 채팅창 -->
+  <g transform="translate(70, 50)">
+    <!-- 채팅창 배경 -->
+    <rect x="0" y="0" width="100" height="80" rx="12" fill="white" stroke="url(#chatGradient)" stroke-width="2"/>
+    
+    <!-- 채팅창 헤더 -->
+    <rect x="0" y="0" width="100" height="18" rx="12" fill="url(#chatGradient)"/>
+    <circle cx="8" cy="9" r="2" fill="white" opacity="0.8"/>
+    <circle cx="15" cy="9" r="2" fill="white" opacity="0.6"/>
+    <circle cx="22" cy="9" r="2" fill="white" opacity="0.4"/>
+    
+    <!-- 챗봇 메시지 버블 (왼쪽) -->
+    <rect x="8" y="28" width="45" height="12" rx="6" fill="#F3F4F6"/>
+    <rect x="8" y="44" width="35" height="12" rx="6" fill="#F3F4F6"/>
+    
+    <!-- 사용자 메시지 버블 (오른쪽) -->
+    <rect x="47" y="60" width="45" height="12" rx="6" fill="url(#chatGradient)" opacity="0.8"/>
+    
+    <!-- 작은 메시지 텍스트 라인들 -->
+    <rect x="12" y="32" width="30" height="1.5" rx="0.75" fill="#94A3B8"/>
+    <rect x="12" y="35" width="25" height="1.5" rx="0.75" fill="#94A3B8"/>
+    <rect x="12" y="48" width="20" height="1.5" rx="0.75" fill="#94A3B8"/>
+    <rect x="12" y="51" width="18" height="1.5" rx="0.75" fill="#94A3B8"/>
+    
+    <!-- 오른쪽 메시지 텍스트 -->
+    <rect x="51" y="64" width="30" height="1.5" rx="0.75" fill="white"/>
+    <rect x="51" y="67" width="25" height="1.5" rx="0.75" fill="white"/>
+  </g>
+  
+  <!-- AI 로봇 아이콘 -->
+  <g transform="translate(190, 70)">
+    <!-- 로봇 머리 -->
+    <rect x="0" y="0" width="35" height="30" rx="15" fill="url(#hrGradient)"/>
+    
+    <!-- 로봇 눈 -->
+    <circle cx="10" cy="12" r="4" fill="white"/>
+    <circle cx="25" cy="12" r="4" fill="white"/>
+    <circle cx="10" cy="12" r="2" fill="url(#hrGradient)"/>
+    <circle cx="25" cy="12" r="2" fill="url(#hrGradient)"/>
+    
+    <!-- 로봇 입 -->
+    <rect x="12" y="20" width="11" height="3" rx="1.5" fill="white"/>
+    
+    <!-- 안테나 -->
+    <line x1="17.5" y1="0" x2="17.5" y2="-8" stroke="url(#hrGradient)" stroke-width="2"/>
+    <circle cx="17.5" cy="-8" r="3" fill="url(#hrGradient)"/>
+    
+    <!-- 인사실무 표시 -->
+    <rect x="5" y="35" width="25" height="8" rx="4" fill="white" stroke="url(#hrGradient)" stroke-width="1"/>
+    <text x="17.5" y="41" font-family="Pretendard, Arial, sans-serif" font-size="6" text-anchor="middle" fill="url(#hrGradient)" font-weight="bold">HR</text>
+  </g>
+  
+  <!-- 연결선 -->
+  <path d="M170 90 Q180 85 190 90" stroke="url(#hrGradient)" stroke-width="2" fill="none" opacity="0.6" stroke-dasharray="3,2"/>
+  
+  <!-- 2025 년도 표시 -->
+  <g transform="translate(40, 140)">
+    <rect x="0" y="0" width="40" height="20" rx="10" fill="url(#aiGradient)" opacity="0.9"/>
+    <text x="20" y="13" font-family="Pretendard, Arial, sans-serif" font-size="10" font-weight="700" text-anchor="middle" fill="white">2025</text>
+  </g>
+  
+  <!-- 타이틀 -->
+  <text x="150" y="180" font-family="Pretendard, Arial, sans-serif" font-size="14" font-weight="700" text-anchor="middle" fill="url(#hrGradient)">2025 인사실무 챗봇</text>
+  
+  <!-- 장식적 점들 -->
+  <circle cx="40" cy="180" r="2" fill="url(#hrGradient)" opacity="0.4"/>
+  <circle cx="260" cy="30" r="1.5" fill="url(#chatGradient)" opacity="0.5"/>
+  <circle cx="30" cy="120" r="1" fill="#10B981" opacity="0.6"/>
+  
+  <!-- 말풍선 장식 -->
+  <g transform="translate(240, 100)">
+    <ellipse cx="0" cy="0" rx="12" ry="8" fill="url(#aiGradient)" opacity="0.2"/>
+    <ellipse cx="-3" cy="5" rx="3" ry="2" fill="url(#aiGradient)" opacity="0.2"/>
+  </g>
+</svg>

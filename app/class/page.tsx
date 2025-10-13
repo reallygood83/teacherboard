@@ -1,0 +1,811 @@
+'use client';
+
+import { useState, useEffect } from "react"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import MobileNavigation from "@/components/mobile-navigation"
+import { MobileCard, MobileGrid, MobileButtonGroup } from "@/components/mobile-card"
+import TouchGesture, { useTabSwipeGesture } from "@/components/touch-gestures"
+import { tabConfig, getTabIds, type TabInfo } from "@/lib/tab-config"
+import { DeveloperContact } from "@/components/developer-contact"
+import {
+  Clock,
+  Timer,
+  Shuffle,
+  UserCheck,
+  ExternalLink,
+  Heart,
+  ChevronLeft,
+  ChevronRight,
+  Plus,
+  Trash2,
+  FileText,
+  BookOpen,
+  Brain,
+  Calendar,
+  Users,
+  Play,
+  Link,
+  Settings as SettingsIcon,
+} from "lucide-react"
+import { DigitalClock } from "@/components/digital-clock"
+import { Chalkboard } from "@/components/chalkboard"
+import { StudentPicker } from "@/components/student-picker"
+import { GroupMaker } from "@/components/group-maker"
+import StudentSharing from "@/components/student-sharing"
+import NoticeManager from "@/components/notice-manager"
+import BookContentManager from "@/components/book-content-manager"
+import { LinkEmbedder } from "@/components/link-embedder"
+import { Timetable } from "@/components/timetable"
+import { YoutubeSearch } from "@/components/youtube-search"
+import { Settings } from "@/components/settings"
+// import { OfficialDocGenerator } from "@/components/official-doc-generator"
+import { DocumentGenerator } from "@/components/document-generator"
+import { AIToolsGallery } from "@/components/ai-tools-gallery"
+import { ScheduleManager } from "@/components/schedule-manager"
+import { DDayHeader, InlineDDay } from "@/components/dday-header"
+import { useAuth } from "@/contexts/AuthContext"
+import { useRouter } from "next/navigation"
+import UserProfile from "@/components/auth/UserProfile"
+import { db } from "@/lib/firebase"
+import { collection, getDocs, query, orderBy, where } from "firebase/firestore"
+
+interface SettingsData {
+  title: string
+  subtitle: string
+  footerText: string
+  footerSubtext: string
+  backgroundMode: string
+  geminiApiKey: string
+  geminiModel: string
+}
+
+interface SavedLink {
+  id: string
+  title: string
+  url: string
+  description?: string
+  category: string
+  addedDate: string
+  isQuickLink?: boolean
+}
+
+interface ImportantEvent {
+  id: string;
+  title: string;
+  startDate: string;
+  endDate: string;
+  startTime?: string;
+  category: 'holiday' | 'school-event' | 'personal' | 'meeting' | 'consultation';
+  isImportant: boolean;
+  isAllDay: boolean;
+  description: string;
+}
+
+export default function ClassHomepage() {
+  const { currentUser, loading } = useAuth();
+  const router = useRouter();
+  
+  const [currentDate, setCurrentDate] = useState("")
+  const [isQuickLinksCollapsed, setIsQuickLinksCollapsed] = useState(false)
+  const [savedLinks, setSavedLinks] = useState<SavedLink[]>([])
+  const [activeTab, setActiveTab] = useState("tools")
+  const [importantEvents, setImportantEvents] = useState<ImportantEvent[]>([])
+  const [selectedDDayEvent, setSelectedDDayEvent] = useState<ImportantEvent | null>(null)
+
+  // 탭 변경 시 중요 일정 새로고침 (일정 관리 탭에서 돌아올 때)
+  const handleTabChange = (tabValue: string) => {
+    setActiveTab(tabValue);
+    // 일정 관리 탭에서 다른 탭으로 이동할 때 중요 일정 새로고침
+    if (activeTab === 'schedule-management' && tabValue !== 'schedule-management') {
+      setTimeout(() => loadImportantEvents(), 300);
+    }
+  };
+
+  // Touch gesture setup for tab navigation
+  const tabIds = getTabIds()
+  const { handleSwipeLeft, handleSwipeRight } = useTabSwipeGesture(
+    tabIds,
+    activeTab,
+    handleTabChange
+  )
+  const [settings, setSettings] = useState<SettingsData>({
+    title: "우리 학급 홈페이지",
+    subtitle: "함께 배우고 성장하는 공간입니다 ❤️",
+    footerText: "교육을 위한 따뜻한 기술",
+    footerSubtext: "© 2025 우리 학급 홈페이지. 모든 권리 보유.",
+    backgroundMode: "green",
+    geminiApiKey: "",
+    geminiModel: "gemini-1.5-flash",
+  })
+
+  // 헤더 카운트다운 관련 상태
+  const [selectedImportantEvent, setSelectedImportantEvent] = useState<ImportantEvent | null>(null)
+  const [countdownText, setCountdownText] = useState<string>("")
+
+  // 오늘의 중요 일정에 대한 실시간 카운트다운 업데이트
+  useEffect(() => {
+    const updateCountdown = () => {
+      if (importantEvents.length > 0) {
+        // 항상 최신 상태로 가장 가까운 중요 일정 찾기
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // 시간을 00:00:00으로 설정하여 날짜만 비교
+        
+        const todayEvents = importantEvents.filter(event => {
+          const eventDate = new Date(event.startDate);
+          eventDate.setHours(0, 0, 0, 0);
+          return eventDate.getTime() === today.getTime();
+        });
+        
+        if (todayEvents.length > 0) {
+          setSelectedImportantEvent(todayEvents[0]);
+          setCountdownText("D-DAY");
+        } else {
+          // 가장 가까운 미래 일정
+          const upcomingEvent = importantEvents.find(event => {
+            const eventDate = new Date(event.startDate);
+            eventDate.setHours(0, 0, 0, 0);
+            return eventDate.getTime() > today.getTime();
+          });
+          
+          if (upcomingEvent) {
+            const eventDate = new Date(upcomingEvent.startDate);
+            eventDate.setHours(0, 0, 0, 0);
+            const daysUntil = Math.ceil((eventDate.getTime() - today.getTime()) / (1000 * 3600 * 24));
+            setSelectedImportantEvent(upcomingEvent);
+            setCountdownText(`D-${daysUntil}`);
+          } else {
+            // 과거 일정만 있는 경우 초기화
+            setSelectedImportantEvent(null);
+            setCountdownText("");
+          }
+        }
+      } else {
+        // 일정이 없는 경우 초기화
+        setSelectedImportantEvent(null);
+        setCountdownText("");
+      }
+    };
+
+    if (importantEvents.length > 0) {
+      updateCountdown();
+      // 10초마다 업데이트 (더 자주 체크)
+      const interval = setInterval(updateCountdown, 10000);
+      return () => clearInterval(interval);
+    } else {
+      // 일정이 없을 때도 상태 초기화
+      setSelectedImportantEvent(null);
+      setCountdownText("");
+    }
+  }, [importantEvents]); // selectedImportantEvent 의존성 제거하여 항상 최신 계산
+
+  // 자정이 되면 날짜와 D-Day 카운팅 새로고침
+  useEffect(() => {
+    const updateAtMidnight = () => {
+      const now = new Date();
+      const tomorrow = new Date(now);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      tomorrow.setHours(0, 0, 0, 0);
+      
+      const msUntilMidnight = tomorrow.getTime() - now.getTime();
+      
+      const timeoutId = setTimeout(() => {
+        // 날짜 업데이트
+        const today = new Date();
+        const options: Intl.DateTimeFormatOptions = {
+          year: "numeric",
+          month: "long", 
+          day: "numeric",
+          weekday: "long",
+        };
+        setCurrentDate(today.toLocaleDateString("ko-KR", options));
+        
+        // D-Day 카운팅도 즉시 업데이트 (다음 useEffect가 처리할 것임)
+        // importantEvents가 있으면 자동으로 D-Day가 재계산됨
+      }, msUntilMidnight);
+      
+      return () => clearTimeout(timeoutId);
+    };
+
+    return updateAtMidnight();
+  }, [currentDate]); // currentDate가 변경될 때마다 다음 자정 계산
+
+  // 브라우저 알림 허용 요청 및 타이머 알림
+  useEffect(() => {
+    // 알림 권한 요청
+    if ('Notification' in window && Notification.permission === 'default') {
+      Notification.requestPermission();
+    }
+
+    // 오늘의 중요 일정 알림
+    if (selectedImportantEvent && countdownText === "D-DAY") {
+      const checkTodayEvents = () => {
+        const now = new Date();
+        const eventDate = new Date(selectedImportantEvent.startDate);
+        
+        // 일정 시작 30분 전, 10분 전, 시작 시점에 알림
+        if (selectedImportantEvent.startTime && !selectedImportantEvent.isAllDay) {
+          const [hours, minutes] = selectedImportantEvent.startTime.split(':').map(Number);
+          const eventDateTime = new Date(eventDate);
+          eventDateTime.setHours(hours, minutes);
+
+          const timeDiff = eventDateTime.getTime() - now.getTime();
+          const minutesDiff = Math.floor(timeDiff / (1000 * 60));
+
+          if (minutesDiff === 30 || minutesDiff === 10 || minutesDiff === 0) {
+            if ('Notification' in window && Notification.permission === 'granted') {
+              const message = minutesDiff === 0 
+                ? `⏰ ${selectedImportantEvent.title} 시작!`
+                : `⏰ ${selectedImportantEvent.title}이(가) ${minutesDiff}분 후 시작됩니다.`;
+              
+              new Notification('중요 일정 알림', {
+                body: message,
+                icon: '/favicon.ico',
+                tag: `important-event-${selectedImportantEvent.id}`,
+              });
+            }
+          }
+        }
+      };
+
+      // 1분마다 체크
+      const notificationInterval = setInterval(checkTodayEvents, 60000);
+      checkTodayEvents(); // 즉시 한 번 실행
+      
+      return () => clearInterval(notificationInterval);
+    }
+  }, [selectedImportantEvent, countdownText]);
+
+  // 중요 일정 로드 함수
+  const loadImportantEvents = async () => {
+    if (!currentUser || !db) return;
+    
+    try {
+      const eventsRef = collection(db!, `users/${currentUser.uid}/events`);
+      const q = query(
+        eventsRef, 
+        where('isImportant', '==', true),
+        orderBy('startDate', 'asc')
+      );
+      const snapshot = await getDocs(q);
+      
+      const loadedEvents: ImportantEvent[] = [];
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        loadedEvents.push({
+          id: doc.id,
+          ...data
+        } as ImportantEvent);
+      });
+      
+      setImportantEvents(loadedEvents);
+      
+      // 가장 가까운 미래 일정을 기본 선택
+      const upcoming = loadedEvents.find(event => 
+        new Date(event.startDate) >= new Date()
+      );
+      if (upcoming) {
+        setSelectedDDayEvent(upcoming);
+      }
+    } catch (error) {
+      console.error('중요 일정 로드 실패:', error);
+    }
+  };
+
+  // D-Day 이벤트 클릭 핸들러
+  const handleDDayEventClick = (event: ImportantEvent) => {
+    setSelectedDDayEvent(event);
+    setActiveTab('schedule-management'); // 일정 관리 탭으로 이동
+  };
+
+  useEffect(() => {
+    // 인증되지 않은 사용자는 로그인 페이지로 리다이렉트
+    if (!loading && !currentUser) {
+      router.push('/login');
+      return;
+    }
+  }, [currentUser, loading, router]);
+
+  // 중요 일정 로드 (currentUser가 로드된 후 실행)
+  useEffect(() => {
+    if (currentUser) {
+      loadImportantEvents();
+    }
+  }, [currentUser]);
+
+  useEffect(() => {
+    const today = new Date()
+    const options: Intl.DateTimeFormatOptions = {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      weekday: "long",
+    }
+    setCurrentDate(today.toLocaleDateString("ko-KR", options))
+
+    const savedSettings = localStorage.getItem("classHomepageSettings")
+    if (savedSettings) {
+      setSettings(JSON.parse(savedSettings))
+    }
+
+    // 저장된 링크 불러오기
+    const savedLinksData = localStorage.getItem("classHomepageLinks")
+    if (savedLinksData) {
+      setSavedLinks(JSON.parse(savedLinksData))
+    }
+  }, [])
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-100">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">로딩 중...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!currentUser) {
+    return null; // useEffect에서 리다이렉트 처리
+  }
+
+  const handleSettingsChange = (newSettings: SettingsData) => {
+    setSettings(newSettings)
+  }
+
+  // 빠른링크에서 링크 제거 (빠른 링크 상태만 해제)
+  const removeQuickLink = (id: string) => {
+    const updatedLinks = savedLinks.map((link) => {
+      if (link.id === id) {
+        return { ...link, isQuickLink: false }
+      }
+      return link
+    })
+    setSavedLinks(updatedLinks)
+    localStorage.setItem("classHomepageLinks", JSON.stringify(updatedLinks))
+  }
+
+  // 링크 열기
+  const openLink = (url: string) => {
+    window.open(url, "_blank")
+  }
+
+  const getBackgroundClass = () => {
+    switch (settings.backgroundMode) {
+      case "blue":
+        return "bg-blue-50"
+      case "purple":
+        return "bg-purple-50"
+      case "orange":
+        return "bg-orange-50"
+      case "pink":
+        return "bg-pink-50"
+      case "gray":
+        return "bg-gray-50"
+      default:
+        return "bg-green-50"
+    }
+  }
+
+  const getGradientClass = () => {
+    switch (settings.backgroundMode) {
+      case "blue":
+        return "bg-gradient-to-r from-blue-600 to-blue-700"
+      case "purple":
+        return "bg-gradient-to-r from-purple-600 to-purple-700"
+      case "orange":
+        return "bg-gradient-to-r from-orange-600 to-orange-700"
+      case "pink":
+        return "bg-gradient-to-r from-pink-600 to-pink-700"
+      case "gray":
+        return "bg-gradient-to-r from-gray-600 to-gray-700"
+      default:
+        return "educational-gradient"
+    }
+  }
+
+  const getAccentColor = () => {
+    switch (settings.backgroundMode) {
+      case "blue":
+        return "text-blue-600"
+      case "purple":
+        return "text-purple-600"
+      case "orange":
+        return "text-orange-600"
+      case "pink":
+        return "text-pink-600"
+      case "gray":
+        return "text-gray-600"
+      default:
+        return "text-green-600"
+    }
+  }
+
+  return (
+    <div className={`min-h-screen ${getBackgroundClass()}`}>
+      {/* Header */}
+      <header className={`${getGradientClass()} text-white md:py-8 py-6 px-4`}>
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="font-serif font-black md:text-4xl text-2xl mb-2">{settings.title}</h1>
+              <p className="text-green-100 md:text-lg text-base">{settings.subtitle}</p>
+            </div>
+            <div className="flex items-center gap-4">
+              <div className="text-right">
+                <p className="text-green-100 text-sm">오늘은</p>
+                <p className="font-semibold md:text-xl text-lg">{currentDate}</p>
+                {countdownText && (
+                  <p className="text-yellow-200 text-sm mt-1 truncate max-w-[220px]">
+                    {selectedImportantEvent?.title}: {countdownText}
+                  </p>
+                )}
+              </div>
+              <UserProfile />
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto px-4 md:py-8 py-4">
+        <div className="mb-6 md:mb-8 text-center">
+          <p className="text-gray-600 md:text-lg text-base">안녕하세요 {currentUser.displayName}님, 오늘 하루도 평안하세요 ❤️</p>
+        </div>
+
+        {/* D-Day 중요 일정 헤더 */}
+        <DDayHeader 
+          events={importantEvents} 
+          maxDisplay={3}
+          onEventClick={handleDDayEventClick}
+          className="mb-6"
+        />
+
+        <TouchGesture
+          onSwipeLeft={handleSwipeLeft}
+          onSwipeRight={handleSwipeRight}
+          className="mobile-swipe-container"
+        >
+          <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
+          {/* Mobile Navigation - only show on mobile */}
+          <div className="md:hidden">
+            <MobileNavigation
+              activeTab={activeTab}
+              onTabChange={handleTabChange}
+              tabs={tabConfig}
+            />
+          </div>
+          
+          {/* Desktop Navigation - only show on desktop */}
+          <TabsList className="hidden md:flex w-full justify-between items-center gap-1 mb-8 overflow-hidden">
+            <TabsTrigger value="tools" className="flex items-center gap-1 px-3 py-2 text-sm truncate min-w-0 flex-1">
+              <BookOpen className="w-4 h-4 flex-shrink-0" />
+              <span className="truncate">도구</span>
+            </TabsTrigger>
+            <TabsTrigger value="ai-tools" className="flex items-center gap-1 px-3 py-2 text-sm truncate min-w-0 flex-1">
+              <Brain className="w-4 h-4 flex-shrink-0" />
+              <span className="truncate">AI</span>
+            </TabsTrigger>
+            <TabsTrigger value="schedule" className="flex items-center gap-1 px-3 py-2 text-sm truncate min-w-0 flex-1">
+              <Calendar className="w-4 h-4 flex-shrink-0" />
+              <span className="truncate">시간표</span>
+            </TabsTrigger>
+            <TabsTrigger value="schedule-management" className="flex items-center gap-1 px-3 py-2 text-sm truncate min-w-0 flex-1">
+              <Calendar className="w-4 h-4 flex-shrink-0" />
+              <span className="truncate">일정</span>
+            </TabsTrigger>
+            <TabsTrigger value="students" className="flex items-center gap-1 px-3 py-2 text-sm truncate min-w-0 flex-1">
+              <Users className="w-4 h-4 flex-shrink-0" />
+              <span className="truncate">학생</span>
+            </TabsTrigger>
+            <TabsTrigger value="youtube" className="flex items-center gap-1 px-3 py-2 text-sm truncate min-w-0 flex-1">
+              <Play className="w-4 h-4 flex-shrink-0" />
+              <span className="truncate">YouTube</span>
+            </TabsTrigger>
+            <TabsTrigger value="links" className="flex items-center gap-1 px-3 py-2 text-sm truncate min-w-0 flex-1">
+              <Link className="w-4 h-4 flex-shrink-0" />
+              <span className="truncate">링크</span>
+            </TabsTrigger>
+            <TabsTrigger value="time" className="flex items-center gap-1 px-3 py-2 text-sm truncate min-w-0 flex-1">
+              <Clock className="w-4 h-4 flex-shrink-0" />
+              <span className="truncate">시간</span>
+            </TabsTrigger>
+            <TabsTrigger value="settings" className="flex items-center gap-1 px-3 py-2 text-sm truncate min-w-0 flex-1">
+              <SettingsIcon className="w-4 h-4 flex-shrink-0" />
+              <span className="truncate">설정</span>
+            </TabsTrigger>
+          </TabsList>
+
+          {/* 수업 도구 탭 */}
+          <TabsContent value="tools" className="space-y-6">
+            <div className="flex flex-col md:flex-row gap-4">
+              {/* 수업 칠판 - 정확한 75% 너비 */}
+              <div className={`transition-all duration-300 ${isQuickLinksCollapsed ? 'w-full' : 'md:w-[75%] w-full'}`}>
+                <Card className="card-hover h-full">
+                  <CardHeader>
+                    <CardTitle className={`flex items-center gap-2 font-serif`}>
+                      <BookOpen className={`w-5 h-5 ${getAccentColor()}`} />
+                      수업 칠판
+                    </CardTitle>
+                    <CardDescription>수업 중 필요한 내용을 자유롭게 작성하고 편집하세요</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <Chalkboard 
+                      geminiApiKey={settings.geminiApiKey}
+                      geminiModel={settings.geminiModel}
+                    />
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* 빠른 링크 - 정확한 25% 너비 */}
+              <div className={`transition-all duration-300 ${isQuickLinksCollapsed ? 'md:w-auto w-full' : 'md:w-[25%] w-full'}`}>
+                {!isQuickLinksCollapsed && (
+                  <Card className="card-hover h-full">
+                    <CardHeader>
+                      <CardTitle className={`flex items-center justify-between gap-2 font-serif`}>
+                        <div className="flex items-center gap-2">
+                          <ExternalLink className={`w-5 h-5 ${getAccentColor()}`} />
+                          빠른 링크
+                        </div>
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          onClick={() => setIsQuickLinksCollapsed(true)}
+                          className="h-6 w-6 p-0 hover:bg-gray-100"
+                        >
+                          <ChevronRight className="w-4 h-4" />
+                        </Button>
+                      </CardTitle>
+                      <CardDescription>자주 사용하는 교육 사이트에 빠르게 접속하세요</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                      {/* 새 링크 추가 버튼 */}
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="w-full justify-center bg-blue-50 border-blue-200 text-blue-700 hover:bg-blue-100"
+                        onClick={() => {
+                          // 외부 링크 탭으로 이동
+                          setActiveTab("links")
+                        }}
+                      >
+                        <Plus className="w-4 h-4 mr-1" />
+                        새 링크 추가
+                      </Button>
+                      {/* 링크 추가 안내 */}
+                      {savedLinks.filter(link => link.isQuickLink).length === 0 && (
+                        <div className="text-center py-6 text-gray-500 text-sm">
+                          <p className="mb-2">빠른 링크가 없습니다</p>
+                          <p>외부 링크 탭에서 ⭐ 버튼을 눌러 빠른 링크로 추가하세요</p>
+                        </div>
+                      )}
+
+                      {/* 빠른 링크들만 표시 */}
+                      <div className="space-y-2 max-h-96 overflow-y-auto">
+                        {savedLinks.filter(link => link.isQuickLink).slice(0, 8).map((link: SavedLink) => (
+                          <div key={link.id} className="group flex items-center justify-between bg-white/50 rounded-lg p-2 hover:bg-white/80 transition-colors">
+                            <Button
+                              variant="ghost"
+                              className="flex-1 justify-start text-sm h-auto p-2 font-medium"
+                              onClick={() => openLink(link.url)}
+                              title={link.description || link.url}
+                            >
+                              <ExternalLink className="w-3 h-3 mr-2 text-gray-400" />
+                              <span className="truncate">{link.title}</span>
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              className="opacity-0 group-hover:opacity-100 transition-opacity h-6 w-6 p-0 hover:bg-red-100 hover:text-red-600"
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                removeQuickLink(link.id)
+                              }}
+                              title="링크 제거"
+                            >
+                              <Trash2 className="w-3 h-3" />
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* 빠른 링크가 8개 이상일 때 안내 */}
+                      {savedLinks.filter(link => link.isQuickLink).length > 8 && (
+                        <p className="text-xs text-gray-500 text-center pt-2">
+                          {savedLinks.filter(link => link.isQuickLink).length}개 중 8개 표시 중 (외부 링크 탭에서 전체 보기)
+                        </p>
+                      )}
+                    </CardContent>
+                  </Card>
+                )}
+
+                {/* 접힌 상태에서 펼치기 버튼 - 별도 컨테이너에서 완전한 영역 확보 */}
+                {isQuickLinksCollapsed && (
+                  <div className="w-full flex justify-end">
+                    <div className="bg-white rounded-lg shadow-sm border p-3 hover:shadow-md transition-shadow">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => setIsQuickLinksCollapsed(false)}
+                        className="h-10 w-10 p-0 bg-white hover:bg-gray-50"
+                        title="빠른 링크 펼치기"
+                      >
+                        <ChevronLeft className="w-5 h-5" />
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </TabsContent>
+
+          {/* AI 도구 탭 */}
+          <TabsContent value="ai-tools" className="space-y-6">
+            <AIToolsGallery 
+              geminiApiKey={settings.geminiApiKey}
+              geminiModel={settings.geminiModel}
+              accentColor={getAccentColor()}
+            />
+          </TabsContent>
+
+          {/* 시간표 탭 */}
+          <TabsContent value="schedule">
+            <Card className="card-hover">
+              <CardHeader>
+                <CardTitle className={`flex items-center gap-2 font-serif`}>
+                  <Calendar className={`w-5 h-5 ${getAccentColor()}`} />
+                  오늘의 시간표
+                </CardTitle>
+                <CardDescription>오늘의 수업 일정을 확인하고 관리하세요</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Timetable />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* 일정 관리 탭 */}
+          <TabsContent value="schedule-management" className="space-y-6">
+            <Card className="card-hover">
+              <CardHeader>
+                <CardTitle className={`flex items-center gap-2 font-serif`}>
+                  <Calendar className={`w-5 h-5 ${getAccentColor()}`} />
+                  일정 관리
+                </CardTitle>
+                <CardDescription>방학, 학교행사, 개인 일정 등을 하루/주간/월간/연간으로 관리하세요</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ScheduleManager onEventSelect={(event: any | null) => {
+                  if (event && event.isImportant) {
+                    setSelectedImportantEvent(event)
+                  } else {
+                    setSelectedImportantEvent(null)
+                  }
+                  // 일정이 변경될 때 중요 일정 목록 새로고침
+                  loadImportantEvents();
+                }} />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* 학생 관리 탭 */}
+          <TabsContent value="students" className="space-y-6">
+            {/* 학생 페이지 공유 (전체 너비) */}
+            <StudentSharing accentColor={getAccentColor()} />
+            
+            {/* 공지사항 관리 (전체 너비) */}
+            <NoticeManager accentColor={getAccentColor()} />
+            
+            {/* 도서 내용 관리 (전체 너비) */}
+            <BookContentManager accentColor={getAccentColor()} />
+            
+            {/* 학생 활동 도구들 (2열 그리드) */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+              <Card className="card-hover">
+                <CardHeader>
+                  <CardTitle className={`flex items-center gap-2 font-serif`}>
+                    <UserCheck className={`w-5 h-5 ${getAccentColor()}`} />
+                    학생 뽑기
+                  </CardTitle>
+                  <CardDescription>랜덤으로 학생을 선택하여 발표나 활동에 참여시키세요</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <StudentPicker />
+                </CardContent>
+              </Card>
+
+              <Card className="card-hover">
+                <CardHeader>
+                  <CardTitle className={`flex items-center gap-2 font-serif`}>
+                    <Shuffle className={`w-5 h-5 ${getAccentColor()}`} />
+                    모둠 편성
+                  </CardTitle>
+                  <CardDescription>학생들을 균등하게 모둠으로 나누어 협력 학습을 진행하세요</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <GroupMaker />
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="youtube">
+            <Card className="card-hover">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 font-serif">
+                  <Play className="w-5 h-5 text-red-600" />
+                  YouTube 교육 동영상
+                </CardTitle>
+                <CardDescription>교육용 YouTube 동영상을 검색하고 수업에 활용하세요</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <YoutubeSearch />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* 외부 링크 탭 */}
+          <TabsContent value="links">
+            <Card className="card-hover">
+              <CardHeader>
+                <CardTitle className={`flex items-center gap-2 font-serif`}>
+                  <Link className={`w-5 h-5 ${getAccentColor()}`} />
+                  외부 사이트 임베딩
+                </CardTitle>
+                <CardDescription>유용한 외부 사이트를 쉽게 링크하고 임베드하세요</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <LinkEmbedder onLinksUpdate={setSavedLinks} />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* 시간 관리 탭 */}
+          <TabsContent value="time">
+            <Card className="card-hover">
+              <CardHeader>
+                <CardTitle className={`flex items-center gap-2 font-serif`}>
+                  <Timer className={`w-5 h-5 ${getAccentColor()}`} />
+                  시간 관리
+                </CardTitle>
+                <CardDescription>현재 시간을 확인하고 수업 타이머를 활용하세요</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <DigitalClock />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+
+
+          <TabsContent value="settings">
+            <Settings onSettingsChange={handleSettingsChange} />
+          </TabsContent>
+          </Tabs>
+        </TouchGesture>
+      </main>
+
+      {/* Footer */}
+      <footer className="bg-white border-t border-green-200 py-8 px-4 mt-16">
+        <div className="max-w-7xl mx-auto">
+          {/* 푸터 컨텐츠 */}
+          <div className="text-center">
+            <p className="text-gray-600 mb-2">
+              <Heart className="w-4 h-4 inline text-red-500 mr-1" />
+              {settings.footerText}
+            </p>
+            <p className="text-sm text-gray-500">{settings.footerSubtext}</p>
+          </div>
+          
+          {/* 개발자 연락 버튼 - 우측 하단 */}
+          <div className="flex justify-end mt-4">
+            <DeveloperContact />
+          </div>
+        </div>
+      </footer>
+    </div>
+  )
+}

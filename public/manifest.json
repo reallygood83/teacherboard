@@ -1,0 +1,103 @@
+{
+  "name": "Teaboard - 스마트 학급 관리 플랫폼",
+  "short_name": "Teaboard",
+  "description": "🎯 출석체크부터 학급도구까지! 선생님을 위한 AI 기반 올인원 디지털 교실",
+  "start_url": "/class",
+  "display": "standalone",
+  "background_color": "#3B82F6",
+  "theme_color": "#3B82F6",
+  "orientation": "portrait-primary",
+  "categories": ["education", "productivity", "utilities"],
+  "lang": "ko-KR",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/icons/icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-152x152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "수업 칠판",
+      "short_name": "칠판",
+      "description": "수업용 칠판 바로 열기",
+      "url": "/class?tab=tools",
+      "icons": [{ "src": "/icons/shortcut-chalkboard.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "학생 뽑기",
+      "short_name": "뽑기",
+      "description": "랜덤 학생 선택",
+      "url": "/class?tab=students",
+      "icons": [{ "src": "/icons/shortcut-picker.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "시간표",
+      "short_name": "시간표",
+      "description": "오늘의 시간표 확인",
+      "url": "/class?tab=schedule",
+      "icons": [{ "src": "/icons/shortcut-schedule.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "AI 도구",
+      "short_name": "AI",
+      "description": "AI 기반 교육 도구",
+      "url": "/class?tab=ai-tools",
+      "icons": [{ "src": "/icons/shortcut-ai.png", "sizes": "96x96" }]
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false,
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
+  "launch_handler": {
+    "client_mode": "focus-existing"
+  },
+  "handle_links": "preferred",
+  "capture_links": "new-client"
+}

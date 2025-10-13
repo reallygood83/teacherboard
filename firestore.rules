@@ -1,0 +1,122 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 사용자별 칠판 노트 보안 규칙
+    match /users/{userId}/chalkboardNotes/{noteId} {
+      // 읽기: 본인만 가능
+      allow read: if request.auth != null && request.auth.uid == userId;
+      
+      // 쓰기/수정: 본인만 가능하며 필수 필드 검증
+      allow write: if request.auth != null 
+        && request.auth.uid == userId
+        && resource == null // 새 문서 생성 시
+        && validateChalkboardNote();
+      
+      // 업데이트: 본인만 가능하며 필수 필드 검증
+      allow update: if request.auth != null 
+        && request.auth.uid == userId
+        && validateChalkboardNote();
+      
+      // 삭제: 본인만 가능
+      allow delete: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // 사용자별 일정 데이터 보안 규칙
+    match /users/{userId}/events/{eventId} {
+      // 읽기: 본인만 가능
+      allow read: if request.auth != null && request.auth.uid == userId;
+      
+      // 쓰기/수정: 본인만 가능하며 필수 필드 검증
+      allow write: if request.auth != null 
+        && request.auth.uid == userId
+        && resource == null // 새 문서 생성 시
+        && validateEvent();
+      
+      // 업데이트: 본인만 가능하며 필수 필드 검증
+      allow update: if request.auth != null 
+        && request.auth.uid == userId
+        && validateEvent();
+      
+      // 삭제: 본인만 가능
+      allow delete: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // 사용자 설정 데이터 보안 규칙 (Gemini API 키 등)
+    match /users/{userId}/settings/{document=**} {
+      // 읽기: 본인만 가능
+      allow read: if request.auth != null && request.auth.uid == userId;
+
+      // 쓰기/수정/삭제: 본인만 가능하며 필수 필드 검증
+      allow write, update, delete: if request.auth != null
+        && request.auth.uid == userId
+        && validateSettings();
+    }
+
+    // 사용자 프로필 데이터 (필요 시)
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // 공용 데이터 (필요 시 - 읽기 전용)
+    match /public/{document=**} {
+      allow read: if request.auth != null;
+      allow write: if false; // 관리자만 쓰기 가능하도록 별도 설정
+    }
+    
+    // 기본 거부 규칙
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
+
+// 칠판 노트 유효성 검증 함수
+function validateChalkboardNote() {
+  let data = request.resource.data;
+  return data.keys().hasAll(['title', 'contentHtml', 'contentText', 'createdAt', 'updatedAt'])
+    && data.title is string
+    && data.title.size() <= 100
+    && data.contentHtml is string
+    && data.contentHtml.size() <= 50000  // 50KB 제한
+    && data.contentText is string
+    && data.contentText.size() <= 50000  // 50KB 제한
+    && data.createdAt is timestamp
+    && data.updatedAt is timestamp;
+}
+
+// 일정 유효성 검증 함수
+function validateEvent() {
+  let data = request.resource.data;
+  return data.keys().hasAll(['title', 'startDate', 'endDate', 'category', 'isAllDay', 'isImportant', 'createdAt', 'userId'])
+    && data.title is string
+    && data.title.size() > 0 && data.title.size() <= 100
+    && data.startDate is string
+    && data.endDate is string
+    && data.category in ['holiday', 'school-event', 'personal', 'meeting', 'consultation']
+    && data.isAllDay is bool
+    && data.isImportant is bool
+    && data.userId == request.auth.uid
+    && data.createdAt is string;
+}
+
+// 설정 유효성 검증 함수
+function validateSettings() {
+  let data = request.resource.data;
+  return data.keys().hasAll(['title', 'subtitle', 'footerText', 'footerSubtext', 'backgroundMode', 'geminiApiKey', 'geminiModel', 'lastUpdated'])
+    && data.title is string
+    && data.title.size() > 0 && data.title.size() <= 100
+    && data.subtitle is string
+    && data.subtitle.size() <= 200
+    && data.footerText is string
+    && data.footerText.size() <= 100
+    && data.footerSubtext is string
+    && data.footerSubtext.size() <= 500
+    && data.backgroundMode is string
+    && data.backgroundMode in ['green', 'blue', 'purple', 'orange', 'pink', 'gray']
+    && data.geminiApiKey is string
+    && data.geminiApiKey.size() <= 100
+    && data.geminiModel is string
+    && data.geminiModel in ['gemini-1.5-flash', 'gemini-1.5-pro', 'gemini-2.0-flash-exp', 'gemini-1.0-pro']
+    && data.lastUpdated is string;
+}

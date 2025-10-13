@@ -1,0 +1,68 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // 교사 개인 데이터 - 본인만 접근
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+      
+      // 교사의 공유된 수업 내용 - 학생들이 읽을 수 있도록 공개
+      match /sharedClassContent/{contentId} {
+        allow read: if true;  // 학생들이 세션 코드로 접근 가능
+        allow write: if request.auth != null && request.auth.uid == userId;
+      }
+      
+      // 교사의 공지사항 - 학생들이 읽을 수 있도록 공개
+      match /notices/{noticeId} {
+        allow read: if true;  // 학생들이 공지사항 읽기 가능
+        allow write: if request.auth != null && request.auth.uid == userId;
+      }
+      
+      // 교사의 저장된 링크 - 학생들이 읽을 수 있도록 공개
+      match /savedLinks/{linkId} {
+        allow read: if true;  // 학생들이 링크 읽기 가능
+        allow write: if request.auth != null && request.auth.uid == userId;
+      }
+      
+      // 교사의 도서 내용 - 학생들이 읽을 수 있도록 공개
+      match /bookContents/{bookId} {
+        allow read: if true;  // 학생들이 도서 내용 읽기 가능
+        allow write: if request.auth != null && request.auth.uid == userId;
+      }
+    }
+    
+    // 학생 세션 관련 데이터 - 모든 사용자가 읽기 가능
+    match /sessions/{sessionId} {
+      allow read: if true;  // 세션 코드로 접근하는 학생들을 위해 공개 읽기
+      allow write: if request.auth != null;  // 교사만 세션 생성/수정 가능
+    }
+    
+    // 최상위 공유된 수업 내용 (기존 호환성)
+    match /sharedClassContent/{contentId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+    
+    // 학생 질문 및 참여 데이터 - 익명 참여 허용
+    match /studentData/{dataId} {
+      allow read, write: if true;
+    }
+    
+    // 학생 응답 및 활동 데이터
+    match /studentResponses/{responseId} {
+      allow read, write: if true;
+    }
+    
+    // 실시간 수업 활동 데이터
+    match /classActivities/{activityId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+    
+    // 기타 모든 문서는 인증된 사용자만 접근
+    match /{document=**} {
+      allow read, write: if request.auth != null;
+    }
+  }
+}

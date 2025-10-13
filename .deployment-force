@@ -1,0 +1,9 @@
+DEPLOYMENT_TIMESTAMP=2025-08-15-19:48
+DEPLOYMENT_TRIGGER=manual-force-deploy
+UI_FIXES_COMMIT=458ff22
+BLACK_BACKGROUND_FIX=completed
+NAVIGATION_ALIGNMENT_FIX=completed
+FIREBASE_CRASH_FIX=completed
+
+# 이 파일은 Vercel 자동 배포를 강제로 트리거하기 위한 더미 파일입니다.
+# GitHub webhook이 작동하지 않을 때 새 커밋을 생성하여 배포를 유도합니다.
