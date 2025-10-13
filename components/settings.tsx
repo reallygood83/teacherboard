@@ -135,7 +135,7 @@ export function Settings({ onSettingsChange }: SettingsProps) {
     footerSubtext: "© 2025 우리 학급 홈페이지. 모든 권리 보유.",
     backgroundMode: "green",
     geminiApiKey: "",
-    geminiModel: "gemini-1.5-flash",
+    geminiModel: "gemini-2.5-flash",
   })
   const [isInitialized, setIsInitialized] = useState(false)
   const [storageStatus, setStorageStatus] = useState<{
@@ -305,7 +305,7 @@ export function Settings({ onSettingsChange }: SettingsProps) {
         footerSubtext: "© 2025 우리 학급 홈페이지. 모든 권리 보유.",
         backgroundMode: "green",
         geminiApiKey: "",
-        geminiModel: "gemini-1.5-flash",
+        geminiModel: "gemini-2.5-flash",
         lastUpdated: new Date().toISOString()
       }
 
@@ -540,7 +540,7 @@ export function Settings({ onSettingsChange }: SettingsProps) {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="gemini-1.5-flash">Gemini 1.5 Flash (빠른 응답)</SelectItem>
+                <SelectItem value="gemini-2.5-flash">Gemini 2.5 Flash</SelectItem>
                 <SelectItem value="gemini-1.5-pro">Gemini 1.5 Pro (고품질 응답)</SelectItem>
                 <SelectItem value="gemini-2.0-flash-exp">Gemini 2.0 Flash (실험적)</SelectItem>
                 <SelectItem value="gemini-1.0-pro">Gemini 1.0 Pro (안정적)</SelectItem>

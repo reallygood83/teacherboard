@@ -117,6 +117,6 @@ function validateSettings() {
     && data.geminiApiKey is string
     && data.geminiApiKey.size() <= 100
     && data.geminiModel is string
-    && data.geminiModel in ['gemini-1.5-flash', 'gemini-1.5-pro', 'gemini-2.0-flash-exp', 'gemini-1.0-pro']
+    && data.geminiModel in ['gemini-2.5-flash', 'gemini-1.5-pro', 'gemini-2.0-flash-exp', 'gemini-1.0-pro']
     && data.lastUpdated is string;
 }
