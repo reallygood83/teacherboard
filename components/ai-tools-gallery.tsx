@@ -63,6 +63,16 @@ export function AIToolsGallery({ geminiApiKey, geminiModel, accentColor = "text-
       externalUrl: "https://script.google.com/macros/s/AKfycbygtpi71zrBa__Nf9glDHadq0HlojLg1kLXU4zhqPHIzK3DJBdsH9d5-zqqQsXpwOabMA/exec"
     },
     {
+      id: "quiz-generator-2",
+      title: "AI 퀴즈 생성기 2",
+      description: "교육 내용에 맞는 퀴즈를 AI가 자동으로 생성하여 학생들의 학습 성과를 측정할 수 있습니다 (서버 2)",
+      icon: HelpCircle,
+      thumbnail: "/thumbnails/quiz-generator-2-thumbnail.svg",
+      category: "assessment",
+      status: "external-link",
+      externalUrl: "https://script.google.com/macros/s/AKfycbzZt2AG2GE6WQzi56qba_fgnEC-oXwDLyDw7su70mMkTLslU0yFR4EeNX2Wxi4OCsfZ/exec"
+    },
+    {
       id: "survey-generator",
       title: "AI 설문 생성기",
       description: "학급 운영과 교육 개선을 위한 설문을 AI가 체계적으로 생성하고 분석해드립니다",
@@ -71,6 +81,16 @@ export function AIToolsGallery({ geminiApiKey, geminiModel, accentColor = "text-
       category: "analysis",
       status: "external-link",
       externalUrl: "https://script.google.com/macros/s/AKfycby8TGGcuL7Vm7gkz_X2h6wBV7ClhKUL89va3AzsGlNnAJRleuB60A5eiYYbKKr7XeT8NA/exec"
+    },
+    {
+      id: "survey-generator-2",
+      title: "AI 설문 생성기 2",
+      description: "학급 운영과 교육 개선을 위한 설문을 AI가 체계적으로 생성하고 분석해드립니다 (서버 2)",
+      icon: BarChart3,
+      thumbnail: "/thumbnails/survey-generator-2-thumbnail.svg",
+      category: "analysis",
+      status: "external-link",
+      externalUrl: "https://script.google.com/macros/s/AKfycbx3yFMcVJVD53DVG06qvBurQTqDpFy345Rsp8lN8tTqUPVnk72x3KMIb5B82h1yWpak/exec"
     },
     {
       id: "newsletter-generator",
