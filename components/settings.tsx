@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { Settings as SettingsIcon, Palette, Type, FileText, Bot, AlertTriangle, CheckCircle, WifiOff, Cloud, HardDrive, Info } from "lucide-react"
+import { Settings as SettingsIcon, Palette, Type, FileText, Bot, AlertTriangle, CheckCircle, WifiOff, Cloud, HardDrive, Info, Save, Check } from "lucide-react"
 import { useAuth } from "@/contexts/AuthContext"
 import { doc, setDoc, getDoc, serverTimestamp } from "firebase/firestore"
 import { db } from "@/lib/firebase"
@@ -144,6 +144,11 @@ export function Settings({ onSettingsChange }: SettingsProps) {
   }>({ type: 'localStorage', isPrivateMode: false })
   const [syncStatus, setSyncStatus] = useState<'synced' | 'syncing' | 'local-only' | 'error'>('local-only')
 
+  // Gemini API Key 저장 관련 state
+  const [tempGeminiApiKey, setTempGeminiApiKey] = useState("")
+  const [hasUnsavedApiKey, setHasUnsavedApiKey] = useState(false)
+  const [apiKeySaved, setApiKeySaved] = useState(false)
+
   // 🚀 초기 데이터 로드 (Hybrid Strategy)
   useEffect(() => {
     const loadSettings = async () => {
@@ -246,6 +251,30 @@ export function Settings({ onSettingsChange }: SettingsProps) {
 
     loadSettings()
   }, [currentUser, firebaseAvailable]) // currentUser와 firebaseAvailable 변경 시 재실행
+
+  // API Key 초기값 및 변경 감지
+  useEffect(() => {
+    setTempGeminiApiKey(settings.geminiApiKey)
+  }, [settings.geminiApiKey])
+
+  useEffect(() => {
+    setHasUnsavedApiKey(tempGeminiApiKey !== settings.geminiApiKey)
+    if (apiKeySaved) {
+      const timer = setTimeout(() => setApiKeySaved(false), 3000)
+      return () => clearTimeout(timer)
+    }
+  }, [tempGeminiApiKey, settings.geminiApiKey, apiKeySaved])
+
+  // API Key 저장 핸들러
+  const handleSaveApiKey = async () => {
+    try {
+      await handleSettingChange("geminiApiKey", tempGeminiApiKey)
+      setApiKeySaved(true)
+      setHasUnsavedApiKey(false)
+    } catch (error) {
+      console.error("API Key 저장 실패:", error)
+    }
+  }
 
   // 📝 설정 변경 핸들러 (Hybrid Save)
   const handleSettingChange = async (key: keyof SettingsData, value: string) => {
@@ -519,13 +548,53 @@ export function Settings({ onSettingsChange }: SettingsProps) {
         <CardContent className="space-y-4">
           <div>
             <Label htmlFor="geminiApiKey">Gemini API Key</Label>
-            <Input
-              id="geminiApiKey"
-              type="password"
-              value={settings.geminiApiKey}
-              onChange={(e) => handleSettingChange("geminiApiKey", e.target.value)}
-              placeholder="AI Studio에서 발급받은 API Key를 입력하세요"
-            />
+            <div className="flex gap-2">
+              <div className="flex-1">
+                <Input
+                  id="geminiApiKey"
+                  type="password"
+                  value={tempGeminiApiKey}
+                  onChange={(e) => setTempGeminiApiKey(e.target.value)}
+                  placeholder="AI Studio에서 발급받은 API Key를 입력하세요"
+                  className={hasUnsavedApiKey ? "border-orange-400" : ""}
+                />
+              </div>
+              <Button
+                onClick={handleSaveApiKey}
+                disabled={!hasUnsavedApiKey}
+                className={`min-w-[100px] transition-all ${
+                  apiKeySaved
+                    ? "bg-green-600 hover:bg-green-700"
+                    : hasUnsavedApiKey
+                    ? "bg-blue-600 hover:bg-blue-700"
+                    : "bg-gray-300"
+                }`}
+              >
+                {apiKeySaved ? (
+                  <>
+                    <Check className="w-4 h-4 mr-1" />
+                    저장됨
+                  </>
+                ) : (
+                  <>
+                    <Save className="w-4 h-4 mr-1" />
+                    저장
+                  </>
+                )}
+              </Button>
+            </div>
+            {hasUnsavedApiKey && (
+              <p className="text-sm text-orange-600 mt-1 flex items-center gap-1">
+                <AlertTriangle className="w-3 h-3" />
+                변경된 내용이 있습니다. 저장 버튼을 눌러주세요.
+              </p>
+            )}
+            {apiKeySaved && (
+              <p className="text-sm text-green-600 mt-1 flex items-center gap-1">
+                <CheckCircle className="w-3 h-3" />
+                API Key가 성공적으로 저장되었습니다.
+              </p>
+            )}
             <p className="text-sm text-gray-500 mt-1">
               API Key는 <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Google AI Studio</a>에서 발급받을 수 있습니다
             </p>
