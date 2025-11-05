@@ -97,7 +97,7 @@ export default function DashboardPage() {
 
   useEffect(() => {
     if (!loading && !currentUser && mounted) {
-      router.push('/login')
+      router.push('/')
     }
   }, [currentUser, loading, router, mounted])
 
@@ -183,7 +183,7 @@ export default function DashboardPage() {
             7 SERVICES
           </Badge>
           <h2 className="text-5xl sm:text-6xl font-black text-[var(--brutal-black)] mb-4 tracking-tight">
-            환영합니다! 👋
+            {currentUser?.displayName || '사용자'} 선생님 환영합니다! 👋
           </h2>
           <p className="text-xl font-bold text-gray-600">
             TeaBoard의 모든 서비스를 한곳에서 이용하세요

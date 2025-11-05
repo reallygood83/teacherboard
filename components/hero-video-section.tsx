@@ -100,7 +100,7 @@ export default function HeroVideoSection() {
                 <button
                   onClick={handleGoogleLogin}
                   disabled={isLoading}
-                  className="inline-flex items-center gap-3 px-10 py-5 bg-white hover:bg-gray-50 text-gray-700 font-semibold text-lg rounded-sm transition-all duration-300 luxury-shadow hover:luxury-shadow-hover disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="inline-flex items-center gap-3 px-10 py-5 bg-[var(--chanel-gold)] hover:bg-[#C19A2E] text-white font-semibold text-lg rounded-sm transition-all duration-300 luxury-shadow hover:luxury-shadow-hover disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isLoading ? (
                     <>

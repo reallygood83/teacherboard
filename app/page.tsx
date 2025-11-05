@@ -270,7 +270,7 @@ export default function LandingPage() {
             <button
               onClick={handleGoogleLogin}
               disabled={isLoading}
-              className="inline-flex items-center gap-3 px-12 py-6 bg-white hover:bg-gray-50 text-gray-700 font-bold text-xl rounded-sm transition-all duration-300 luxury-shadow hover:luxury-shadow-hover disabled:opacity-50 disabled:cursor-not-allowed"
+              className="inline-flex items-center gap-3 px-12 py-6 bg-[var(--chanel-gold)] hover:bg-[#C19A2E] text-white font-bold text-xl rounded-sm transition-all duration-300 luxury-shadow hover:luxury-shadow-hover disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? (
                 <>
