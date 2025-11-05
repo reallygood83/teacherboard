@@ -64,7 +64,7 @@ const services = [
     title: 'TeaBoard Forms',
     description: 'AI 퀴즈 및 설문 생성기',
     icon: ClipboardCheck,
-    url: 'https://quiz.teaboard.link',
+    url: 'https://forms.teaboard.link',
     color: '#FF6F00', // Orange
     bgColor: '#FFF3E0'
   },
