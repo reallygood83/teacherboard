@@ -1,0 +1,1360 @@
+
+> my-v0-project@0.1.0 dev
+> next dev
+
+ ⚠ Port 3000 is in use, trying 3001 instead.
+ ⚠ Port 3001 is in use, trying 3002 instead.
+ ⚠ Port 3002 is in use, trying 3003 instead.
+   ▲ Next.js 15.2.4
+   - Local:        http://localhost:3003
+   - Network:      http://192.168.123.112:3003
+
+ ✓ Starting...
+ ✓ Ready in 3.5s
+ ○ Compiling /class ...
+ ✓ Compiled /class in 13.7s (3182 modules)
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 7.7s (3186 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+🔥 Firebase 환경 변수가 올바르게 설정되지 않았습니다.
+📝 Vercel 대시보드에서 실제 Firebase 설정 값을 입력해주세요.
+🔍 확인 필요 변수: {
+  apiKey: '❌ 누락',
+  authDomain: '❌ 누락',
+  projectId: '❌ 누락',
+  storageBucket: '❌ 누락',
+  messagingSenderId: '❌ 누락',
+  appId: '❌ 누락'
+}
+⚠️ Firebase 초기화 건너뜀 - 환경 변수 미설정
+ GET /class 404 in 23098ms
+ ✓ Compiled in 3.4s (1490 modules)
+ ✓ Compiled in 1354ms (1490 modules)
+ ✓ Compiled in 445ms (1490 modules)
+ ✓ Compiled in 511ms (1490 modules)
+ ✓ Compiled / in 462ms (2048 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+🔥 Firebase 환경 변수가 올바르게 설정되지 않았습니다.
+📝 Vercel 대시보드에서 실제 Firebase 설정 값을 입력해주세요.
+🔍 확인 필요 변수: {
+  apiKey: '❌ 누락',
+  authDomain: '❌ 누락',
+  projectId: '❌ 누락',
+  storageBucket: '❌ 누락',
+  messagingSenderId: '❌ 누락',
+  appId: '❌ 누락'
+}
+⚠️ Firebase 초기화 건너뜀 - 환경 변수 미설정
+ GET / 200 in 848ms
+ ✓ Compiled in 707ms (1492 modules)
+ ✓ Compiled in 1206ms (1492 modules)
+ ✓ Compiled in 1513ms (1492 modules)
+ ✓ Compiled in 1187ms (1492 modules)
+ ✓ Compiled in 1177ms (1492 modules)
+ ✓ Compiled in 1013ms (1492 modules)
+ ✓ Compiled in 916ms (1492 modules)
+ ✓ Compiled in 748ms (1492 modules)
+ ✓ Compiled in 656ms (1492 modules)
+ ✓ Compiled in 489ms (1492 modules)
+ ⨯ ./contexts/AuthContext.tsx
+Error:   [31mx[0m Expression expected
+     ,-[[36;1;4m/Users/moon/Desktop/teacher-board/teacherboard/teacherboard/contexts/AuthContext.tsx[0m:135:1]
+ [2m132[0m |     </AuthContext.Provider>
+ [2m133[0m |   );
+ [2m134[0m | }
+ [2m135[0m | }
+     : [35;1m^[0m
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./contexts/AuthContext.tsx
+ ✓ Compiled in 1036ms (1492 modules)
+ ⨯ ./components/settings.tsx:10:1
+Module not found: Can't resolve '@/components/ui/alert'
+   8 | import { Textarea } from "@/components/ui/textarea"
+   9 | import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+> 10 | import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+     | ^
+  11 | import { Settings as SettingsIcon, Palette, Type, FileText, Bot, AlertTriangle, CheckCircle, WifiOff } from "lucide-react"
+  12 | import { useAuth } from "@/contexts/AuthContext"
+  13 |
+
+https://nextjs.org/docs/messages/module-not-found
+
+Import trace for requested module:
+./app/class/page.tsx
+ ✓ Compiled in 214ms (1494 modules)
+ ✓ Compiled in 369ms (1494 modules)
+ ✓ Compiled in 212ms (1494 modules)
+ ✓ Compiled in 371ms (1494 modules)
+ ✓ Compiled in 501ms (1494 modules)
+ ✓ Compiled in 900ms (1494 modules)
+ ✓ Compiled in 315ms (1494 modules)
+ ✓ Compiled in 520ms (1494 modules)
+ ✓ Compiled in 447ms (1494 modules)
+ ✓ Compiled in 2.1s (1494 modules)
+ ✓ Compiled in 2s (1494 modules)
+ ✓ Compiled in 3.3s (1494 modules)
+ ✓ Compiled in 1514ms (1494 modules)
+ ✓ Compiled in 1261ms (1494 modules)
+ ✓ Compiled in 1081ms (1494 modules)
+ ✓ Compiled in 890ms (1494 modules)
+ ✓ Compiled in 388ms (1494 modules)
+ ✓ Compiled in 460ms (1494 modules)
+ ✓ Compiled in 1139ms (1494 modules)
+ ✓ Compiled in 565ms (1494 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/Users/moon/Desktop/teacher-board/teacherboard/teacherboard/.next/cache/webpack/client-development/0.pack.gz_' -> '/Users/moon/Desktop/teacher-board/teacherboard/teacherboard/.next/cache/webpack/client-development/0.pack.gz'
+ ○ Compiling /class ...
+ ✓ Compiled /class in 893ms (3183 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+🔥 Firebase 환경 변수가 올바르게 설정되지 않았습니다.
+📝 Vercel 대시보드에서 실제 Firebase 설정 값을 입력해주세요.
+🔍 확인 필요 변수: {
+  apiKey: '❌ 누락',
+  authDomain: '❌ 누락',
+  projectId: '❌ 누락',
+  storageBucket: '❌ 누락',
+  messagingSenderId: '❌ 누락',
+  appId: '❌ 누락'
+}
+⚠️ Firebase 초기화 건너뜀 - 환경 변수 미설정
+ GET /class 200 in 2241ms
+ ○ Compiling / ...
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 1852ms
+ ✓ Compiled / in 3.4s (3192 modules)
+ ✓ Compiled in 1ms (1705 modules)
+ ✓ Compiled in 2.1s (3192 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /offline. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /offline. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /styles/globals.css. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /styles/globals.css. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+🔥 Firebase 환경 변수가 올바르게 설정되지 않았습니다.
+📝 Vercel 대시보드에서 실제 Firebase 설정 값을 입력해주세요.
+🔍 확인 필요 변수: {
+  apiKey: '❌ 누락',
+  authDomain: '❌ 누락',
+  projectId: '❌ 누락',
+  storageBucket: '❌ 누락',
+  messagingSenderId: '❌ 누락',
+  appId: '❌ 누락'
+}
+⚠️ Firebase 초기화 건너뜀 - 환경 변수 미설정
+ GET /styles/globals.css 404 in 5114ms
+ GET / 200 in 6999ms
+ GET /offline 404 in 6991ms
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 3667ms
+ ✓ Compiled in 2.5s (1498 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 104ms
+ ✓ Compiled in 345ms (1498 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 66ms
+ ✓ Compiled in 639ms (1498 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 233ms
+ ✓ Compiled in 274ms (1498 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 51ms
+ ✓ Compiled in 490ms (1498 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 56ms
+ ✓ Compiled in 886ms (1498 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 206ms
+ ✓ Compiled in 519ms (1498 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 80ms
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/Users/moon/Desktop/teacher-board/teacherboard/teacherboard/.next/cache/webpack/client-development/0.pack.gz_' -> '/Users/moon/Desktop/teacher-board/teacherboard/teacherboard/.next/cache/webpack/client-development/0.pack.gz'
+ ✓ Compiled in 468ms (1498 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/Users/moon/Desktop/teacher-board/teacherboard/teacherboard/.next/cache/webpack/client-development/0.pack.gz_' -> '/Users/moon/Desktop/teacher-board/teacherboard/teacherboard/.next/cache/webpack/client-development/0.pack.gz'
+ ✓ Compiled in 1078ms (1498 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/Users/moon/Desktop/teacher-board/teacherboard/teacherboard/.next/cache/webpack/client-development/0.pack.gz_' -> '/Users/moon/Desktop/teacher-board/teacherboard/teacherboard/.next/cache/webpack/client-development/0.pack.gz'
+ ✓ Compiled in 436ms (1498 modules)
+ ✓ Compiled in 2.2s (1498 modules)
+ ✓ Compiled in 3.6s (3197 modules)
+ ✓ Compiled in 2.4s (3197 modules)
+ ✓ Compiled in 3.4s (3197 modules)
+ ✓ Compiled in 1185ms (3197 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/Users/moon/Desktop/teacher-board/teacherboard/teacherboard/.next/cache/webpack/client-development/0.pack.gz_' -> '/Users/moon/Desktop/teacher-board/teacherboard/teacherboard/.next/cache/webpack/client-development/0.pack.gz'
+ ✓ Compiled in 1096ms (3197 modules)
+ ✓ Compiled in 2.4s (3207 modules)
+ ✓ Compiled in 1671ms (3207 modules)
+ ✓ Compiled in 2.5s (3207 modules)
+ ✓ Compiled in 2.2s (3207 modules)
+ ✓ Compiled in 1630ms (3207 modules)
+ ✓ Compiled in 1370ms (3207 modules)
+ ✓ Compiled in 1017ms (3207 modules)
+ ✓ Compiled in 986ms (3207 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/Users/moon/Desktop/teacher-board/teacherboard/teacherboard/.next/cache/webpack/client-development/0.pack.gz_' -> '/Users/moon/Desktop/teacher-board/teacherboard/teacherboard/.next/cache/webpack/client-development/0.pack.gz'
+ ✓ Compiled in 1045ms (3207 modules)
+ ✓ Compiled in 1352ms (3205 modules)
+ ✓ Compiled in 1067ms (3205 modules)
+ ✓ Compiled in 1007ms (3205 modules)
+ ✓ Compiled in 928ms (3205 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/Users/moon/Desktop/teacher-board/teacherboard/teacherboard/.next/cache/webpack/client-development/0.pack.gz_' -> '/Users/moon/Desktop/teacher-board/teacherboard/teacherboard/.next/cache/webpack/client-development/0.pack.gz'
+ ⨯ ./app/class/page.tsx
+Module parse failed: Identifier 'handleTabChange' has already been declared (181:10)
+|     };
+|     // 탭 변경 시 중요 일정 새로고침 (일정 관리 탭에서 돌아올 때)
+>     const handleTabChange = (tabValue)=>{
+|         setActiveTab(tabValue);
+|         // 일정 관리 탭에서 다른 탭으로 이동할 때 중요 일정 새로고침
+
+Import trace for requested module:
+./app/class/page.tsx
+ ✓ Compiled in 2.2s (3205 modules)
+ ✓ Compiled in 2s (3205 modules)
+ ✓ Compiled in 1439ms (3205 modules)
+   Reload env: .env.local
+ ✓ Compiled in 31.1s (3223 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/Users/moon/Desktop/teacher-board/teacherboard/teacherboard/.next/cache/webpack/client-development/0.pack.gz_' -> '/Users/moon/Desktop/teacher-board/teacherboard/teacherboard/.next/cache/webpack/client-development/0.pack.gz'
+   Reload env: .env.local
+ ✓ Compiled in 10.6s (3223 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+🔥 Firebase 초기화 시작...
+✅ Firebase 앱 초기화 완료
+✅ Firebase Auth 초기화 완료 (Calendar 스코프 포함)
+✅ Firestore 초기화 완료
+🎉 Firebase 전체 초기화 성공!
+ GET /class 200 in 634ms
+ ○ Compiling / ...
+ ✓ Compiled / in 945ms (3209 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /offline. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /offline. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+🔥 Firebase 초기화 시작...
+✅ Firebase 앱 초기화 완료
+✅ Firebase Auth 초기화 완료 (Calendar 스코프 포함)
+✅ Firestore 초기화 완료
+🎉 Firebase 전체 초기화 성공!
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /login. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /login. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 1132ms
+ GET / 200 in 1134ms
+ GET /offline 404 in 1123ms
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /login 200 in 1387ms
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /login. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /login. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /login 200 in 161ms
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 10ms
+ ✓ Compiled /dashboard in 373ms (3211 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /dashboard. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /dashboard. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+🔥 Firebase 초기화 시작...
+✅ Firebase 앱 초기화 완료
+✅ Firebase Auth 초기화 완료 (Calendar 스코프 포함)
+✅ Firestore 초기화 완료
+🎉 Firebase 전체 초기화 성공!
+ GET /dashboard 200 in 602ms
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 174ms
+ ✓ Compiled / in 368ms (3220 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /offline. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /offline. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /styles/globals.css. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /styles/globals.css. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+🔥 Firebase 초기화 시작...
+✅ Firebase 앱 초기화 완료
+✅ Firebase Auth 초기화 완료 (Calendar 스코프 포함)
+✅ Firestore 초기화 완료
+🎉 Firebase 전체 초기화 성공!
+ GET / 200 in 634ms
+ GET /offline 404 in 631ms
+ GET /styles/globals.css 404 in 415ms
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 20ms
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 170ms
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /offline. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /offline. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET / 200 in 28ms
+ GET /offline 404 in 26ms
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ✓ Compiled in 2.3s (1509 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 71ms
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 546ms (3208 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /.well-known/appspecific/com.chrome.devtools.json. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /.well-known/appspecific/com.chrome.devtools.json. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+🔥 Firebase 초기화 시작...
+✅ Firebase 앱 초기화 완료
+✅ Firebase Auth 초기화 완료 (Calendar 스코프 포함)
+✅ Firestore 초기화 완료
+🎉 Firebase 전체 초기화 성공!
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 821ms
+ ✓ Compiled in 1003ms (1512 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 100ms
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 239ms
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /offline. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /offline. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /offline 404 in 59ms
+ ✓ Compiled / in 384ms (1715 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+🔥 Firebase 초기화 시작...
+✅ Firebase 앱 초기화 완료
+✅ Firebase Auth 초기화 완료 (Calendar 스코프 포함)
+✅ Firestore 초기화 완료
+🎉 Firebase 전체 초기화 성공!
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /login. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /login. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /login 200 in 1367ms
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/Users/moon/Desktop/teacher-board/teacherboard/teacherboard/.next/cache/webpack/client-development/2.pack.gz_' -> '/Users/moon/Desktop/teacher-board/teacherboard/teacherboard/.next/cache/webpack/client-development/2.pack.gz'
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 50ms
+ ✓ Compiled /dashboard in 373ms (1722 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /dashboard. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /dashboard. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+🔥 Firebase 초기화 시작...
+✅ Firebase 앱 초기화 완료
+✅ Firebase Auth 초기화 완료 (Calendar 스코프 포함)
+✅ Firestore 초기화 완료
+🎉 Firebase 전체 초기화 성공!
+ GET /dashboard 200 in 621ms
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /offline. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /offline. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET / 200 in 62ms
+ GET /offline 404 in 55ms
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 21ms
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 46ms
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /offline. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /offline. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 50ms
+ GET /offline 404 in 49ms
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 33ms
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /offline. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /offline. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET / 200 in 41ms
+ GET /offline 404 in 40ms
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ✓ Compiled in 466ms (1512 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /_next/static/webpack/1552dfa0fca392da.webpack.hot-update.json. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /_next/static/webpack/1552dfa0fca392da.webpack.hot-update.json. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /_next/static/webpack/1552dfa0fca392da.webpack.hot-update.json 404 in 141ms
+ GET /class 200 in 181ms
+ GET /class 200 in 179ms
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 62ms
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /offline. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /offline. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET / 200 in 51ms
+ GET /offline 404 in 40ms
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ✓ Compiled in 610ms (1512 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /_next/static/webpack/a6c5171b0eb57ce0.webpack.hot-update.json. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /_next/static/webpack/a6c5171b0eb57ce0.webpack.hot-update.json. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ GET /class 200 in 186ms
+ GET /class 200 in 186ms
+ GET /_next/static/webpack/a6c5171b0eb57ce0.webpack.hot-update.json 404 in 181ms
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 277ms
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /offline. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /offline. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET / 200 in 101ms
+ GET /offline 404 in 94ms
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 56ms
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /offline. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /offline. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET / 200 in 62ms
+ GET /offline 404 in 60ms
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/Users/moon/Desktop/teacher-board/teacherboard/teacherboard/.next/cache/webpack/client-development/0.pack.gz_' -> '/Users/moon/Desktop/teacher-board/teacherboard/teacherboard/.next/cache/webpack/client-development/0.pack.gz'
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 102ms
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /offline. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /offline. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 30ms
+ GET / 200 in 30ms
+ GET /offline 404 in 29ms
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 34ms
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /offline. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /offline. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 29ms
+ GET / 200 in 30ms
+ GET /offline 404 in 29ms
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ✓ Compiled in 1678ms (3225 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 200ms
+ GET /class 200 in 203ms
+ ✓ Compiled in 848ms (3225 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 100ms
+ GET /class 200 in 99ms
+ ✓ Compiled in 1229ms (3225 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 298ms
+ GET /class 200 in 304ms
+ ✓ Compiled in 843ms (3225 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 131ms
+ GET /class 200 in 134ms
+ ✓ Compiled in 1884ms (3225 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 422ms
+ GET /class 200 in 460ms
+ ✓ Compiled in 1273ms (3225 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 941ms
+ GET /class 200 in 990ms
+ ⨯ ./components/schedule-manager.tsx
+Error:   [31mx[0m Expected ',', got '{'
+     ,-[[36;1;4m/Users/moon/Desktop/teacher-board/teacherboard/teacherboard/components/schedule-manager.tsx[0m:787:1]
+ [2m784[0m | 
+ [2m785[0m |     </div>
+ [2m786[0m | 
+ [2m787[0m |       {/* Delete confirmation dialog */}
+     : [35;1m      ^[0m
+ [2m788[0m |       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+ [2m789[0m |         <DialogContent className="max-w-md">
+ [2m790[0m |           <DialogHeader>
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./components/schedule-manager.tsx
+./app/class/page.tsx
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/Users/moon/Desktop/teacher-board/teacherboard/teacherboard/.next/cache/webpack/client-development/0.pack.gz_' -> '/Users/moon/Desktop/teacher-board/teacherboard/teacherboard/.next/cache/webpack/client-development/0.pack.gz'
+ ✓ Compiled in 1846ms (3225 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 423ms
+ GET /class 200 in 444ms
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/Users/moon/Desktop/teacher-board/teacherboard/teacherboard/.next/cache/webpack/client-development/0.pack.gz_' -> '/Users/moon/Desktop/teacher-board/teacherboard/teacherboard/.next/cache/webpack/client-development/0.pack.gz'
+ ✓ Compiled in 1088ms (1509 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 54ms
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 68ms
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 2.7s (3215 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /_next/static/css/app/layout.css. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /_next/static/css/app/layout.css. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /_next/static/css/app/layout.css. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /_next/static/css/app/layout.css. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+🔥 Firebase 초기화 시작...
+✅ Firebase 앱 초기화 완료
+✅ Firebase Auth 초기화 완료 (Calendar 스코프 포함)
+✅ Firestore 초기화 완료
+🎉 Firebase 전체 초기화 성공!
+ GET /_next/static/css/app/layout.css?v=1755270180484 404 in 3231ms
+ GET /_next/static/css/app/layout.css?v=1755270180540 404 in 3341ms
+ ✓ Compiled in 1051ms (3229 modules)
+ ⚠ metadataBase property in metadata export is not set for resolving social open graph or twitter images, using "http://localhost:3003". See https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadatabase
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 164ms
+ GET /class 200 in 183ms
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /_next/static/css/app/layout.css. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /_next/static/css/app/layout.css. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+🔥 Firebase 초기화 시작...
+✅ Firebase 앱 초기화 완료
+✅ Firebase Auth 초기화 완료 (Calendar 스코프 포함)
+✅ Firestore 초기화 완료
+🎉 Firebase 전체 초기화 성공!
+ GET /_next/static/css/app/layout.css?v=1755270210857 404 in 521ms
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /_next/static/css/app/layout.css. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /_next/static/css/app/layout.css. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /_next/static/css/app/layout.css?v=1755270210860 404 in 622ms
+ ✓ Compiled in 1091ms (3229 modules)
+ ⚠ metadataBase property in metadata export is not set for resolving social open graph or twitter images, using "http://localhost:3003". See https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadatabase
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 81ms
+ GET /class 200 in 81ms
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /_next/static/css/app/layout.css. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /_next/static/css/app/layout.css. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+🔥 Firebase 초기화 시작...
+✅ Firebase 앱 초기화 완료
+✅ Firebase Auth 초기화 완료 (Calendar 스코프 포함)
+✅ Firestore 초기화 완료
+🎉 Firebase 전체 초기화 성공!
+ GET /_next/static/css/app/layout.css?v=1755270226037 404 in 179ms
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /_next/static/css/app/layout.css. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /_next/static/css/app/layout.css. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /_next/static/css/app/layout.css?v=1755270226033 404 in 90ms
+ ✓ Compiled in 278ms (1512 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 60ms
+ GET /class 200 in 60ms
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /_next/static/css/app/layout.css. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /_next/static/css/app/layout.css. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /_next/static/css/app/layout.css?v=1755270238767 404 in 53ms
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /_next/static/css/app/layout.css. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /_next/static/css/app/layout.css. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /_next/static/css/app/layout.css?v=1755270238770 404 in 66ms
+ ✓ Compiled in 2.1s (3229 modules)
+ ⚠ metadataBase property in metadata export is not set for resolving social open graph or twitter images, using "http://localhost:3003". See https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadatabase
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 95ms
+ GET /class 200 in 99ms
+ ✓ Compiled in 950ms (3229 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 107ms
+ GET /class 200 in 109ms
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /_next/static/css/app/layout.css. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /_next/static/css/app/layout.css. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+🔥 Firebase 초기화 시작...
+✅ Firebase 앱 초기화 완료
+✅ Firebase Auth 초기화 완료 (Calendar 스코프 포함)
+✅ Firestore 초기화 완료
+🎉 Firebase 전체 초기화 성공!
+ GET /_next/static/css/app/layout.css?v=1755270287129 404 in 256ms
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /_next/static/css/app/layout.css. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /_next/static/css/app/layout.css. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /_next/static/css/app/layout.css?v=1755270287126 404 in 100ms
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/Users/moon/Desktop/teacher-board/teacherboard/teacherboard/.next/cache/webpack/client-development/0.pack.gz_' -> '/Users/moon/Desktop/teacher-board/teacherboard/teacherboard/.next/cache/webpack/client-development/0.pack.gz'
+ ✓ Compiled in 1546ms (3225 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 240ms
+ GET /class 200 in 239ms
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 760ms (3215 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /_next/static/css/app/layout.css. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /_next/static/css/app/layout.css. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /_next/static/css/app/layout.css. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /_next/static/css/app/layout.css. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+🔥 Firebase 초기화 시작...
+✅ Firebase 앱 초기화 완료
+✅ Firebase Auth 초기화 완료 (Calendar 스코프 포함)
+✅ Firestore 초기화 완료
+🎉 Firebase 전체 초기화 성공!
+ GET /_next/static/css/app/layout.css?v=1755270505911 404 in 1966ms
+ GET /_next/static/css/app/layout.css?v=1755270505917 404 in 2010ms
+ ✓ Compiled in 1570ms (3225 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 127ms
+ GET /class 200 in 129ms
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 669ms (3215 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /_next/static/css/app/layout.css. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /_next/static/css/app/layout.css. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /_next/static/css/app/layout.css. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /_next/static/css/app/layout.css. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+🔥 Firebase 초기화 시작...
+✅ Firebase 앱 초기화 완료
+✅ Firebase Auth 초기화 완료 (Calendar 스코프 포함)
+✅ Firestore 초기화 완료
+🎉 Firebase 전체 초기화 성공!
+ GET /_next/static/css/app/layout.css?v=1755270634331 404 in 1304ms
+ GET /_next/static/css/app/layout.css?v=1755270634328 404 in 1323ms
+ ✓ Compiled in 813ms (3229 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 126ms
+ GET /class 200 in 127ms
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /_next/static/css/app/layout.css. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /_next/static/css/app/layout.css. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+🔥 Firebase 초기화 시작...
+✅ Firebase 앱 초기화 완료
+✅ Firebase Auth 초기화 완료 (Calendar 스코프 포함)
+✅ Firestore 초기화 완료
+🎉 Firebase 전체 초기화 성공!
+ GET /_next/static/css/app/layout.css?v=1755270643953 404 in 163ms
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /_next/static/css/app/layout.css. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /_next/static/css/app/layout.css. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /_next/static/css/app/layout.css?v=1755270643950 404 in 47ms
+ ✓ Compiled in 4.6s (3229 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 647ms
+ GET /class 200 in 726ms
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /_next/static/css/app/layout.css. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /_next/static/css/app/layout.css. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /_next/static/css/app/layout.css. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /_next/static/css/app/layout.css. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+🔥 Firebase 초기화 시작...
+✅ Firebase 앱 초기화 완료
+✅ Firebase Auth 초기화 완료 (Calendar 스코프 포함)
+✅ Firestore 초기화 완료
+🎉 Firebase 전체 초기화 성공!
+ GET /_next/static/css/app/layout.css?v=1755270658227 404 in 1202ms
+ GET /_next/static/css/app/layout.css?v=1755270658202 404 in 1325ms
+ ✓ Compiled in 1058ms (3229 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 113ms
+ GET /class 200 in 114ms
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /_next/static/css/app/layout.css. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /_next/static/css/app/layout.css. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /_next/static/css/app/layout.css. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /_next/static/css/app/layout.css. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+🔥 Firebase 초기화 시작...
+✅ Firebase 앱 초기화 완료
+✅ Firebase Auth 초기화 완료 (Calendar 스코프 포함)
+✅ Firestore 초기화 완료
+🎉 Firebase 전체 초기화 성공!
+ GET /_next/static/css/app/layout.css?v=1755270670137 404 in 366ms
+ GET /_next/static/css/app/layout.css?v=1755270670133 404 in 437ms
+ ✓ Compiled in 3.3s (3229 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 579ms
+ GET /class 200 in 594ms
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /_next/static/css/app/layout.css. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /_next/static/css/app/layout.css. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /_next/static/css/app/layout.css. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /_next/static/css/app/layout.css. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+🔥 Firebase 초기화 시작...
+✅ Firebase 앱 초기화 완료
+✅ Firebase Auth 초기화 완료 (Calendar 스코프 포함)
+✅ Firestore 초기화 완료
+🎉 Firebase 전체 초기화 성공!
+ GET /_next/static/css/app/layout.css?v=1755270683045 404 in 1981ms
+ GET /_next/static/css/app/layout.css?v=1755270683028 404 in 1990ms
+ ✓ Compiled in 1505ms (3231 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 177ms
+ GET /class 200 in 181ms
+ ✓ Compiled in 787ms (3231 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 120ms
+ GET /class 200 in 119ms
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/Users/moon/Desktop/teacher-board/teacherboard/teacherboard/.next/cache/webpack/client-development/0.pack.gz_' -> '/Users/moon/Desktop/teacher-board/teacherboard/teacherboard/.next/cache/webpack/client-development/0.pack.gz'
+ ✓ Compiled in 1256ms (3227 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 234ms
+ GET /class 200 in 239ms
+ ✓ Compiled in 1474ms (3227 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 214ms
+ GET /class 200 in 217ms
+ ✓ Compiled in 867ms (3227 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 144ms
+ GET /class 200 in 143ms
+ ✓ Compiled in 723ms (3227 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 264ms
+ GET /class 200 in 269ms
+ ✓ Compiled in 1143ms (3227 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 140ms
+ GET /class 200 in 144ms
+ ✓ Compiled in 2.5s (3227 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 282ms
+ GET /class 200 in 279ms
+ ✓ Compiled in 1013ms (3227 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 106ms
+ GET /class 200 in 108ms
+ ✓ Compiled in 723ms (3227 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 71ms
+ GET /class 200 in 80ms
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/Users/moon/Desktop/teacher-board/teacherboard/teacherboard/.next/cache/webpack/client-development/0.pack.gz_' -> '/Users/moon/Desktop/teacher-board/teacherboard/teacherboard/.next/cache/webpack/client-development/0.pack.gz'
+ ✓ Compiled in 1454ms (3227 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 153ms
+ GET /class 200 in 164ms
+ ✓ Compiled in 635ms (3227 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 107ms
+ GET /class 200 in 108ms
+ ✓ Compiled in 792ms (3227 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 57ms
+ GET /class 200 in 58ms
+ ✓ Compiled in 594ms (3227 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 136ms
+ GET /class 200 in 146ms
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/Users/moon/Desktop/teacher-board/teacherboard/teacherboard/.next/cache/webpack/client-development/0.pack.gz_' -> '/Users/moon/Desktop/teacher-board/teacherboard/teacherboard/.next/cache/webpack/client-development/0.pack.gz'
+ ✓ Compiled in 649ms (1510 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 136ms
+ GET /class 200 in 118ms
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/Users/moon/Desktop/teacher-board/teacherboard/teacherboard/.next/cache/webpack/client-development/0.pack.gz_' -> '/Users/moon/Desktop/teacher-board/teacherboard/teacherboard/.next/cache/webpack/client-development/0.pack.gz'
+ ✓ Compiled in 477ms (1510 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 75ms
+ GET /class 200 in 68ms
+ ✓ Compiled in 305ms (1510 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 50ms
+ GET /class 200 in 50ms
+ ✓ Compiled in 3.5s (3227 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 778ms
+ GET /class 200 in 790ms
+ ✓ Compiled in 1453ms (3231 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 244ms
+ GET /class 200 in 245ms
+ ✓ Compiled in 1323ms (3231 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 330ms
+ GET /class 200 in 339ms
+ ✓ Compiled in 2s (3231 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 312ms
+ GET /class 200 in 317ms
+ ✓ Compiled in 1061ms (3237 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 79ms
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 96ms
+ ✓ Compiled in 975ms (3237 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 121ms
+ GET /class 200 in 162ms
+ ✓ Compiled in 809ms (3237 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 77ms
+ GET /class 200 in 80ms
+ ✓ Compiled in 588ms (3237 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 530ms
+ GET /class 200 in 538ms
+ ✓ Compiled in 455ms (3237 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 210ms
+ GET /class 200 in 211ms
+ ✓ Compiled in 1378ms (3237 modules)
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata themeColor is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ ⚠ Unsupported metadata viewport is configured in metadata export in /class. Please move it to viewport export instead.
+Read more: https://nextjs.org/docs/app/api-reference/functions/generate-viewport
+ GET /class 200 in 132ms
+ GET /class 200 in 139ms
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/Users/moon/Desktop/teacher-board/teacherboard/teacherboard/.next/cache/webpack/client-development/0.pack.gz_' -> '/Users/moon/Desktop/teacher-board/teacherboard/teacherboard/.next/cache/webpack/client-development/0.pack.gz'
+ ✓ Compiled in 3.9s (3237 modules)
+ ✓ Compiled in 2s (3239 modules)
+ ✓ Compiled in 3.5s (3239 modules)
+ ✓ Compiled in 3.3s (3239 modules)
+ ✓ Compiled in 955ms (3239 modules)
+ ✓ Compiled in 4.9s (3239 modules)
+ ✓ Compiled in 1348ms (3239 modules)
+ ✓ Compiled in 1754ms (3239 modules)
+ ✓ Compiled in 4.7s (3239 modules)
+ ✓ Compiled in 964ms (3241 modules)
+ ✓ Compiled in 922ms (3241 modules)
+ ✓ Compiled in 7.6s (3241 modules)
+ ✓ Compiled in 1811ms (3241 modules)
+ ✓ Compiled in 1591ms (3241 modules)
+ ✓ Compiled in 888ms (3241 modules)
+ ✓ Compiled in 732ms (3241 modules)
+ ✓ Compiled in 2s (3241 modules)
+ ✓ Compiled in 641ms (3241 modules)
+ ✓ Compiled in 4.5s (3241 modules)
+ ✓ Compiled in 1297ms (3241 modules)
+ ✓ Compiled in 864ms (3241 modules)
+ ⚠ Found a change in next.config.mjs. Restarting the server to apply the changes...
+   ▲ Next.js 15.2.4
+   - Local:        http://localhost:3003
+   - Network:      http://192.168.123.112:3003
+   - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Ready in 2.8s

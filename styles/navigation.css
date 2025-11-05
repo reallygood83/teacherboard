@@ -1,0 +1,65 @@
+/* 드래그앤드롭 네비게이션 스타일 */
+.draggable-tab {
+  transition: all 0.2s ease;
+}
+
+.draggable-tab:hover {
+  transform: translateY(-1px);
+}
+
+.draggable-tab.is-dragging {
+  transform: rotate(3deg) scale(1.05);
+  z-index: 999;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.droppable-area {
+  min-height: 60px;
+  transition: background-color 0.2s ease;
+}
+
+.droppable-area.is-dragging-over {
+  background-color: rgba(59, 130, 246, 0.1);
+  border: 2px dashed rgba(59, 130, 246, 0.3);
+  border-radius: 8px;
+}
+
+/* 모바일 네비게이션 개선 */
+.mobile-nav-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'><path fill='%23666' d='M2 0L0 2h4zm0 5L0 3h4z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 12px;
+  padding-right: 40px;
+}
+
+/* 태블릿 네비게이션 그리드 조정 */
+@media (max-width: 1023px) and (min-width: 768px) {
+  .tablet-nav-grid {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  }
+}
+
+/* 드래그 힌트 애니메이션 */
+@keyframes dragHint {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(2px); }
+  75% { transform: translateX(-2px); }
+}
+
+.drag-hint {
+  animation: dragHint 2s ease-in-out infinite;
+}
+
+/* 접근성 개선 */
+.draggable-tab:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+.draggable-tab[aria-pressed="true"] {
+  background-color: var(--background);
+  color: var(--foreground);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}

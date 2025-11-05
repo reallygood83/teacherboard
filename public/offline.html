@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>오프라인 - 학급 홈페이지</title>
+    <link rel="stylesheet" href="/styles/globals.css">
+    <link rel="stylesheet" href="/styles/mobile-optimized.css">
+    <style>
+        .offline-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: var(--mobile-spacing-xl);
+            background: linear-gradient(135deg, #16a34a 0%, #22c55e 100%);
+            color: white;
+            text-align: center;
+        }
+        
+        .offline-icon {
+            width: 120px;
+            height: 120px;
+            margin-bottom: var(--mobile-spacing-lg);
+            opacity: 0.9;
+        }
+        
+        .offline-title {
+            font-size: var(--mobile-text-3xl);
+            font-weight: 800;
+            margin: 0 0 var(--mobile-spacing-md) 0;
+            line-height: 1.2;
+        }
+        
+        .offline-message {
+            font-size: var(--mobile-text-lg);
+            margin: 0 0 var(--mobile-spacing-xl) 0;
+            opacity: 0.9;
+            line-height: 1.5;
+            max-width: 400px;
+        }
+        
+        .offline-actions {
+            display: flex;
+            flex-direction: column;
+            gap: var(--mobile-spacing-md);
+            width: 100%;
+            max-width: 280px;
+        }
+        
+        .retry-button {
+            background-color: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 16px var(--mobile-spacing-lg);
+            border-radius: 12px;
+            font-size: var(--mobile-text-base);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--mobile-transition-base) ease;
+            backdrop-filter: blur(10px);
+        }
+        
+        .retry-button:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
+        }
+        
+        .cached-content {
+            margin-top: var(--mobile-spacing-xl);
+            padding: var(--mobile-spacing-lg);
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .cached-title {
+            font-size: var(--mobile-text-lg);
+            font-weight: 600;
+            margin: 0 0 var(--mobile-spacing-sm) 0;
+        }
+        
+        .cached-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .cached-item {
+            padding: var(--mobile-spacing-sm) 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .cached-item:last-child {
+            border-bottom: none;
+        }
+        
+        .cached-link {
+            color: white;
+            text-decoration: none;
+            font-size: var(--mobile-text-base);
+            opacity: 0.9;
+        }
+        
+        .cached-link:hover {
+            opacity: 1;
+            text-decoration: underline;
+        }
+        
+        .connection-status {
+            position: fixed;
+            bottom: var(--mobile-spacing-md);
+            left: var(--mobile-spacing-md);
+            right: var(--mobile-spacing-md);
+            padding: var(--mobile-spacing-sm);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            text-align: center;
+            border-radius: 8px;
+            font-size: var(--mobile-text-sm);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all var(--mobile-transition-base) ease;
+        }
+        
+        .connection-status.online {
+            background-color: rgba(34, 197, 94, 0.9);
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        @media (max-width: 375px) {
+            .offline-container {
+                padding: var(--mobile-spacing-lg);
+            }
+            
+            .offline-title {
+                font-size: var(--mobile-text-2xl);
+            }
+            
+            .offline-message {
+                font-size: var(--mobile-text-base);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="offline-container">
+        <!-- Offline Icon SVG -->
+        <svg class="offline-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3 9L12 2L21 9V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V9Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M9 22V12H15V22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="12" cy="8" r="3" fill="currentColor" opacity="0.3"/>
+        </svg>
+        
+        <h1 class="offline-title">오프라인 상태</h1>
+        <p class="offline-message">
+            인터넷 연결을 확인해주세요.<br>
+            일부 기능은 오프라인에서도 사용할 수 있습니다.
+        </p>
+        
+        <div class="offline-actions">
+            <button class="retry-button" onclick="retryConnection()">
+                📡 연결 재시도
+            </button>
+            <button class="retry-button" onclick="goToHome()">
+                🏠 홈으로 이동
+            </button>
+        </div>
+        
+        <div class="cached-content">
+            <h3 class="cached-title">📱 오프라인 사용 가능</h3>
+            <ul class="cached-list">
+                <li class="cached-item">
+                    <a href="/" class="cached-link">홈페이지</a>
+                </li>
+                <li class="cached-item">
+                    <a href="/class" class="cached-link">학급 관리</a>
+                </li>
+                <li class="cached-item">
+                    <span class="cached-link" style="opacity: 0.6;">저장된 설정 및 데이터</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+    
+    <div id="connectionStatus" class="connection-status">
+        🌐 인터넷에 연결되었습니다!
+    </div>
+    
+    <script>
+        // Connection status monitoring
+        let isOnline = navigator.onLine;
+        const statusElement = document.getElementById('connectionStatus');
+        
+        function updateConnectionStatus() {
+            if (navigator.onLine && !isOnline) {
+                // Just came online
+                statusElement.classList.add('online');
+                setTimeout(() => {
+                    statusElement.classList.remove('online');
+                }, 3000);
+                
+                // Auto-redirect after showing status
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 2000);
+            }
+            isOnline = navigator.onLine;
+        }
+        
+        function retryConnection() {
+            if (navigator.onLine) {
+                window.location.href = '/';
+            } else {
+                // Show connection failed message
+                const button = event.target;
+                const originalText = button.textContent;
+                button.textContent = '❌ 연결 실패';
+                button.style.backgroundColor = 'rgba(239, 68, 68, 0.3)';
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.style.backgroundColor = '';
+                }, 2000);
+            }
+        }
+        
+        function goToHome() {
+            window.location.href = '/';
+        }
+        
+        // Listen for online/offline events
+        window.addEventListener('online', updateConnectionStatus);
+        window.addEventListener('offline', updateConnectionStatus);
+        
+        // Check connection periodically
+        setInterval(() => {
+            if (navigator.onLine) {
+                updateConnectionStatus();
+            }
+        }, 5000);
+        
+        // Service worker message handling
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.addEventListener('message', event => {
+                if (event.data && event.data.type === 'CACHE_UPDATED') {
+                    console.log('Cache updated while offline');
+                }
+            });
+        }
+        
+        // Prevent zoom on iOS
+        document.addEventListener('touchstart', function (event) {
+            if (event.touches.length > 1) {
+                event.preventDefault();
+            }
+        }, { passive: false });
+        
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function (event) {
+            const now = (new Date()).getTime();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+    </script>
+</body>
+</html>

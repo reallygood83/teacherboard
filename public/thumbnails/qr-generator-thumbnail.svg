@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 200" width="300" height="200">
+  <defs>
+    <!-- 그라데이션 정의 -->
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F8FAFC;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#EFF6FF;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#DBEAFE;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="qrGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8B5CF6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#6D28D9;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="scanGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#10B981;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#059669;stop-opacity:1" />
+    </linearGradient>
+
+    <!-- 미묘한 패턴 -->
+    <pattern id="subtlePattern" patternUnits="userSpaceOnUse" width="20" height="20">
+      <circle cx="10" cy="10" r="0.8" fill="#94A3B8" opacity="0.1"/>
+    </pattern>
+  </defs>
+  
+  <!-- 배경 -->
+  <rect width="300" height="200" fill="url(#bgGradient)" rx="8"/>
+  <rect width="300" height="200" fill="url(#subtlePattern)" rx="8"/>
+  
+  <!-- 장식적 원형들 -->
+  <circle cx="50" cy="50" r="25" fill="url(#qrGradient)" opacity="0.1"/>
+  <circle cx="250" cy="150" r="35" fill="url(#scanGradient)" opacity="0.08"/>
+  <circle cx="220" cy="40" r="15" fill="url(#qrGradient)" opacity="0.15"/>
+  
+  <!-- 메인 QR 코드 아이콘 -->
+  <g transform="translate(100, 50)">
+    <!-- QR 코드 배경 -->
+    <rect x="0" y="0" width="100" height="100" rx="8" fill="white" stroke="url(#qrGradient)" stroke-width="2"/>
+    
+    <!-- QR 코드 패턴 (간략화된 버전) -->
+    <!-- 왼쪽 상단 위치 마커 -->
+    <rect x="8" y="8" width="24" height="24" fill="url(#qrGradient)"/>
+    <rect x="12" y="12" width="16" height="16" fill="white"/>
+    <rect x="16" y="16" width="8" height="8" fill="url(#qrGradient)"/>
+    
+    <!-- 오른쪽 상단 위치 마커 -->
+    <rect x="68" y="8" width="24" height="24" fill="url(#qrGradient)"/>
+    <rect x="72" y="12" width="16" height="16" fill="white"/>
+    <rect x="76" y="16" width="8" height="8" fill="url(#qrGradient)"/>
+    
+    <!-- 왼쪽 하단 위치 마커 -->
+    <rect x="8" y="68" width="24" height="24" fill="url(#qrGradient)"/>
+    <rect x="12" y="72" width="16" height="16" fill="white"/>
+    <rect x="16" y="76" width="8" height="8" fill="url(#qrGradient)"/>
+    
+    <!-- 중앙 데이터 패턴 -->
+    <rect x="40" y="12" width="4" height="12" fill="#6D28D9"/>
+    <rect x="48" y="8" width="4" height="8" fill="#6D28D9"/>
+    <rect x="56" y="12" width="4" height="16" fill="#6D28D9"/>
+    
+    <rect x="40" y="32" width="8" height="4" fill="#6D28D9"/>
+    <rect x="52" y="28" width="4" height="12" fill="#6D28D9"/>
+    <rect x="44" y="40" width="12" height="4" fill="#6D28D9"/>
+    
+    <rect x="36" y="48" width="4" height="8" fill="#6D28D9"/>
+    <rect x="44" y="52" width="8" height="4" fill="#6D28D9"/>
+    <rect x="56" y="48" width="4" height="12" fill="#6D28D9"/>
+    
+    <rect x="40" y="64" width="4" height="4" fill="#6D28D9"/>
+    <rect x="48" y="60" width="8" height="4" fill="#6D28D9"/>
+    <rect x="52" y="68" width="4" height="8" fill="#6D28D9"/>
+    
+    <rect x="40" y="76" width="12" height="4" fill="#6D28D9"/>
+    <rect x="56" y="72" width="4" height="8" fill="#6D28D9"/>
+    <rect x="40" y="84" width="8" height="4" fill="#6D28D9"/>
+  </g>
+  
+  <!-- 스캔 라인 효과 -->
+  <g transform="translate(100, 50)">
+    <rect x="0" y="45" width="100" height="10" fill="url(#scanGradient)" opacity="0.2"/>
+    <line x1="0" y1="50" x2="100" y2="50" stroke="url(#scanGradient)" stroke-width="2" opacity="0.6"/>
+  </g>
+  
+  <!-- 화살표 (입력 → QR) -->
+  <path d="M70 100 Q80 90 90 100" stroke="url(#scanGradient)" stroke-width="3" fill="none" opacity="0.6" marker-end="url(#arrowhead)"/>
+  
+  <!-- 화살표 마커 정의 -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="url(#scanGradient)" opacity="0.6"/>
+    </marker>
+  </defs>
+  
+  <!-- 플러스 아이콘 (생성 표시) -->
+  <g transform="translate(210, 100)">
+    <circle cx="15" cy="15" r="15" fill="url(#scanGradient)" opacity="0.8"/>
+    <line x1="15" y1="8" x2="15" y2="22" stroke="white" stroke-width="2" stroke-linecap="round"/>
+    <line x1="8" y1="15" x2="22" y2="15" stroke="white" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  
+  <!-- 타이틀 -->
+  <text x="150" y="180" font-family="Pretendard, Arial, sans-serif" font-size="14" font-weight="700" text-anchor="middle" fill="url(#qrGradient)">QR코드 생성기</text>
+  
+  <!-- 장식적 점들 -->
+  <circle cx="40" cy="180" r="2" fill="url(#scanGradient)" opacity="0.4"/>
+  <circle cx="260" cy="30" r="1.5" fill="url(#qrGradient)" opacity="0.5"/>
+  <circle cx="30" cy="120" r="1" fill="#10B981" opacity="0.6"/>
+</svg>

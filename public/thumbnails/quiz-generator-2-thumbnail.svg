@@ -1,0 +1,127 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 200" width="300" height="200">
+  <defs>
+    <linearGradient id="bgGradient2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#E0F2FE;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#BAE6FD;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0EA5E9;stop-opacity:0.3" />
+    </linearGradient>
+
+    <linearGradient id="quizGradient2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0EA5E9;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0284C7;stop-opacity:1" />
+    </linearGradient>
+
+    <linearGradient id="aiGradient2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8B5CF6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#7C3AED;stop-opacity:1" />
+    </linearGradient>
+
+    <pattern id="subtlePattern2" patternUnits="userSpaceOnUse" width="20" height="20">
+      <circle cx="10" cy="10" r="0.8" fill="#38BDF8" opacity="0.1"/>
+    </pattern>
+  </defs>
+
+  <rect width="300" height="200" fill="url(#bgGradient2)" rx="8"/>
+  <rect width="300" height="200" fill="url(#subtlePattern2)" rx="8"/>
+
+  <!-- 장식 원들 -->
+  <circle cx="50" cy="50" r="20" fill="url(#quizGradient2)" opacity="0.1"/>
+  <circle cx="250" cy="150" r="30" fill="url(#aiGradient2)" opacity="0.08"/>
+  <circle cx="230" cy="40" r="12" fill="url(#quizGradient2)" opacity="0.15"/>
+
+  <!-- 메인 퀴즈 카드 -->
+  <g transform="translate(80, 50)">
+    <!-- 퀴즈 카드 배경 -->
+    <rect x="0" y="0" width="85" height="95" rx="8" fill="white" stroke="url(#quizGradient2)" stroke-width="2"/>
+
+    <!-- 퀴즈 헤더 -->
+    <rect x="6" y="6" width="73" height="15" rx="4" fill="url(#quizGradient2)" opacity="0.1"/>
+    <text x="42.5" y="16" font-family="Arial, sans-serif" font-size="9" font-weight="700" text-anchor="middle" fill="url(#quizGradient2)">AI 퀴즈</text>
+
+    <!-- 문제 영역 -->
+    <g transform="translate(8, 28)">
+      <!-- Q 마크 -->
+      <circle cx="8" cy="8" r="7" fill="url(#quizGradient2)" opacity="0.2"/>
+      <text x="8" y="12" font-family="Arial, sans-serif" font-size="10" font-weight="900" text-anchor="middle" fill="url(#quizGradient2)">Q</text>
+
+      <!-- 문제 텍스트 라인들 -->
+      <rect x="20" y="3" width="45" height="3" rx="1.5" fill="#94A3B8"/>
+      <rect x="20" y="9" width="35" height="3" rx="1.5" fill="#94A3B8"/>
+      <rect x="20" y="15" width="50" height="3" rx="1.5" fill="#94A3B8"/>
+    </g>
+
+    <!-- 선택지들 -->
+    <g transform="translate(8, 50)">
+      <!-- 선택지 1 -->
+      <circle cx="4" cy="4" r="3" fill="none" stroke="url(#quizGradient2)" stroke-width="1.5"/>
+      <text x="2.5" y="7" font-family="Arial, sans-serif" font-size="8" font-weight="600" text-anchor="middle" fill="url(#quizGradient2)">①</text>
+      <rect x="12" y="2" width="40" height="2.5" rx="1.25" fill="#CBD5E1"/>
+
+      <!-- 선택지 2 (정답) -->
+      <circle cx="4" cy="15" r="3" fill="url(#quizGradient2)" opacity="0.2"/>
+      <text x="2.5" y="18" font-family="Arial, sans-serif" font-size="8" font-weight="600" text-anchor="middle" fill="url(#quizGradient2)">②</text>
+      <rect x="12" y="13" width="35" height="2.5" rx="1.25" fill="#10B981" opacity="0.6"/>
+
+      <!-- 선택지 3 -->
+      <circle cx="4" cy="26" r="3" fill="none" stroke="url(#quizGradient2)" stroke-width="1.5"/>
+      <text x="2.5" y="29" font-family="Arial, sans-serif" font-size="8" font-weight="600" text-anchor="middle" fill="url(#quizGradient2)">③</text>
+      <rect x="12" y="24" width="38" height="2.5" rx="1.25" fill="#CBD5E1"/>
+
+      <!-- 선택지 4 -->
+      <circle cx="4" cy="37" r="3" fill="none" stroke="url(#quizGradient2)" stroke-width="1.5"/>
+      <text x="2.5" y="40" font-family="Arial, sans-serif" font-size="8" font-weight="600" text-anchor="middle" fill="url(#quizGradient2)">④</text>
+      <rect x="12" y="35" width="42" height="2.5" rx="1.25" fill="#CBD5E1"/>
+    </g>
+  </g>
+
+  <!-- AI 로봇 아이콘 -->
+  <g transform="translate(200, 75)">
+    <!-- 로봇 머리 -->
+    <rect x="0" y="0" width="25" height="20" rx="10" fill="url(#aiGradient2)"/>
+
+    <!-- 로봇 눈 -->
+    <circle cx="7" cy="8" r="2.5" fill="white"/>
+    <circle cx="18" cy="8" r="2.5" fill="white"/>
+    <circle cx="7" cy="8" r="1.2" fill="url(#aiGradient2)"/>
+    <circle cx="18" cy="8" r="1.2" fill="url(#aiGradient2)"/>
+
+    <!-- 로봇 입 -->
+    <rect x="9" y="13" width="7" height="1.5" rx="0.75" fill="white"/>
+
+    <!-- 안테나 -->
+    <line x1="12.5" y1="0" x2="12.5" y2="-4" stroke="url(#aiGradient2)" stroke-width="2"/>
+    <circle cx="12.5" cy="-4" r="1.5" fill="url(#aiGradient2)"/>
+
+    <!-- 번개 효과 -->
+    <path d="M20 -2 L22 2 L19 2 L21 6" fill="#38BDF8" opacity="0.8"/>
+  </g>
+
+  <!-- 화살표 -->
+  <path d="M175 95 Q185 85 195 95" stroke="url(#aiGradient2)" stroke-width="2" fill="none" opacity="0.6"/>
+
+  <!-- 타이틀 with 2 badge -->
+  <text x="130" y="180" font-family="Pretendard, Arial, sans-serif" font-size="14" font-weight="700" text-anchor="middle" fill="url(#quizGradient2)">AI 퀴즈 생성기</text>
+
+  <!-- 2 배지 -->
+  <g transform="translate(180, 165)">
+    <rect x="0" y="0" width="18" height="18" rx="9" fill="url(#quizGradient2)" opacity="0.9"/>
+    <text x="9" y="14" font-family="Arial, sans-serif" font-size="12" font-weight="700" text-anchor="middle" fill="white">2</text>
+  </g>
+
+  <!-- 장식 요소들 -->
+  <circle cx="40" cy="170" r="2" fill="url(#quizGradient2)" opacity="0.4"/>
+  <circle cx="260" cy="30" r="1.5" fill="#10B981" opacity="0.6"/>
+  <circle cx="30" cy="110" r="1" fill="url(#aiGradient2)" opacity="0.5"/>
+
+  <!-- 체크마크 (정답 표시) -->
+  <g transform="translate(220, 50)">
+    <circle cx="8" cy="8" r="6" fill="#10B981" opacity="0.2"/>
+    <path d="M5 8 L7 10 L11 6" stroke="#10B981" stroke-width="2" fill="none"/>
+  </g>
+
+  <!-- 서버 2 표시 -->
+  <g transform="translate(240, 170)">
+    <rect x="0" y="0" width="35" height="12" rx="6" fill="url(#quizGradient2)" opacity="0.15"/>
+    <text x="17.5" y="9" font-family="Arial, sans-serif" font-size="7" font-weight="600" text-anchor="middle" fill="url(#quizGradient2)">서버 2</text>
+  </g>
+</svg>
