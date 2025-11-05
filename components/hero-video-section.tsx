@@ -24,7 +24,7 @@ export default function HeroVideoSection() {
             muted
             playsInline
             onLoadedData={() => setVideoLoaded(true)}
-            className="absolute inset-0 w-full h-full object-cover"
+            className="absolute inset-0 w-full h-full object-cover object-[center_30%]"
           >
             <source src="/videos/brand-teacher-dance.mp4" type="video/mp4" />
           </video>
@@ -99,9 +99,7 @@ export default function HeroVideoSection() {
                 className="pt-12"
               >
                 <div className="inline-flex items-center gap-2 px-6 py-3 bg-white/10 backdrop-blur-md rounded-full border border-white/20">
-                  <span className="text-white/70 text-sm">총</span>
-                  <span className="text-[var(--chanel-gold)] text-2xl font-bold">7</span>
-                  <span className="text-white/70 text-sm">개의 혁신적인 서비스</span>
+                  <span className="text-[var(--chanel-gold)] text-lg font-bold">혁신적인 서비스</span>
                 </div>
               </motion.div>
             </motion.div>

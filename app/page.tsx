@@ -151,13 +151,13 @@ export default function LandingPage() {
             className="text-center mb-16 space-y-4"
           >
             <Badge variant="outline" className="text-[var(--chanel-gold)] border-[var(--chanel-gold)] mb-4">
-              7 SERVICES
+              SERVICES
             </Badge>
             <h2 className="text-4xl sm:text-5xl font-bold text-[var(--chanel-black)] tracking-tight">
               혁신적인 교육 도구
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              TeaBoard가 제공하는 7가지 전문 서비스로 교육 현장의 모든 니즈를 해결하세요
+              TeaBoard가 제공하는 전문 서비스로 교육 현장의 모든 니즈를 해결하세요
             </p>
           </motion.div>
 
