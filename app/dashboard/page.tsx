@@ -16,7 +16,9 @@ import {
   Coins,
   LogOut,
   User,
-  ArrowUpRight
+  ArrowUpRight,
+  Youtube,
+  MessageCircle
 } from 'lucide-react'
 
 // 7가지 서비스 구성 (Neo-Brutalism 스타일)
@@ -311,10 +313,38 @@ export default function DashboardPage() {
 
       {/* Footer */}
       <footer className="mt-24 py-8 px-4 sm:px-6 lg:px-8 border-t-4 brutal-border bg-gray-50">
-        <div className="max-w-7xl mx-auto text-center">
-          <p className="text-sm font-bold text-gray-600">
-            © 2025 TeaBoard. All rights reserved.
-          </p>
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            {/* Copyright */}
+            <p className="text-sm font-bold text-gray-600">
+              © 2025 Moon-Jung Kim. All rights reserved.
+            </p>
+
+            {/* Social Media Buttons */}
+            <div className="flex items-center gap-3">
+              {/* YouTube Button */}
+              <a
+                href="https://www.youtube.com/@%EB%B0%B0%EC%9F%88%EC%9D%98%EB%8B%AC%EC%9D%B8-p5v"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white font-bold text-sm brutal-border rounded-lg brutal-shadow-sm hover:brutal-shadow hover:translate-x-1 hover:translate-y-1 transition-all duration-200 active:translate-x-0 active:translate-y-0"
+              >
+                <Youtube className="w-5 h-5" />
+                <span className="hidden sm:inline">배움의 달인</span>
+              </a>
+
+              {/* KakaoTalk Open Chat Button */}
+              <a
+                href="https://open.kakao.com/o/gubGYQ7g"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 px-4 py-2 bg-[var(--brutal-yellow)] text-[var(--brutal-black)] font-bold text-sm brutal-border rounded-lg brutal-shadow-sm hover:brutal-shadow hover:translate-x-1 hover:translate-y-1 transition-all duration-200 active:translate-x-0 active:translate-y-0"
+              >
+                <MessageCircle className="w-5 h-5" />
+                <span className="hidden sm:inline">오픈채팅</span>
+              </a>
+            </div>
+          </div>
         </div>
       </footer>
     </div>
