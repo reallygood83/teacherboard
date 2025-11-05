@@ -298,7 +298,9 @@ export default function DashboardPage() {
               </p>
             </div>
             <a
-              href="mailto:feedback@teaboard.link"
+              href="https://open.kakao.com/me/vesa"
+              target="_blank"
+              rel="noopener noreferrer"
               className="px-8 py-4 bg-[var(--brutal-black)] text-white font-black text-lg brutal-border rounded-lg brutal-shadow hover:brutal-shadow-hover hover:translate-x-2 hover:translate-y-2 transition-all duration-200 active:translate-x-0 active:translate-y-0 whitespace-nowrap"
             >
               피드백 보내기 →
