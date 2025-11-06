@@ -22,43 +22,43 @@ const openSans = Open_Sans({
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://teaboard.link'),
-  title: "Teacher Board - 우리 학급 홈페이지",
-  description: "🎯 AI 도구, 수업 칠판, 학생 관리까지! 선생님을 위한 올인원 디지털 교실 플랫폼. 함께 배우고 성장하는 공간입니다.",
-  generator: "Teacher Board",
+  title: "TeaBoard - 선생님을 위한 올인원 디지털 교실",
+  description: "🎯 AI 도구, 수업 관리, 학생 관리, YouTube Bank까지! 7가지 교육 서비스를 한곳에서. 선생님의 일상을 더 스마트하게 만드는 TeaBoard 서비스 허브입니다.",
+  generator: "TeaBoard",
   manifest: "/manifest.json",
-  keywords: ["학급관리", "교육도구", "AI교육", "수업칠판", "학생관리", "디지털교실", "스마트교육", "모바일교육", "교사도구"],
-  authors: [{ name: "Teacher Board Team" }],
-  creator: "Teacher Board",
-  publisher: "Teacher Board",
+  keywords: ["TeaBoard", "학급관리", "교육도구", "AI교육", "수업관리", "학생관리", "디지털교실", "스마트교육", "교사도구", "YouTube", "누가바", "MarkSlide", "리치스튜던트"],
+  authors: [{ name: "Moon-Jung Kim" }],
+  creator: "Moon-Jung Kim",
+  publisher: "TeaBoard",
   category: "Education",
-  
+
   // Open Graph 메타데이터
   openGraph: {
     type: "website",
     locale: "ko_KR",
-    url: "https://teaboard.link/class",
-    siteName: "Teacher Board",
-    title: "Teacher Board - 우리 학급 홈페이지",
-    description: "🎯 AI 도구, 수업 칠판, 학생 관리까지! 함께 배우고 성장하는 교육 공간을 만들어보세요.",
+    url: "https://teaboard.link",
+    siteName: "TeaBoard",
+    title: "TeaBoard - 선생님을 위한 올인원 디지털 교실",
+    description: "🤖 AI 도구 📚 수업 관리 👥 학생 관리 🎬 YouTube Bank - 7가지 교육 서비스를 한곳에서 이용하세요!",
     images: [
       {
-        url: "/og-image.svg",
+        url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Teacher Board - 우리 학급 홈페이지 플랫폼",
-        type: "image/svg+xml"
+        alt: "TeaBoard - 7가지 교육 서비스 허브 (AI 도구, 수업 관리, 학생 관리, YouTube Bank, 문서 생성, 퀴즈 생성, 슬라이드 제작)",
+        type: "image/png"
       }
     ],
   },
-  
+
   // Twitter 카드 메타데이터
   twitter: {
     card: "summary_large_image",
     site: "@teacherboard",
-    creator: "@teacherboard",
-    title: "Teacher Board - 우리 학급 홈페이지",
-    description: "🎯 AI 도구, 수업 칠판, 학생 관리까지! 함께 배우고 성장하는 교육 공간",
-    images: ["/og-image.svg"],
+    creator: "@moonjungkim",
+    title: "TeaBoard - 선생님을 위한 올인원 디지털 교실",
+    description: "🤖 AI 도구 📚 수업 관리 👥 학생 관리 🎬 YouTube - 7가지 교육 서비스 허브",
+    images: ["/og-image.png"],
   },
   
   // 기존 설정들
@@ -111,9 +111,9 @@ export default function RootLayout({
           {JSON.stringify({
             "@context": "https://schema.org",
             "@type": "WebApplication",
-            "name": "Teacher Board",
-            "description": "AI 도구, 수업 칠판, 학생 관리까지! 선생님을 위한 올인원 디지털 교실 플랫폼",
-            "url": "https://teaboard.link/class",
+            "name": "TeaBoard",
+            "description": "AI 도구, 수업 관리, 학생 관리, YouTube Bank까지! 선생님을 위한 7가지 교육 서비스 허브",
+            "url": "https://teaboard.link",
             "applicationCategory": "EducationalApplication",
             "operatingSystem": "All",
             "offers": {
@@ -122,8 +122,13 @@ export default function RootLayout({
               "priceCurrency": "KRW"
             },
             "author": {
-              "@type": "Organization",
-              "name": "Teacher Board Team"
+              "@type": "Person",
+              "name": "Moon-Jung Kim"
+            },
+            "creator": {
+              "@type": "Person",
+              "name": "Moon-Jung Kim",
+              "url": "https://www.youtube.com/@%EB%B0%B0%EC%9B%80%EC%9D%98%EB%8B%AC%EC%9D%B8-p5v"
             }
           })}
         </script>
