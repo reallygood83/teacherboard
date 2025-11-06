@@ -42,11 +42,11 @@ export const metadata: Metadata = {
     description: "🤖 AI 도구 📚 수업 관리 👥 학생 관리 🎬 YouTube Bank - 7가지 교육 서비스를 한곳에서 이용하세요!",
     images: [
       {
-        url: "/og-image.png",
+        url: "/og-image.svg",
         width: 1200,
         height: 630,
         alt: "TeaBoard - 7가지 교육 서비스 허브 (AI 도구, 수업 관리, 학생 관리, YouTube Bank, 문서 생성, 퀴즈 생성, 슬라이드 제작)",
-        type: "image/png"
+        type: "image/svg+xml"
       }
     ],
   },
@@ -58,7 +58,7 @@ export const metadata: Metadata = {
     creator: "@moonjungkim",
     title: "TeaBoard - 선생님을 위한 올인원 디지털 교실",
     description: "🤖 AI 도구 📚 수업 관리 👥 학생 관리 🎬 YouTube - 7가지 교육 서비스 허브",
-    images: ["/og-image.png"],
+    images: ["/og-image.svg"],
   },
   
   // 기존 설정들
