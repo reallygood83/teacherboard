@@ -1,0 +1,11 @@
+# TeaBoard Robots.txt Configuration
+# 배경 영상은 장식 목적이므로 비디오 검색에서 제외
+
+User-agent: *
+Allow: /
+
+# 비디오 파일 크롤링 방지 (배경 영상은 검색 대상이 아님)
+Disallow: /videos/
+
+# Sitemap
+Sitemap: https://teaboard.link/sitemap.xml
