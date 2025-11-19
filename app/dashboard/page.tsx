@@ -18,10 +18,11 @@ import {
   User,
   ArrowUpRight,
   Youtube,
-  MessageCircle
+  MessageCircle,
+  Share2
 } from 'lucide-react'
 
-// 7가지 서비스 구성 (Neo-Brutalism 스타일)
+// 8가지 서비스 구성 (Neo-Brutalism 스타일)
 const services = [
   {
     id: 1,
@@ -85,6 +86,15 @@ const services = [
     url: 'https://richstudent.dev',
     color: '#C6FF00', // Lime
     bgColor: '#F9FBE7'
+  },
+  {
+    id: 8,
+    title: 'TeaBoard Share',
+    description: '기기간 간편한 파일 공유',
+    icon: Share2,
+    url: 'https://e2ecp.com/',
+    color: '#2196F3', // Blue
+    bgColor: '#E3F2FD'
   }
 ]
 
@@ -182,7 +192,7 @@ export default function DashboardPage() {
           className="mb-12"
         >
           <Badge className="mb-4 bg-[var(--brutal-cyan)] text-[var(--brutal-black)] brutal-border px-4 py-1 text-sm font-black">
-            7 SERVICES
+            8 SERVICES
           </Badge>
           <h2 className="text-5xl sm:text-6xl font-black text-[var(--brutal-black)] mb-4 tracking-tight">
             {currentUser?.displayName || '사용자'} 선생님 환영합니다! 👋
@@ -238,9 +248,9 @@ export default function DashboardPage() {
             ))}
           </div>
 
-          {/* Second Row - 3 items centered */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            {services.slice(4, 7).map((service, index) => (
+          {/* Second Row - 4 items */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {services.slice(4, 8).map((service, index) => (
               <motion.div
                 key={service.id}
                 initial={{ y: 30, opacity: 0 }}
