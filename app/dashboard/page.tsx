@@ -19,10 +19,12 @@ import {
   ArrowUpRight,
   Youtube,
   MessageCircle,
-  Share2
+  Share2,
+  ClipboardList,
+  Newspaper
 } from 'lucide-react'
 
-// 8가지 서비스 구성 (Neo-Brutalism 스타일)
+// 10가지 서비스 구성 (Neo-Brutalism 스타일)
 const services = [
   {
     id: 1,
@@ -44,21 +46,21 @@ const services = [
   },
   {
     id: 3,
+    title: '이발소',
+    description: '교과별 평어 생성기',
+    icon: ClipboardList,
+    url: 'https://evalso.teaboard.link',
+    color: '#FF5722', // Deep Orange
+    bgColor: '#FBE9E7'
+  },
+  {
+    id: 4,
     title: 'YouTube Bank',
     description: '교육용 영상 큐레이션 플랫폼',
     icon: Video,
     url: 'https://youtube.teaboard.link',
     color: '#FF6B9D', // Pink
     bgColor: '#FCE4EC'
-  },
-  {
-    id: 4,
-    title: 'TeaBoard DOCs',
-    description: 'AI 기반 문서 생성 도구',
-    icon: FileText,
-    url: 'https://docs.teaboard.link',
-    color: '#9C27B0', // Purple
-    bgColor: '#F3E5F5'
   },
   {
     id: 5,
@@ -89,6 +91,24 @@ const services = [
   },
   {
     id: 8,
+    title: 'TeaBoard DOCs',
+    description: 'AI 기반 문서 생성 도구',
+    icon: FileText,
+    url: 'https://docs.teaboard.link',
+    color: '#9C27B0', // Purple
+    bgColor: '#F3E5F5'
+  },
+  {
+    id: 9,
+    title: '파인만 AI 뉴스',
+    description: '쉽게 읽어주는 AI 교육 뉴스',
+    icon: Newspaper,
+    url: 'https://news.teaboard.link',
+    color: '#009688', // Teal
+    bgColor: '#E0F2F1'
+  },
+  {
+    id: 10,
     title: 'TeaBoard Share',
     description: '기기간 간편한 파일 공유',
     icon: Share2,
@@ -192,7 +212,7 @@ export default function DashboardPage() {
           className="mb-12"
         >
           <Badge className="mb-4 bg-[var(--brutal-cyan)] text-[var(--brutal-black)] brutal-border px-4 py-1 text-sm font-black">
-            8 SERVICES
+            10 SERVICES
           </Badge>
           <h2 className="text-5xl sm:text-6xl font-black text-[var(--brutal-black)] mb-4 tracking-tight">
             {currentUser?.displayName || '사용자'} 선생님 환영합니다! 👋
@@ -202,7 +222,7 @@ export default function DashboardPage() {
           </p>
         </motion.div>
 
-        {/* Services Grid - 2 rows × 4 columns */}
+        {/* Services Grid - 3 rows (4+4+2) */}
         <div className="space-y-8">
           {/* First Row - 4 items */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -256,6 +276,50 @@ export default function DashboardPage() {
                 initial={{ y: 30, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.5, delay: (index + 4) * 0.1 }}
+              >
+                <a
+                  href={service.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block h-full group"
+                >
+                  <Card
+                    className="h-full brutal-border brutal-shadow hover:brutal-shadow-hover hover:translate-x-2 hover:translate-y-2 transition-all duration-200 active:translate-x-0 active:translate-y-0"
+                    style={{ backgroundColor: service.bgColor }}
+                  >
+                    <CardHeader className="space-y-4">
+                      <div
+                        className="w-16 h-16 brutal-border rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-200"
+                        style={{ backgroundColor: service.color }}
+                      >
+                        <service.icon className="w-8 h-8 text-white" strokeWidth={2.5} />
+                      </div>
+                      <div className="flex items-start justify-between gap-2">
+                        <CardTitle className="text-xl font-black text-[var(--brutal-black)] tracking-tight leading-tight">
+                          {service.title}
+                        </CardTitle>
+                        <ArrowUpRight className="w-5 h-5 text-[var(--brutal-black)] flex-shrink-0 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <CardDescription className="text-sm font-bold text-gray-700">
+                        {service.description}
+                      </CardDescription>
+                    </CardContent>
+                  </Card>
+                </a>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Third Row - 2 items (left-aligned) */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {services.slice(8, 10).map((service, index) => (
+              <motion.div
+                key={service.id}
+                initial={{ y: 30, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.5, delay: (index + 8) * 0.1 }}
               >
                 <a
                   href={service.url}
