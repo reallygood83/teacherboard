@@ -398,7 +398,7 @@ export default function DashboardPage() {
             <div className="flex items-center gap-3">
               {/* YouTube Button */}
               <a
-                href="https://www.youtube.com/@%EB%B0%B0%EC%9F%88%EC%9D%98%EB%8B%AC%EC%9D%B8-p5v"
+                href="https://www.youtube.com/@%EB%B0%B0%EC%9B%80%EC%9D%98%EB%8B%AC%EC%9D%B8-p5v"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white font-bold text-sm brutal-border rounded-lg brutal-shadow-sm hover:brutal-shadow hover:translate-x-1 hover:translate-y-1 transition-all duration-200 active:translate-x-0 active:translate-y-0"
